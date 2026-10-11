@@ -1,9 +1,14 @@
 """Episode outcomes; these models do not decide whether content is acceptable."""
 
+from __future__ import annotations
+
+from collections.abc import Mapping
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any
 
 from qa_framework.models.metrics import EpisodeMetrics
+from qa_framework.schema.json_data import copy_json_object
 from qa_framework.schema.validation import validate_boolean
 
 
@@ -46,3 +51,27 @@ class EpisodeResult:
         )
         if self.truncated != is_interruption:
             raise ValueError("terminal_reason is inconsistent with termination flags")
+
+    def to_dict(self) -> dict[str, object]:
+        """Return the termination outcome and descriptive metrics as finite JSON."""
+        return {
+            "terminated": self.terminated,
+            "truncated": self.truncated,
+            "terminal_reason": self.terminal_reason.value,
+            "metrics": self.metrics.to_dict(),
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, object]) -> EpisodeResult:
+        """Restore an outcome with unchanged termination and truncation semantics."""
+        # JSON validation precedes decoding; the constructor validates field types.
+        payload: dict[str, Any] = copy_json_object(data, name="episode result data")
+        reason = payload["terminal_reason"]
+        if not isinstance(reason, str):
+            raise TypeError("serialized terminal_reason must be a string")
+        return cls(
+            terminated=payload["terminated"],
+            truncated=payload["truncated"],
+            terminal_reason=TerminalReason(reason),
+            metrics=EpisodeMetrics.from_dict(payload["metrics"]),
+        )

@@ -8,6 +8,14 @@ from qa_framework.models.metrics import EpisodeMetrics
 from qa_framework.models.observation import QAObservation
 
 
+class QAEnvironmentError(RuntimeError):
+    """Infrastructure failure from an adapter, distinct from an invalid policy action.
+
+    Future transports translate disconnects, timeouts and level-loading failures
+    into this exception. Callers retire the session rather than infer gameplay loss.
+    """
+
+
 class QAEnvironment(ABC):
     """Explicit adapter contract, with no engine or transport dependencies.
 
@@ -21,7 +29,12 @@ class QAEnvironment(ABC):
     def reset(
         self, *, seed: int | None = None, config: EpisodeConfig | None = None
     ) -> tuple[QAObservation, dict[str, object]]:
-        """Start a new episode; previous_action in its observation is NOOP."""
+        """Start a new episode; previous_action in its observation is NOOP.
+
+        When config.level is supplied, load that candidate and acknowledge its
+        level_id and generation_seed in info on reset and every step. Adapters
+        that cannot do this must reject the request before starting gameplay.
+        """
         raise NotImplementedError
 
     @abstractmethod

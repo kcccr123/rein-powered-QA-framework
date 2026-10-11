@@ -135,11 +135,16 @@ class FakeQAEnvironment(QAEnvironment):
             raise RuntimeError("environment is closed")
 
     def _make_info(self) -> dict[str, object]:
-        return {
+        info: dict[str, object] = {
             "schema_version": self.observation_schema_version,
             "step": self._metrics.step_count,
             "episode_id": f"fake-{self._episode_number}",
         }
+        if self._config.level is not None:
+            # Echo provenance for contract tests; no content is loaded or generated.
+            info["level_id"] = self._config.level.level_id
+            info["generation_seed"] = self._config.level.generation_seed
+        return info
 
     def _make_observation(self) -> QAObservation:
         object_types = (

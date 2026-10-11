@@ -1,7 +1,12 @@
 """Descriptive episode metrics, independent of evaluation policy."""
 
-from dataclasses import dataclass
+from __future__ import annotations
 
+from collections.abc import Mapping
+from dataclasses import dataclass
+from typing import Any
+
+from qa_framework.schema.json_data import copy_json_object
 from qa_framework.schema.validation import (
     validate_boolean,
     validate_finite_number,
@@ -29,3 +34,32 @@ class EpisodeMetrics:
             validate_finite_number(getattr(self, name), name=name, minimum=0.0)
         validate_boolean(self.completed, name="completed")
         validate_boolean(self.player_died, name="player_died")
+
+    def to_dict(self) -> dict[str, object]:
+        """Return descriptive metrics as finite JSON fields for a future handoff."""
+        return {
+            "step_count": self.step_count,
+            "elapsed_seconds": float(self.elapsed_seconds),
+            "completed": self.completed,
+            "player_died": self.player_died,
+            "enemies_killed": self.enemies_killed,
+            "damage_taken": float(self.damage_taken),
+            "powerups_used": self.powerups_used,
+            "stuck_events": self.stuck_events,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Mapping[str, object]) -> EpisodeMetrics:
+        """Restore metrics using the same validation as direct construction."""
+        # JSON validation precedes decoding; the constructor validates field types.
+        payload: dict[str, Any] = copy_json_object(data, name="episode metrics data")
+        return cls(
+            step_count=payload["step_count"],
+            elapsed_seconds=payload["elapsed_seconds"],
+            completed=payload["completed"],
+            player_died=payload["player_died"],
+            enemies_killed=payload["enemies_killed"],
+            damage_taken=payload["damage_taken"],
+            powerups_used=payload["powerups_used"],
+            stuck_events=payload["stuck_events"],
+        )

@@ -2,7 +2,8 @@
 
 A lightweight Python environment abstraction for automated gameplay QA and an
 external reinforcement learning framework. Currently this project provides typed data
-models, validation, a deterministic fake environment, and tests. 
+models, validation, a deterministic fake environment, level handoff and evaluation
+contracts, an optional Gymnasium wrapper, and tests.
 
 The learning algorithms belong to the external RL framework, the game simulation
 belongs to Unity, and procedural content generation belongs to the separate
@@ -22,14 +23,14 @@ QAEnvironment
 FakeQAEnvironment      Future UnityQAEnvironment
                                |
                                v
-                         ML-Agents transport
+                         Shared RL TCP backend
                                |
                                v
                              Unity
 ```
 
 External consumers use `QAEnvironment` and the domain models. They do not import
-Unity, ML-Agents, transport objects, or game-specific code. `QAEnvironment` is an
+Unity or transport objects. `QAEnvironment` is an
 abstract base class (`abc.ABC`): explicit inheritance makes implementations easy
 to discover and prevents instantiating an adapter that omits required methods.
 Its return conventions also allow a future Gymnasium wrapper without adding
@@ -37,11 +38,16 @@ Gymnasium as a dependency.
 
 The source layout separates these concerns:
 
-- `models/`: actions, observations, ray perception, episode configuration, metrics.
+- `models/`: actions, observations, ray perception, episode configuration, level recipes, metrics.
 - `environments/`: the abstract contract and fake implementation.
 - `schema/`: schema constants, validation, and flattening.
-- `evaluation/result.py`: descriptive episode outcomes, without acceptance rules.
-- `environments/unity.py`: a documented extension point for a future adapter.
+- `evaluation/`: descriptive episode outcomes and bounded, candidate-correlated rollouts.
+- `environments/unity.py`: offline capability checks for a future adapter.
+- `environments/gymnasium.py`: optional numeric interface for the shared RL trainer.
+
+The Unity connection remains unimplemented. See the
+[integration readiness guide](docs/integration-readiness.md) for the repository
+audit, remaining game/bridge requirements and precise handoff contract.
 
 ## Install and run
 
@@ -51,9 +57,11 @@ Use Python 3.10 or newer, from the repository root:
 python -m pip install -e ".[test]"
 python -m pytest
 python examples/random_agent.py
+python examples/evaluate_generated_level.py
 ```
 
-The `test` extra installs pytest. Runtime code uses only the standard library.
+The `test` extra installs pytest. Core runtime code uses only the standard library.
+Install `.[rl,test]` to also use and test the optional Gymnasium/NumPy adapter.
 
 ## Environment API
 
@@ -183,10 +191,13 @@ schema migration system in this milestone.
 ## Episodes, metrics, and info
 
 `EpisodeConfig` contains `max_steps` (default `1000`), optional
-`max_duration_seconds`, and caller-defined `metadata`. Limits must be positive.
+`max_duration_seconds`, caller-defined `metadata`, and optional `level: LevelSpec`.
+Limits must be positive.
 Metadata is shallow-copied into a read-only mapping; callers should treat any
-nested values as immutable. It may eventually identify an externally generated
-level without defining PCG parameters or generation behavior.
+nested values as immutable. `LevelSpec` explicitly carries a level ID, generation
+seed, deeply immutable JSON recipe and optional generator/settings revision.
+It does not generate or load content. `level.pcg_parameters()` includes Unity's
+exact `Seed` field while preserving the supplied parameter names.
 
 `EpisodeMetrics` describes `step_count`, `elapsed_seconds`, `completed`,
 `player_died`, `enemies_killed`, `damage_taken`, `powerups_used`, and
@@ -203,6 +214,13 @@ observations. The fake environment returns `schema_version`, `step`, and
 increasing identifiers. An ending step also includes `episode_result`, an
 `EpisodeResult` object. Consumers should use the typed observation for policy
 input and the explicit booleans to detect episode endings.
+
+When `config.level` is provided, reset and step info also acknowledge `level_id`
+and `generation_seed`. The fake only echoes this provenance. `evaluate_episode`
+uses an `EvaluationRequest` to return a serializable `EvaluationReport` with the
+candidate, independent QA seed, policy ID, total reward and typed outcome. It
+rejects missing level acknowledgement or contradictory terminal evidence. The
+core result/config/metrics models also expose `to_dict()` and `from_dict()`.
 
 ## Fake environment behavior
 
@@ -226,16 +244,16 @@ does not populate combat or game-specific metrics.
 
 ## Future Unity adapter
 
-`qa_framework.environments.unity` currently documents the extension point and
-implements no integration. A future `UnityQAEnvironment` will inherit
-`QAEnvironment`, translate transport observations into validated
-`QAObservation` values, translate `QAAction` into transport actions, and report
-episode outcomes through the same lifecycle. It can adapt
-`mlagents_envs.UnityEnvironment` or a different transport while keeping those
-dependencies behind the environment boundary.
+`qa_framework.environments.unity` implements offline readiness checks through
+`UnityQARequirements` and `UnityQACapabilities`. A future `UnityQAEnvironment`
+will inherit `QAEnvironment`, translate observations/actions, load the requested
+candidate and report explicit outcomes/metrics. The shared RL package here uses
+a custom TCP protocol. Its current seed-only reset and `OBS/REW/DONE` responses
+do not yet carry the level or outcome evidence required for gameplay QA.
 
 Unity owns raycasts, actual movement, and game simulation. The separate PCG
 framework owns generated content. A future adapter must agree with the Python
 schema on ray count, ray ordering, semantic classifications, previous-action
-behavior, and numeric ranges. This package currently has no ML-Agents dependency
-and starts no Unity process.
+behavior, and numeric ranges. Readiness checks require explicit schema and
+gameplay capability evidence; vector dimensions alone are insufficient. This
+package starts no Unity process and opens no connection.
