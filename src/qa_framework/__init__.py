@@ -2,7 +2,7 @@
 
 from qa_framework.environments import (
     FakeQAEnvironment, QAEnvironment, QAEnvironmentError,
-    UnityQACapabilities, UnityQAReadinessError, UnityQARequirements,
+    UnityQACapabilities, UnityQAEnvironment, UnityQAReadinessError, UnityQARequirements,
 )
 from qa_framework.evaluation import (
     EVALUATION_SCHEMA_VERSION, EpisodeResult, EvaluationReport, EvaluationRequest,
@@ -56,6 +56,7 @@ __all__ = [
     "RayObservation",
     "TerminalReason",
     "UnityQACapabilities",
+    "UnityQAEnvironment",
     "UnityQAReadinessError",
     "UnityQARequirements",
     "action_from_tuple",

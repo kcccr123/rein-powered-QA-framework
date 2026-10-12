@@ -7,8 +7,10 @@ from qa_framework.environments.unity import (
     UnityQAReadinessError,
     UnityQARequirements,
 )
+from qa_framework.environments.unity_socket import UnityQAEnvironment
 
 __all__ = [
     "QAEnvironment", "QAEnvironmentError", "FakeQAEnvironment",
     "UnityQACapabilities", "UnityQAReadinessError", "UnityQARequirements",
+    "UnityQAEnvironment",
 ]
