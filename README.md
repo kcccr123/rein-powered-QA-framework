@@ -2,8 +2,9 @@
 
 A lightweight Python environment abstraction for automated gameplay QA and an
 external reinforcement learning framework. Currently this project provides typed data
-models, validation, a deterministic fake environment, level handoff and evaluation
-contracts, an optional Gymnasium wrapper, and tests.
+models, validation, a deterministic fake environment, a Unity TCP adapter,
+episode evaluation, ray/health policies, an adaptive round loop, and an optional
+Gymnasium interface for training.
 
 The learning algorithms belong to the external RL framework, the game simulation
 belongs to Unity, and procedural content generation belongs to the separate
@@ -12,7 +13,10 @@ Unity PCG framework.
 ## Architecture
 
 ```text
-External RL Framework
+External RL Policy / Ray Heuristic
+        |
+        v
+Adaptive Round Loop -> EvaluationReport -> Next LevelSpec
         |
         v
 QAEnvironment
@@ -20,10 +24,10 @@ QAEnvironment
         +----------------------+
         |                      |
         v                      v
-FakeQAEnvironment      Future UnityQAEnvironment
+FakeQAEnvironment          UnityQAEnvironment
                                |
                                v
-                         Shared RL TCP backend
+                         QaTcpHost (JSON TCP)
                                |
                                v
                              Unity
@@ -39,15 +43,16 @@ Gymnasium as a dependency.
 The source layout separates these concerns:
 
 - `models/`: actions, observations, ray perception, episode configuration, level recipes, metrics.
-- `environments/`: the abstract contract and fake implementation.
+- `environments/`: the abstract contract, fake implementation and Unity socket client.
 - `schema/`: schema constants, validation, and flattening.
 - `evaluation/`: descriptive episode outcomes and bounded, candidate-correlated rollouts.
-- `environments/unity.py`: offline capability checks for a future adapter.
+- `environments/unity.py`: capability checks for the Unity handshake.
 - `environments/gymnasium.py`: optional numeric interface for the shared RL trainer.
+- `policies/`: a ray/health baseline and optional PPO/A2C checkpoint inference.
+- `orchestration/`: complete-episode feedback and bounded adaptive level recipes.
 
-The Unity connection remains unimplemented. See the
-[integration readiness guide](docs/integration-readiness.md) for the repository
-audit, remaining game/bridge requirements and precise handoff contract.
+See the [Unity integration guide](docs/integration-readiness.md) for setup,
+the current wire contract, training, and known game-side limitations.
 
 ## Install and run
 
@@ -58,10 +63,52 @@ python -m pip install -e ".[test]"
 python -m pytest
 python examples/random_agent.py
 python examples/evaluate_generated_level.py
+python examples/play_generated_level_live.py --fake --episodes 3
 ```
 
 The `test` extra installs pytest. Core runtime code uses only the standard library.
 Install `.[rl,test]` to also use and test the optional Gymnasium/NumPy adapter.
+
+With `InitialGenerationScene` playing in Unity and `QaTcpHost` listening on port
+8800, run observation-driven QA rounds:
+
+```shell
+python examples/play_generated_level_live.py --episodes 10 --report-path artifacts/qa-rounds.jsonl
+```
+
+The default policy reads ordered rays and health, seeks visible exits/loot,
+attacks nearby enemies, avoids close walls, and retreats at low health. It is a
+local baseline with no map or pathfinding. Every episode ends on completion,
+death or its configured limit; `--episodes 0` continues until Ctrl+C.
+
+Each round's completion, budget efficiency, damage and stuck events update a
+bounded heuristic skill estimate and the next level's `RoomCount`, `AreaWidth`
+and `AreaHeight`. The JSONL log records the full evaluation, before/after state,
+calibration settings and next recipe. This is a tunable controller, not a trained
+PCG policy or a validated estimate of human skill. Geometry size is only a proxy
+for navigation difficulty; enemy/content density are unsupported.
+
+For a gameplay QA PPO/A2C checkpoint using this schema, install the optional
+inference extra and pass its path:
+
+```shell
+python -m pip install -e ".[inference,test]"
+python examples/play_generated_level_live.py --episodes 10 --model-path artifacts/qa/final_model.zip --algorithm ppo
+```
+
+Existing PCG generation checkpoints use different observations/actions and cannot
+control the player. No trained gameplay QA checkpoint is included. A QA-local
+training example uses the same SB3 algorithms as the RL repository:
+
+```shell
+python examples/train_unity_qa.py --algorithm ppo --total-timesteps 100000 --output artifacts/qa/final_model.zip
+```
+
+Training uses `GymnasiumQAEnvironment` over the JSON QA host with a fixed level
+recipe; inference flattens health, previous action and all rays into 119 float32
+values and decodes five model outputs through `QAActionCodec`. No other
+repository needs modification. See the integration guide for assumptions and
+training limits.
 
 ## Environment API
 
@@ -123,7 +170,10 @@ The default schema always has 16 rays. An explicit alternate `ray_count` is
 supported for an agreed schema configuration; producers and consumers must agree
 on that count. There are no variable lists of nearby enemies, loot, or objects.
 Ray index ordering is stable; the eventual adapter must document its spatial
-directions and keep them consistent across episodes.
+directions and keep them consistent across episodes. The current Unity controller
+uses world-aligned rays: index 0 points along +Z (`move_y=1`), increasing angles
+turn toward +X (`move_x=1` at index 4 of 16). Direction `i` maps to
+`(sin(2*pi*i/N), cos(2*pi*i/N))`; the rays do not rotate with the player.
 
 Each ray contains a strict boolean `hit`, a finite `distance_01` in `[0, 1]`, and
 a `QAObjectType`: `NONE`, `OBSTACLE`, `ENEMY`, `LOOT`, or `EXIT`. A ray with
@@ -242,18 +292,31 @@ from wall-clock time. This makes duration limits and tests deterministic. The
 fake environment is a contract fixture rather than a gameplay simulation, and
 does not populate combat or game-specific metrics.
 
-## Future Unity adapter
+## Unity adapter and adaptive orchestration
 
-`qa_framework.environments.unity` implements offline readiness checks through
-`UnityQARequirements` and `UnityQACapabilities`. A future `UnityQAEnvironment`
-will inherit `QAEnvironment`, translate observations/actions, load the requested
-candidate and report explicit outcomes/metrics. The shared RL package here uses
-a custom TCP protocol. Its current seed-only reset and `OBS/REW/DONE` responses
-do not yet carry the level or outcome evidence required for gameplay QA.
+`UnityQAEnvironment` connects to an already running `QaTcpHost`, validates its
+capabilities, sends concrete level recipes at reset, and decodes typed
+observations/results. This JSON endpoint differs from the shared RL package's
+`CONFIG/OBS/REW/DONE` bridge. Unity owns sensing, movement and gameplay; PCG owns
+generation. Python chooses actions and the next recipe without wire changes.
 
-Unity owns raycasts, actual movement, and game simulation. The separate PCG
-framework owns generated content. A future adapter must agree with the Python
-schema on ray count, ray ordering, semantic classifications, previous-action
-behavior, and numeric ranges. Readiness checks require explicit schema and
-gameplay capability evidence; vector dimensions alone are insufficient. This
-package starts no Unity process and opens no connection.
+The current host sends full metrics only at episode end. Interim `last_metrics`
+snapshots contain confirmed step counts and simulated time (`0.1` seconds/step,
+configurable to match the controller); combat/event fields remain zero until
+reported. Final event metrics come from Unity. Movement acknowledgements and
+simulation-time boundaries account for C# float32 rounding.
+
+`iter_adaptive_rounds(env, policy, initial_level, rounds=N)` streams `RoundReport`
+objects using `evaluate_episode`. `rounds=None` runs indefinitely. Customize
+`AdaptiveDifficultyConfig` bounds and penalty scales for the actual generation
+settings. The original complete recipe must be within those bounds. Reports
+retain the baseline and settings for reproducible decisions and resumption.
+An optional policy `reset_episode()` hook clears policy history before each
+round. Environment failures yield one failure report and stop; policy/contract
+errors propagate. The caller owns cleanup.
+
+The current Unity host can lose asynchronous death/exit signals between requests
+and return an inactive-episode error. QA records this as `ENVIRONMENT_FAILURE`
+and does not interpret it as player failure. See the integration guide for the
+game-side fix that remains outside this repository. Offline tests and synthetic
+examples do not establish live gameplay or checkpoint quality.

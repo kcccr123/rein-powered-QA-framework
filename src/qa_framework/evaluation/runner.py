@@ -277,7 +277,10 @@ def _validate_requested_limits(request: EvaluationRequest, result: EpisodeResult
 
 
 def _limit_reached(elapsed: float, limit: float) -> bool:
-    return elapsed >= limit or isclose(elapsed, limit, rel_tol=1e-12, abs_tol=0.0)
+    # Unity serializes simulation times and requested durations as C# float32.
+    # Allow its relative rounding error at the boundary, without an absolute
+    # tolerance that could swallow a very small positive duration entirely.
+    return elapsed >= limit or isclose(elapsed, limit, rel_tol=1e-7, abs_tol=0.0)
 
 
 def _validate_identifier(value: object, name: str) -> None:

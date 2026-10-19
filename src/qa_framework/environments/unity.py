@@ -1,9 +1,8 @@
-"""Offline requirements for a future UnityQAEnvironment; no transport is implemented.
+"""Capability checks for the JSON QaTcpHost gameplay transport.
 
-The sibling shared RL package uses RlProtocol over TCP, rather than ML-Agents.
-Its legacy CONFIG/OBS/REW/DONE messages do not carry the level, schema, metrics,
-or terminal evidence required here. These Python records describe proposed
-capability checks, not an extension already supported by the Unity wire protocol.
+The separate shared RL bridge uses CONFIG/OBS/REW/DONE messages and is not the
+QA gameplay endpoint. UnityQAEnvironment uses these records to validate the
+QaTcpHost handshake before running an episode.
 """
 
 from __future__ import annotations
@@ -25,7 +24,7 @@ class UnityQAReadinessError(RuntimeError):
 
 @dataclass(frozen=True, slots=True)
 class UnityQACapabilities:
-    """Evidence a future backend must obtain explicitly, rather than infer from DONE.
+    """Explicit backend evidence, rather than inference from DONE.
 
     Observation/action sizes alone never prove QA compatibility. Unavailable
     capabilities default to unknown/false so legacy bridge descriptions fail closed.

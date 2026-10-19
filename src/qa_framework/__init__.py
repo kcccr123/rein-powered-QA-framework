@@ -20,6 +20,11 @@ from qa_framework.models import (
     action_from_tuple,
     action_to_tuple,
 )
+from qa_framework.orchestration import (
+    ORCHESTRATION_SCHEMA_VERSION, AdaptiveDifficultyConfig, AdaptiveState,
+    RoundReport, iter_adaptive_rounds,
+)
+from qa_framework.policies import RayHeuristicPolicy, StableBaselinesPolicy
 from qa_framework.schema import (
     ACTION_ENCODING_VERSION,
     DEFAULT_RAY_COUNT,
@@ -38,6 +43,9 @@ __all__ = [
     "OBSERVATION_SCHEMA_VERSION",
     "EVALUATION_SCHEMA_VERSION",
     "LEVEL_SCHEMA_VERSION",
+    "ORCHESTRATION_SCHEMA_VERSION",
+    "AdaptiveDifficultyConfig",
+    "AdaptiveState",
     "EpisodeConfig",
     "EpisodeMetrics",
     "EpisodeResult",
@@ -54,6 +62,9 @@ __all__ = [
     "QAObservation",
     "QAPolicy",
     "RayObservation",
+    "RayHeuristicPolicy",
+    "RoundReport",
+    "StableBaselinesPolicy",
     "TerminalReason",
     "UnityQACapabilities",
     "UnityQAEnvironment",
@@ -64,6 +75,7 @@ __all__ = [
     "evaluate_episode",
     "flatten_observation",
     "get_flat_observation_size",
+    "iter_adaptive_rounds",
     "validate_action",
     "validate_observation",
     "validate_ray",

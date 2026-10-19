@@ -13,6 +13,7 @@ dependencies = []
 [project.optional-dependencies]
 test = ["pytest>=7"]
 rl = ["gymnasium>=0.29,<2", "numpy>=1.24"]
+inference = ["gymnasium>=0.29,<2", "numpy>=1.24", "stable-baselines3>=2.5,<3"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
