@@ -6,6 +6,22 @@ combat and outcomes. Python processes typed observations, chooses actions,
 evaluates complete episodes and selects the next level recipe. No sibling
 repository changes are required for these QA features.
 
+## Goal and current status
+
+The gameplay QA goal is a policy that controls the Unity player from game
+observations, navigates generated dungeons without human input and reaches the
+exit. A level counts as cleared only when Unity reports exit completion.
+Generation success, structural validation or a synthetic `--fake` episode
+cannot establish that result. A training reward average alone does not show
+whether the policy clears other generated levels.
+
+The game has a movable QA player and `QaTcpHost`; this repository has the
+Unity adapter, observation/action codec, heuristic baseline, training example
+and checkpoint inference. The training example can produce a PPO/A2C checkpoint
+for one fixed dungeon recipe. No trained gameplay QA checkpoint or measured
+level-clearing performance is included. Generalization to other generated
+levels, and use of QA results as PCG training feedback, remain unverified.
+
 ## Run rounds
 
 From this repository, using Python 3.10+:
@@ -98,10 +114,21 @@ recipe through `GymnasiumQAEnvironment(UnityQAEnvironment(...))`, learns a
 feedforward `MlpPolicy`, saves an SB3 checkpoint, and closes its session. A2C is
 also available with `--algorithm a2c`. Pass the matching algorithm at inference.
 `--fake` exercises training plumbing only, and its resulting model is synthetic.
-Training against one recipe and sparse completion reward is a starting point;
-it does not establish a robust policy across generated levels. Training duration
+Each reset in this example uses the same complete dungeon recipe and
+generation seed. Unity returns reward 0 during play and 1 on exit completion;
+death or an episode limit ends the attempt without a completion reward.
+Training against this one recipe and sparse reward is a starting point, not
+evidence that the policy can clear other generated levels. Training duration
 and gameplay quality have not been validated here. Learning remains in the
 example and optional external library, outside the core QA package.
+
+After training, run the saved checkpoint against Unity with
+`play_generated_level_live.py --model-path` and record terminal reasons and
+completion counts across held-out generation seeds and recipes. Compare those
+results with the heuristic baseline under the same episode limits. The live
+round command and JSONL reports support inspection, but this repository does
+not include a held-out benchmark or a demonstrated success threshold. Treat a
+saved checkpoint as a training artifact until gameplay completion is measured.
 
 ## Adaptive round loop
 
