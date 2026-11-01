@@ -1,259 +1,108 @@
 # QA Framework
 
-A lightweight Python environment abstraction for automated gameplay QA and an
-external reinforcement learning framework. Currently this project provides typed data
-models, validation, a deterministic fake environment, level handoff and evaluation
-contracts, an optional Gymnasium wrapper, and tests.
-
-The learning algorithms belong to the external RL framework, the game simulation
-belongs to Unity, and procedural content generation belongs to the separate
-Unity PCG framework.
-
-## Architecture
+A reusable Unity unit adapter and Python QA evaluator with a TCP startup handshake.
 
 ```text
-External RL Framework
-        |
-        v
-QAEnvironment
-        |
-        +----------------------+
-        |                      |
-        v                      v
-FakeQAEnvironment      Future UnityQAEnvironment
-                               |
-                               v
-                         Shared RL TCP backend
-                               |
-                               v
-                             Unity
++------------------------------------------------------------------+
+| SCENE STARTUP                                                    |
+| Launcher starts Python -> validate TCP readiness -> enable game. |
++------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| DEVELOPER: unit lifecycle                                        |
+| StartUnit -> run game -> EndUnit.                                |
+| Aggregate final actor snapshots in OnUnitEnd.                    |
++------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| SHARED QA TRANSPORT                                              |
+| Inherited SendReport -> JSON over the same TCP connection.       |
++------------------------------------------------------------------+
+             |
+             v
++---------------------------------------------------------------------+
+| DEVELOPER: Python consumer                                          |
+| Receive -> evaluate named requirements -> optionally store results. |
++---------------------------------------------------------------------+
 ```
 
-External consumers use `QAEnvironment` and the domain models. They do not import
-Unity or transport objects. `QAEnvironment` is an
-abstract base class (`abc.ABC`): explicit inheritance makes implementations easy
-to discover and prevents instantiating an adapter that omits required methods.
-Its return conventions also allow a future Gymnasium wrapper without adding
-Gymnasium as a dependency.
+The developer calls `StartUnit(unitId)` and `EndUnit()`. The adapter invokes developer hooks and sends the final report. It does no per-tick state collection or end-condition polling. Unity owns actors, simulation, model inference, and unit lifecycle; the shared RL framework owns training.
 
-The source layout separates these concerns:
+## Initial package setup
 
-- `models/`: actions, observations, ray perception, episode configuration, level recipes, metrics.
-- `environments/`: the abstract contract and fake implementation.
-- `schema/`: schema constants, validation, and flattening.
-- `evaluation/`: descriptive episode outcomes and bounded, candidate-correlated rollouts.
-- `environments/unity.py`: offline capability checks for a future adapter.
-- `environments/gymnasium.py`: optional numeric interface for the shared RL trainer.
+Install Python and this Python package into your chosen environment:
 
-The Unity connection remains unimplemented. See the
-[integration readiness guide](docs/integration-readiness.md) for the repository
-audit, remaining game/bridge requirements and precise handoff contract.
+```shell
+python -m pip install -e path/to/rein-powered-QA-framework
+```
 
-## Install and run
+Install the Unity package from `Unity/package.json` through Package Manager. Supply the interpreter, consumer script, and packages on each test machine, including desktop builds.
 
-Use Python 3.10 or newer, from the repository root:
+## Per-game implementation
+
+Derive a component from `Kcccr.QaFramework.QaUnitAdapter`, add it explicitly to your scene controller, and implement:
+
+```csharp
+protected abstract void OnUnitStart();
+protected abstract QaUnitReport OnUnitEnd();
+```
+
+Use `OnUnitStart()` to initialize tracking and component references. In `OnUnitEnd()`, read your `IQaStateSource<TState>` components, aggregate their snapshots, and return a concrete serializable `QaUnitReport` subclass with a typed `evidence` field. The base fills `schema_version`, `unit_id`, and a fresh `attempt_id`, then calls inherited `SendReport()` automatically.
+
+Call `StartUnit(unitId)` from your game's unit-start event and `EndUnit()` at its chosen end condition, before resetting or destroying the sources. End the active attempt before starting another. Repeated or reentrant `EndUnit()` calls do nothing after that attempt is consumed. Disabling/re-enabling the component preserves attempt state and never starts or ends a unit. Delivery runs asynchronously in report order to `127.0.0.1:8800` by default.
+
+## Start the recorder from Unity
+
+Add **QA Framework > QA Recorder Launcher** to an active scene GameObject. Set its Python executable, script arguments (or `-m your_module`), and working directory. Assign its **Adapter**, or keep the unit adapter on the same GameObject. The adapter supplies the TCP host/port and owns the connection. Keep the gameplay controller disabled in the saved scene; connect **On Ready** to that controller's `enabled = true` and **On Stopped** to `enabled = false` in the Inspector.
+
+Your Python consumer runs its normal `QAReportReceiver.receive()` loop. The receiver automatically sends a newline-delimited readiness message when it accepts Unity's connection: `{"type":"ready","schema_version":2,"process_id":1234,"session_id":"..."}`. The launcher gives its child a fresh `QA_RECORDER_SESSION` environment value; the receiver echoes it as `session_id`. The launcher retries refused connections while Python starts, validates the schema and session, then invokes **On Ready**. That same connection carries subsequent unit reports. No readiness print statement is needed; stdout/stderr are ordinary Unity Console logs.
+
+Disabling the launcher, unloading the scene, or stopping Play closes the connection and stops its owned Python process (including Windows virtual-environment child processes). Missing Python, an occupied port, incompatible readiness data, an unexpected session, early exit, or the startup timeout leaves gameplay paused. Python sends readiness once per accepted connection; unit reports flow Unity to Python, with no per-report acknowledgement or gameplay commands.
+
+Use `{timestamp}` in the arguments for a fresh results filename per scene session. Relative working directories start at the Unity project root in the Editor, or beside the executable in desktop builds. The optional **Python Path** adds one source directory to `PYTHONPATH`, relative to the working directory; otherwise install this Python package into the chosen interpreter. Python must already be installed. Desktop builds also need the configured scripts/package beside the build or at configured external paths.
+
+For the included printing example, set **Arguments** to `-u path/to/receive_unity_reports.py` using the path from the configured working directory. Use the selected interpreter's installed QA package, or set **Python Path** to its source directory. Your own consumer supplies requirements and persistence.
+
+## Python
+
+From this repository:
 
 ```shell
 python -m pip install -e ".[test]"
-python -m pytest
-python examples/random_agent.py
-python examples/evaluate_generated_level.py
+python examples/receive_unity_reports.py --port 8800
 ```
 
-The `test` extra installs pytest. Core runtime code uses only the standard library.
-Install `.[rl,test]` to also use and test the optional Gymnasium/NumPy adapter.
-
-## Environment API
-
-```text
-reset(*, seed: int | None = None, config: EpisodeConfig | None = None)
-    -> tuple[QAObservation, dict[str, object]]
-
-step(action: QAAction)
-    -> tuple[QAObservation, float, bool, bool, dict[str, object]]
-
-close() -> None
-```
-
-The two booleans returned by `step` are `terminated` and `truncated`, in that
-order. `terminated` describes an environment outcome such as completion or
-player death. `truncated` describes an imposed limit such as maximum steps or
-duration, or an environment failure. Consumers stop the episode when either is true.
-
-The interface also exposes `observation_schema_version`, `episode_active`, and
-`last_metrics`. Metrics are immutable snapshots of the current or most recent
-episode. Reset starts a fresh episode and clears metrics and the previous action.
-Calling `step` before reset or after the episode ends raises `RuntimeError`.
-The fake environment's `close` is idempotent and permanently closes the instance;
-reset and step then raise `RuntimeError`.
+The launcher can start this receiver for you; manual startup remains available. The receiving example prints validated reports without assuming any evidence fields. To produce QA results, supply your own named predicates:
 
 ```python
-from qa_framework import FakeQAEnvironment, QAAction, QAEnvironment
+from qa_framework import QAReportReceiver, evaluate_unit
 
-env: QAEnvironment = FakeQAEnvironment()
-try:
-    observation, info = env.reset(seed=123)
-    while True:
-        # An external policy can choose an action from the typed observation.
-        action = QAAction(move_x=1.0)
-        observation, reward, terminated, truncated, info = env.step(action)
-        if terminated or truncated:
-            break
-finally:
-    env.close()
+with QAReportReceiver(port=8800) as receiver:
+    report = receiver.receive()
+    result = evaluate_unit(report, {
+        "target_activated": lambda unit: unit.evidence["activated"],
+        "within_interaction_budget": lambda unit: unit.evidence["interaction_count"] <= 3,
+    })
+    print(result.to_dict())
 ```
 
-See [examples/random_agent.py](examples/random_agent.py) for a random policy using
-the same API. The example performs no learning.
+`receive()` returns a `UnitReport` containing `unit_id`, `attempt_id`, and developer-defined evidence. Schema version 2 validates nonempty string identities and finite JSON objects. Evidence is copied and frozen so later mutations cannot change the received snapshot. Dictionaries/arrays are exported as ordinary JSON objects/arrays by `to_dict()`.
 
-## Observation schema version 1
+`evaluate_unit(report, requirements)` requires at least one named predicate. Each must return a boolean; overall `passed` is true exactly when all requirements pass. Completion, failure, seeds, recipes, player metrics, and ending reasons have no built-in QA meaning. Add them to your evidence and predicates when needed.
 
-`OBSERVATION_SCHEMA_VERSION = 1` identifies the encoder contract. A
-`QAObservation` is an immutable dataclass containing:
+For an offline example and the existing checks:
 
-| Field | Contract |
-| --- | --- |
-| `health_01` | Finite float in `[0, 1]` |
-| `powerup_count` | Nonnegative integer, retained as a raw count |
-| `rays` | Tuple of exactly `ray_count` `RayObservation` values |
-| `previous_action` | Last applied `QAAction`; `QAAction.noop()` at reset |
-| `ray_count` | Positive schema count; defaults to `DEFAULT_RAY_COUNT = 16` |
-
-The default schema always has 16 rays. An explicit alternate `ray_count` is
-supported for an agreed schema configuration; producers and consumers must agree
-on that count. There are no variable lists of nearby enemies, loot, or objects.
-Ray index ordering is stable; the eventual adapter must document its spatial
-directions and keep them consistent across episodes.
-
-Each ray contains a strict boolean `hit`, a finite `distance_01` in `[0, 1]`, and
-a `QAObjectType`: `NONE`, `OBSTACLE`, `ENEMY`, `LOOT`, or `EXIT`. A ray with
-`hit=False` must use `NONE`; its conventional full-range distance is `1.0`.
-Validation accepts other normalized distances for a no-hit ray. `hit=True` with
-`NONE` represents a hit without a classified semantic type. `NONE` therefore
-does not by itself imply that no physical hit occurred.
-
-After `step(action)`, the returned observation's `previous_action` equals the
-validated action supplied to that step. Reset replaces it with the no-op action.
-
-Construction and validation reject invalid ranges, wrong ray counts, negative
-counts, inappropriate field types, NaN, and infinity. Immutable tuples and frozen
-dataclasses protect the observation and action contract from accidental mutation.
-
-## Action schema
-
-`QAAction` is an immutable dataclass:
-
-| Field | Default | Contract |
-| --- | --- | --- |
-| `move_x` | `0.0` | Finite float in `[-1, 1]` |
-| `move_y` | `0.0` | Finite float in `[-1, 1]` |
-| `attack` | `False` | Boolean |
-| `interact` | `False` | Boolean |
-| `ability` | `0` | Nonnegative integer; `0` means none, positive values are slots |
-
-`QAAction.noop()` returns the all-default action. Movement is validated per axis;
-diagonal normalization and physical movement semantics belong to the eventual
-environment implementation. The contract has no game-specific ability catalog.
-An adapter with a known slot count can call
-`validate_action(action, max_ability_slot=N)` to reject unsupported slots.
-
-`action_to_tuple` and `action_from_tuple` use the exact order
-`(move_x, move_y, attack, interact, ability)` and preserve boolean/integer fields.
-They do not encode an ML-Agents transport action.
-
-## Flattening and serialization
-
-`flatten_observation(observation)` returns a tuple of floats, with this exact
-ordering:
-
-```text
-health_01, raw powerup_count,
-previous_action.move_x, previous_action.move_y,
-previous_action.attack, previous_action.interact, previous_action.ability,
-ray_0.hit, ray_0.distance_01, ray_0.NONE, ray_0.OBSTACLE,
-    ray_0.ENEMY, ray_0.LOOT, ray_0.EXIT,
-ray_1.hit, ray_1.distance_01, ray_1.NONE, ray_1.OBSTACLE,
-    ray_1.ENEMY, ray_1.LOOT, ray_1.EXIT,
-...remaining rays in index order...
+```shell
+python examples/evaluate_unit.py
+python -m pytest
 ```
 
-Flags become `0.0` or `1.0`; semantic types use a five-element one-hot vector in
-the stated order. Powerup count and ability slot are raw numeric values, with no
-hidden normalization. `get_flat_observation_size(ray_count=16)` returns
-`7 + 7 * ray_count`, which is **119** for the default schema. No NumPy is needed.
+The old action/observation, level, and episode models are deprecated and retained in their source modules for reference. They are not exported by the package API or imported by the receiver/evaluator. Generic JSON and primitive validation are the only schema helpers loaded by the current runtime. Runtime code uses only the Python standard library and Unity's built-in `JsonUtility`.
 
-Actions and observations expose `to_dict()` and `from_dict()` for JSON-compatible
-primitive serialization. Observation dictionaries include `schema_version`,
-`ray_count`, player fields, nested ray records, and the previous action. Decoding
-validates the contract and rejects unsupported schema versions. There is no
-schema migration system in this milestone.
+See [the integration guide](docs/integration-readiness.md) for a complete developer adapter example, wire format, and verification steps.
 
-## Episodes, metrics, and info
+## Worked example
 
-`EpisodeConfig` contains `max_steps` (default `1000`), optional
-`max_duration_seconds`, caller-defined `metadata`, and optional `level: LevelSpec`.
-Limits must be positive.
-Metadata is shallow-copied into a read-only mapping; callers should treat any
-nested values as immutable. `LevelSpec` explicitly carries a level ID, generation
-seed, deeply immutable JSON recipe and optional generator/settings revision.
-It does not generate or load content. `level.pcg_parameters()` includes Unity's
-exact `Seed` field while preserving the supplied parameter names.
-
-`EpisodeMetrics` describes `step_count`, `elapsed_seconds`, `completed`,
-`player_died`, `enemies_killed`, `damage_taken`, `powerups_used`, and
-`stuck_events`. Unobserved values retain sensible zero/false defaults. These are
-measurements; they do not decide whether a level is acceptable.
-
-`EpisodeResult` contains `terminated`, `truncated`, `terminal_reason`, and
-`metrics`. `TerminalReason` includes `COMPLETED`, `PLAYER_DIED`, `MAX_STEPS`,
-`MAX_DURATION`, and `ENVIRONMENT_FAILURE`.
-
-The info dictionary carries auxiliary episode context rather than core
-observations. The fake environment returns `schema_version`, `step`, and
-`episode_id` on reset and every step. Its episode IDs are local, monotonically
-increasing identifiers. An ending step also includes `episode_result`, an
-`EpisodeResult` object. Consumers should use the typed observation for policy
-input and the explicit booleans to detect episode endings.
-
-When `config.level` is provided, reset and step info also acknowledge `level_id`
-and `generation_seed`. The fake only echoes this provenance. `evaluate_episode`
-uses an `EvaluationRequest` to return a serializable `EvaluationReport` with the
-candidate, independent QA seed, policy ID, total reward and typed outcome. It
-rejects missing level acknowledgement or contradictory terminal evidence. The
-core result/config/metrics models also expose `to_dict()` and `from_dict()`.
-
-## Fake environment behavior
-
-`FakeQAEnvironment` defaults to `completion_steps=20`, `ray_count=16`, and
-`step_duration_seconds=0.1`. Seeded observation generation uses local randomness
-without changing global random state. The same seed, configuration, and actions
-produce the same observations, rewards, and metrics. Episode IDs identify resets
-and are bookkeeping rather than part of the seeded observation sequence.
-
-Each valid step records the supplied action, increments the counter, advances the
-simulated clock, and produces a fixed-size observation. Reward is `0.0` during
-the episode and `1.0` on successful completion. `max_steps` and
-`max_duration_seconds` can truncate it earlier. Completion takes precedence if a
-limit coincides with the completion step. Invalid actions leave episode state
-unchanged.
-
-Elapsed time is simulated as `step_count * step_duration_seconds`, not measured
-from wall-clock time. This makes duration limits and tests deterministic. The
-fake environment is a contract fixture rather than a gameplay simulation, and
-does not populate combat or game-specific metrics.
-
-## Future Unity adapter
-
-`qa_framework.environments.unity` implements offline readiness checks through
-`UnityQARequirements` and `UnityQACapabilities`. A future `UnityQAEnvironment`
-will inherit `QAEnvironment`, translate observations/actions, load the requested
-candidate and report explicit outcomes/metrics. The shared RL package here uses
-a custom TCP protocol. Its current seed-only reset and `OBS/REW/DONE` responses
-do not yet carry the level or outcome evidence required for gameplay QA.
-
-Unity owns raycasts, actual movement, and game simulation. The separate PCG
-framework owns generated content. A future adapter must agree with the Python
-schema on ray count, ray ordering, semantic classifications, previous-action
-behavior, and numeric ranges. Readiness checks require explicit schema and
-gameplay capability evidence; vector dimensions alone are insufficient. This
-package starts no Unity process and opens no connection.
+The sibling game's [QA integration guide](../kawaii-power-little-adventure/QA/README.md) demonstrates an adapter, state wrappers, lifecycle wiring, and an exit-time/success recorder. Its gameplay, evidence fields, predicates, and batch settings are integration choices.
