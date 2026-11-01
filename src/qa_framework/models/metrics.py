@@ -1,4 +1,4 @@
-"""Descriptive episode metrics, independent of evaluation policy."""
+"""Deprecated episode metrics retained for reference; unused by unit reporting."""
 
 from __future__ import annotations
 
@@ -14,6 +14,7 @@ from qa_framework.schema.validation import (
 )
 
 
+# Deprecated: use developer-defined evidence for unit reporting.
 @dataclass(frozen=True, slots=True)
 class EpisodeMetrics:
     """Immutable metric snapshot; zero defaults also mean no events recorded."""

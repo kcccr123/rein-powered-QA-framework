@@ -5,15 +5,11 @@ import json
 
 import pytest
 
-from qa_framework import (
-    DEFAULT_RAY_COUNT,
-    OBSERVATION_SCHEMA_VERSION,
-    QAAction,
-    QAObjectType,
-    QAObservation,
-    RayObservation,
-    validate_observation,
-)
+from qa_framework.models.action import QAAction
+from qa_framework.models.observation import QAObservation
+from qa_framework.models.perception import QAObjectType, RayObservation
+from qa_framework.schema.constants import DEFAULT_RAY_COUNT, OBSERVATION_SCHEMA_VERSION
+from qa_framework.schema.validation import validate_observation
 
 
 def empty_rays(count: int = DEFAULT_RAY_COUNT) -> tuple[RayObservation, ...]:

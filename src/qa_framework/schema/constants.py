@@ -1,4 +1,4 @@
-"""Stable dimensions and encoding order for observation schema version 1."""
+"""Deprecated schema-v1 dimensions retained for reference; unused by unit reporting."""
 
 OBSERVATION_SCHEMA_VERSION = 1
 DEFAULT_RAY_COUNT = 16

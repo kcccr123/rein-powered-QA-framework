@@ -5,12 +5,12 @@ import json
 
 import pytest
 
-from qa_framework import (
+from qa_framework.models.action import (
     QAAction,
     action_from_tuple,
     action_to_tuple,
-    validate_action,
 )
+from qa_framework.schema.validation import validate_action
 
 
 def test_noop_is_valid_and_has_no_effect_flags() -> None:

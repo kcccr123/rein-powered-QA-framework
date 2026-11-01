@@ -1,4 +1,4 @@
-"""Episode outcomes; these models do not decide whether content is acceptable."""
+"""Deprecated episode outcomes retained for reference; unused by unit evaluation."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from qa_framework.schema.json_data import copy_json_object
 from qa_framework.schema.validation import validate_boolean
 
 
+# Deprecated: define ending reasons in developer-owned evidence.
 class TerminalReason(str, Enum):
     """Why an episode ended, independent of any learning algorithm."""
 
@@ -22,6 +23,7 @@ class TerminalReason(str, Enum):
     ENVIRONMENT_FAILURE = "environment_failure"
 
 
+# Deprecated: unit evaluation uses UnitReport and explicit requirement predicates.
 @dataclass(frozen=True, slots=True)
 class EpisodeResult:
     """An ended episode: either an inherent outcome or an external interruption.

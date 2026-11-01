@@ -1,4 +1,4 @@
-"""Fixed-size perception readings, independent of the eventual raycast transport."""
+"""Deprecated perception models retained for reference; unused by unit reporting."""
 
 from dataclasses import dataclass
 from enum import Enum
@@ -6,6 +6,7 @@ from enum import Enum
 from qa_framework.schema.validation import validate_ray
 
 
+# Deprecated: use developer-defined evidence for unit reporting.
 class QAObjectType(str, Enum):
     """Semantic categories, not Unity tags, object references, or game-specific IDs."""
 
@@ -16,6 +17,7 @@ class QAObjectType(str, Enum):
     EXIT = "EXIT"
 
 
+# Deprecated: use developer-defined evidence for unit reporting.
 @dataclass(frozen=True, slots=True)
 class RayObservation:
     """NONE means no classified object; a hit on an unclassified object may also use NONE.

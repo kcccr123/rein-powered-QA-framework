@@ -1,4 +1,4 @@
-"""Immutable schema v1 observations and JSON-compatible serialization."""
+"""Deprecated schema-v1 observations retained for reference; unused by unit reporting."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from qa_framework.schema.constants import DEFAULT_RAY_COUNT, OBSERVATION_SCHEMA_
 from qa_framework.schema.validation import validate_integer, validate_observation
 
 
+# Deprecated: use developer-defined evidence for unit reporting.
 @dataclass(frozen=True, slots=True)
 class QAObservation:
     """Player state, ordered rays, and the last applied action.

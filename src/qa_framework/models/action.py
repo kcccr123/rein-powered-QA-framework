@@ -1,4 +1,4 @@
-"""Transport-independent commands for a top-down QA agent."""
+"""Deprecated player commands retained for reference; unused by unit reporting."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ from typing import Any
 from qa_framework.schema.validation import validate_action
 
 
+# Deprecated: use developer-defined evidence for unit reporting.
 @dataclass(frozen=True, slots=True)
 class QAAction:
     """Movement is bounded per axis; physical/diagonal semantics belong to the environment."""

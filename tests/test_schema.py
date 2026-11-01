@@ -2,16 +2,11 @@
 
 import pytest
 
-from qa_framework import (
-    DEFAULT_RAY_COUNT,
-    OBSERVATION_SCHEMA_VERSION,
-    QAAction,
-    QAObjectType,
-    QAObservation,
-    RayObservation,
-    flatten_observation,
-    get_flat_observation_size,
-)
+from qa_framework.models.action import QAAction
+from qa_framework.models.observation import QAObservation
+from qa_framework.models.perception import QAObjectType, RayObservation
+from qa_framework.schema.constants import DEFAULT_RAY_COUNT, OBSERVATION_SCHEMA_VERSION
+from qa_framework.schema.validation import flatten_observation, get_flat_observation_size
 
 
 def make_observation(ray_count: int, action: QAAction | None = None) -> QAObservation:
