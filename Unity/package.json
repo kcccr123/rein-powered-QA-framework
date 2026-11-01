@@ -1,0 +1,10 @@
+{
+  "name": "com.kcccr.qa-framework",
+  "version": "0.1.0",
+  "displayName": "QA Framework",
+  "description": "Explicit unit lifecycle hooks and one-way QA report delivery to Python.",
+  "unity": "6000.0",
+  "author": {
+    "name": "KCCCR"
+  }
+}
