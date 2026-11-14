@@ -10,7 +10,41 @@ Build a small, reusable QA platform for Unity:
 - Let developers define test scenarios, state components, evidence, and success rules.
 - Collect each trial's evidence and verifier results, aggregate repeated trials, and report useful feedback.
 
+## Trial definition
+
 One trial means one agent version attempting one scenario once. A suite expands into scenarios x agent versions x repetitions.
+
+The proposed starting boundary is one fresh Unity Player instance per trial, packaged with its Python evaluation consumer in one disposable container. The existing `StartUnit() -> gameplay -> EndUnit()` lifecycle runs inside that container. Container execution is planned; it is not implemented yet.
+
+```text
+Run manager supplies scenario + agent version + seed
+                            |
+                            v
++--------------------------------------------------------+
+| ONE TRIAL CONTAINER                                    |
+|                                                        |
+|  Built Unity game + selected agent                     |
+|          |                                             |
+|          v                                             |
+|  StartUnit -> run test -> EndUnit                      |
+|                              |                         |
+|                              v                         |
+|                   Evidence sent to Python              |
+|                              |                         |
+|                              v                         |
+|                    Run custom verifiers                |
+|                              |                         |
+|                              v                         |
+|                   Save result + evidence               |
++--------------------------------------------------------+
+                            |
+                            v
+              Platform collects the result
+```
+
+The run manager supplies the scenario, agent/model version, seed, and execution budget. The same built image can be reused for many trial containers with different configurations.
+
+The container saves its graded result and evidence to storage the platform can collect before removing the container. `EndUnit()` queues asynchronous delivery today; the trial wrapper must wait for the saved evaluation result before shutting down.
 
 ## Existing modular foundation
 
