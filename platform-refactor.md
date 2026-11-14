@@ -60,20 +60,6 @@ The container saves its graded result and evidence to storage the platform can c
 
 The integration is live inside Unity, but the framework reads evidence through developer hooks at the end of each unit. Continuous traces require additional instrumentation. Persistence and aggregation currently belong to the consuming application.
 
-## Components to add
-
-| Shared platform component | Responsibility |
-| --- | --- |
-| Suite configuration | Select scenarios, agent/model versions, repetitions, seeds, budgets, and a concurrency limit. |
-| Run manager | Expand the suite into trials, assign run/trial IDs, schedule workers, and track completion. |
-| Environment lifecycle | Launch, initialize, reset, and stop independent Unity environments through developer-provided integration hooks. |
-| Agent execution integration | Select the requested agent version and connect it to the environment's existing control path. |
-| Evidence and evaluation pipeline | Associate reports with trials and verifier versions; retain evidence, results, logs, and optional traces. |
-| Results storage | Store trial records and artifact references with scenario, environment, agent, and configuration versions. |
-| Aggregation and reporting | Group results by scenario and agent version; compare success rates, failures, timing, and available resource/cost measurements. |
-
-These are proposed responsibilities, not existing APIs.
-
 ## Developer-owned modules
 
 - Scenario setup, initial state, and reset behavior.
