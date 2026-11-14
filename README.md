@@ -2,6 +2,8 @@
 
 A reusable Unity unit adapter and Python QA evaluator with a TCP startup handshake.
 
+See [Platform refactor](platform-refactor.md) for the proposed parallel trial execution, modular testing, and aggregated reporting design.
+
 ```text
 +------------------------------------------------------------------+
 | SCENE STARTUP                                                    |
