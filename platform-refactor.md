@@ -114,13 +114,3 @@ Test suite + agent versions + execution settings
                        v
              Reports and comparisons
 ```
-
-## First implementation steps
-
-1. Connect one existing evaluation workflow to the shared evidence and verifier pipeline.
-2. Add a suite definition and run one trial end to end with a stored result.
-3. Add repeated trials and a simple aggregate report.
-4. Run two independent Unity instances concurrently and verify that their state, ports, and outputs stay separate.
-5. Compare two agent versions using the same scenario set.
-
-Validate built-player launch/reset support and graphics requirements before choosing headless execution. Automatic training or agent changes remain outside this evaluation workflow.
