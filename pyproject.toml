@@ -12,12 +12,17 @@ dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
+platform = ["PyYAML>=6"]
+
+[project.scripts]
+qa-run-suite = "qa_framework.platform.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 qa_framework = ["py.typed"]
+"qa_framework.platform" = ["compose.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

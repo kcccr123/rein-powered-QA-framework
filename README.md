@@ -2,7 +2,7 @@
 
 A reusable Unity unit adapter and Python QA evaluator with a TCP startup handshake.
 
-See [Platform refactor](platform-refactor.md) for the proposed parallel trial execution, modular testing, and aggregated reporting design.
+See [Platform refactor](platform-refactor.md) for bounded parallel trial execution, modular testing, and the planned aggregated reporting design.
 
 ```text
 +------------------------------------------------------------------+
@@ -41,6 +41,43 @@ python -m pip install -e path/to/rein-powered-QA-framework
 ```
 
 Install the Unity package from `Unity/package.json` through Package Manager. Supply the interpreter, consumer script, and packages on each test machine, including desktop builds.
+
+## Run a containerized suite
+
+Install the optional YAML dependency and start a local Docker engine with Compose:
+
+Copy [suite.example.yaml](suite.example.yaml) to `suite.yaml` and fill in the image, episode count, concurrency limit, output directory, environments, and agents. The template explains each field and includes two environments and two agents.
+
+```shell
+python -m pip install -e ".[platform]"
+qa-run-suite suite.yaml
+```
+
+```yaml
+image: my-trial-image:tag
+episodes_per_trial: 100
+max_concurrent_trials: 4
+output_dir: ./runs
+
+environments:
+  - id: dungeon
+    scene: Dungeon
+
+agents:
+  - id: baseline
+    model: models/baseline.onnx
+```
+
+- Counts must be positive integers. Both lists must be nonempty and have unique, nonempty string IDs within each list.
+- One fresh container runs each environment/agent pair, with at most `max_concurrent_trials` active at once in one Compose project.
+- The supplied image keeps its entrypoint and command. It reads `QA_TRIAL_CONFIG`, a read-only JSON file with `suite_id`, `trial_id`, `episodes_per_trial`, `environment`, and `agent`, and writes artifacts to `QA_OUTPUT_DIR`.
+- Environment/agent definitions pass through as JSON settings. The image owns model/asset loading, Unity startup, the episode loop, and shutdown.
+- Paths in environment/agent settings are passed through unchanged; only the assignment and output directory are mounted by the runner.
+- `output_dir` resolves relative to the YAML file. Each invocation saves `<output_dir>/<suite-id>/status.jsonl` and `trials/<trial-id>/{assignment.json,container.log,output/}`. Launch failures also save `launch.log`.
+- Exited containers are logged and removed; free slots refill independently. Individual failures do not stop the remaining trials.
+- Ctrl+C or termination stops scheduling and cleans up this suite's containers/project resources while preserving output. Infrastructure failures stop scheduling and report cleanup failures if Docker is unreachable.
+- Exit codes: `0` for all container exits successful, `1` for trial/infrastructure failures, `2` for invalid configuration, `130` for cancellation. Execution status does not establish verifier success.
+- This version uses one Docker host, with no pair repetitions, retries, restart recovery, automatic resource sizing, or per-trial timeouts.
 
 ## Per-game implementation
 
@@ -101,7 +138,7 @@ python examples/evaluate_unit.py
 python -m pytest
 ```
 
-The old action/observation, level, and episode models are deprecated and retained in their source modules for reference. They are not exported by the package API or imported by the receiver/evaluator. Generic JSON and primitive validation are the only schema helpers loaded by the current runtime. Runtime code uses only the Python standard library and Unity's built-in `JsonUtility`.
+The old action/observation, level, and episode models are deprecated and retained in their source modules for reference. They are not exported by the package API or imported by the receiver/evaluator. Generic JSON and primitive validation are the only schema helpers loaded by the current runtime. The receiver/evaluator runtime uses only the Python standard library and Unity's built-in `JsonUtility`. The suite runner adds optional PyYAML parsing and invokes Docker Compose.
 
 See [the integration guide](docs/integration-readiness.md) for a complete developer adapter example, wire format, and verification steps.
 

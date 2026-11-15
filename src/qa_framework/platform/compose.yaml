@@ -1,0 +1,19 @@
+services:
+  trial:
+    image: "${QA_TRIAL_IMAGE:?trial image is required}"
+    restart: "no"
+    environment:
+      QA_TRIAL_CONFIG: /qa/assignment.json
+      QA_OUTPUT_DIR: /qa/output
+    volumes:
+      - type: bind
+        source: "${QA_TRIAL_CONFIG_HOST:?assignment path is required}"
+        target: /qa/assignment.json
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: "${QA_OUTPUT_DIR_HOST:?output path is required}"
+        target: /qa/output
+        bind:
+          create_host_path: false

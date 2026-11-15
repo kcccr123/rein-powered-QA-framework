@@ -1,0 +1,37 @@
+# Copy this file to suite.yaml and replace the image, scenes, and model references.
+# Run: qa-run-suite suite.yaml
+
+# Your Docker image. Its existing entrypoint must read QA_TRIAL_CONFIG (JSON)
+# and write trial artifacts to QA_OUTPUT_DIR.
+image: my-trial-image:tag
+
+# Number of episodes to run for each environment/agent pair; positive integer.
+episodes_per_trial: 100
+
+# Maximum number of trial containers active at once; positive integer.
+max_concurrent_trials: 2
+
+# Host output directory, relative to this YAML file (or an absolute path).
+# Each invocation creates a separate suite directory here for status and outputs.
+output_dir: ./runs
+
+# Add or remove environments. Keep at least one, with a unique, nonempty id.
+# scene is an example setting consumed by your image; use its expected fields.
+environments:
+  - id: dungeon
+    scene: Dungeon
+  - id: arena
+    scene: Arena
+
+# Add or remove agents. Keep at least one, with a unique, nonempty id.
+# model is an example reference consumed by your image. Make the referenced
+# models/assets available inside the image; the runner passes settings through
+# unchanged and mounts only the assignment JSON and the trial output directory.
+agents:
+  - id: baseline
+    model: models/baseline.onnx
+  - id: candidate
+    model: models/candidate.onnx
+
+# This example produces 2 environments x 2 agents = 4 trials,
+# each running 100 episodes, with at most 2 containers active at once.
