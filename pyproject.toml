@@ -12,17 +12,18 @@ dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
-platform = ["PyYAML>=6"]
+platform = ["PyYAML>=6", "onnx>=1.16"]
 
 [project.scripts]
 qa-run-suite = "qa_framework.platform.cli:main"
+qa-run-trial = "qa_framework.platform.trial:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 qa_framework = ["py.typed"]
-"qa_framework.platform" = ["compose.yaml"]
+"qa_framework.platform" = ["compose.yaml", "converter/*.cs"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

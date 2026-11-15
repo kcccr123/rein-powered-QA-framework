@@ -1,6 +1,6 @@
 # Unity units to Python QA
 
-Python sends readiness over TCP, then Unity sends completed unit reports:
+Both integrations share schema-2 unit reports. [Platform trials](#platform-trials) use Python as the parent process and confirm saved output before shutdown. The standalone launcher/consumer flow is:
 
 ```text
 +------------------------------------------------------------------+
@@ -31,7 +31,72 @@ Python sends readiness over TCP, then Unity sends completed unit reports:
 
 Python listens on `127.0.0.1:8800`. Unity connects and validates Python's readiness message before sending reports. Python sends one UTF-8 JSON line per accepted connection: `{"type":"ready","schema_version":2,"process_id":1234,"session_id":"..."}`. `schema_version` identifies the supported report schema; `process_id` identifies the receiver process. The receiver echoes `QA_RECORDER_SESSION` from its environment as `session_id` (empty for a manual receiver without that variable). Unity then writes one UTF-8 JSON line per ended attempt on that same connection. Python sends no per-report acknowledgement, gameplay command, or QA result. TCP itself still handles transport acknowledgements.
 
-## Automatic recorder startup
+## Platform trials
+
+For Linux containers, add Linux Build Support (Mono) to Unity 6000.3.4f1 and build
+a Linux x86-64 Player. Use CPU inference with `-batchmode -nographics` and set
+`SDL_VIDEODRIVER=dummy` in the image to avoid Unity's native input startup crash
+when no display driver exists. The [sample build](../examples/actor-control/README.md)
+also keeps the inference package's App UI dependency editor-only.
+
+Start the Player in a small scene containing `QaPlatformBootstrap`. Include every target environment in Build Settings, referenced by its full scene path or unique scene name. Missing/ambiguous references and missing/multiple active enabled adapters fail startup. Derive the gameplay scene adapter from `QaPlatformAdapter`, using the state sources and typed reports below plus the [observation/action hooks](../README.md#run-a-platform-trial). Keep one adapter alive throughout the trial and enable the gameplay controller through its **On Ready** event. The game still owns resets and end conditions; the adapter reads `episodes_per_trial` and stops accepting episodes at that limit.
+
+```text
+qa-run-trial -- <Unity executable> [arguments]
+  -> Python reads QA_TRIAL_CONFIG and opens QA_OUTPUT_DIR/episodes.jsonl
+  -> listen on an available loopback port -> start Player with port and session
+  -> bootstrap selects environment.scene -> require exactly one enabled adapter
+  -> adapter validates Python readiness -> loads agent.model on CPU
+  -> zero-input validation inference -> On Ready enables gameplay
+  -> CanStartUnit -> StartUnit -> gameplay -> EndUnit -> JSON report
+  -> Python validates and appends report with trial context
+  -> final EndUnit blocks new starts -> drain queue -> trial_complete
+  -> Python flushes + fsyncs + closes output -> trial_saved
+  -> Unity exits successfully -> Python exits -> container exits
+```
+
+The runtime sets `QA_REPORT_PORT` and `QA_RECORDER_SESSION` in its child's environment. `QA_TRIAL_CONFIG` points to JSON containing nonempty `suite_id`/`trial_id`, a positive integer `episodes_per_trial`, and `environment`/`agent` objects with nonempty string `id` fields. The runtime passes the assignment and output paths as absolute paths. `environment.scene` and `agent.model` are also required. The suite prepares each distinct self-contained ONNX path once in an isolated Editor with Inference Engine 2.4.1; it mounts the selected `.sentis` read-only at `/qa/model/agent.sentis` and puts that path in the generated assignment. Local Player runs must supply a prepared `.sentis` path themselves. Other environment/agent settings remain available to developer code.
+
+The concrete adapter declares `ObservationSize` and `ActionSize`, implements `CollectObservation()` and `ApplyAction(float[] actions)`, and holds its actor reference. One static float input `[1, ObservationSize]` and one float output `[1, ActionSize]` are supported. The adapter owns its CPU worker and validates it with a zero-input pass before **On Ready**, without applying actions. The active episode loop runs from base `FixedUpdate` every configurable 0.1 simulated seconds. `StartUnit` resets its timer; `EndUnit` or replacing an episode invalidates pending actions. Shape/type/nonfinite values, model/inference failures, or observation/action hook exceptions fail the trial and dispose inference resources. Completion and disablement also dispose them. No separate policy-driving component is required.
+
+Messages use one UTF-8 JSON object per line on one connection. Platform readiness extends the standalone handshake without changing the report schema:
+
+```json
+{"type":"ready","schema_version":2,"platform_protocol_version":1,"process_id":1234,"session_id":"session-token","suite_id":"suite-1","trial_id":"trial-1","episodes_per_trial":3}
+```
+
+After exactly three reports, Unity sends the completion request. Python checks the IDs, count, and distinct attempt IDs before acknowledging the closed output file:
+
+```json
+{"type":"trial_complete","suite_id":"suite-1","trial_id":"trial-1","completed_episodes":3}
+{"type":"trial_saved","suite_id":"suite-1","trial_id":"trial-1","saved_episodes":3}
+```
+
+Each line in `episodes.jsonl` contains the original validated report and its trial context:
+
+```json
+{
+  "suite_id": "suite-1",
+  "trial_id": "trial-1",
+  "environment_id": "interaction-room",
+  "agent_id": "baseline",
+  "episode_index": 1,
+  "report": {
+    "schema_version": 2,
+    "unit_id": "interaction-check",
+    "attempt_id": "unique-attempt-id",
+    "evidence": {"activated": true, "checkpoints": ["switch", "door"]}
+  }
+}
+```
+
+Python preserves arbitrary finite JSON evidence without game-specific classes or required evidence-schema configuration. It does not run verifiers; use `evaluate_unit()` separately with developer-supplied predicates. An existing output file is rejected, and invalid/duplicate/excess reports fail the trial while preserving records already written.
+
+`StartUnit()` requires `CanStartUnit`; overlapping starts, starts during the end hook, and starts after the limit throw. Repeated or reentrant `EndUnit()` calls do nothing. `CompletedEpisodes` counts queued reports; the final acknowledgement confirms saved records. Call `EndUnit()` before resetting sources, and keep the adapter enabled until it quits the Player. Disablement, hook errors, or delivery failure fail the platform trial. If overriding `Start`, `FixedUpdate`, `OnDisable`, or `OnApplicationQuit`, call the base implementation. Do not use `QaRecorderLauncher` on this path.
+
+Startup and final report-draining/acknowledgement each have a 30-second deadline. Python also requires the completion request within 30 seconds of the final report. After acknowledgement, Unity has five seconds to exit with code zero. Failure or cancellation stops the child, waits two seconds, then kills/reaps it if necessary. Python returns `0` for confirmed storage plus a successful Player exit, `1` for trial failure, `2` for CLI misuse, or `130` for cancellation. No gameplay duration timeout is imposed.
+
+## Automatic recorder startup (standalone)
 
 Use the package's **QA Framework > QA Recorder Launcher** component to start a Python script or `-m module` on scene startup. Configure the executable, arguments, working directory, and optional source directory for `PYTHONPATH`. Python and the consumer must already be available on the machine; the component installs nothing.
 
@@ -43,7 +108,7 @@ See [the package README](../README.md#start-the-recorder-from-unity) for example
 
 ## Unity integration
 
-Install `Unity/package.json` through Unity Package Manager's **Install package from disk** command. The package assembly is `Kcccr.QaFramework.Runtime`, and its namespace is `Kcccr.QaFramework`. It has no third-party dependencies. If your consumer uses an assembly definition, reference `Kcccr.QaFramework.Runtime` from it.
+Install `Unity/package.json` through Unity Package Manager's **Install package from disk** command. The package assembly is `Kcccr.QaFramework.Runtime`, and its namespace is `Kcccr.QaFramework`. It pins Unity Inference Engine 2.4.1 for the platform CPU policy path. The standalone unit/launcher behavior is unchanged. If your consumer uses an assembly definition, reference `Kcccr.QaFramework.Runtime` from it.
 
 The state-source contract is:
 

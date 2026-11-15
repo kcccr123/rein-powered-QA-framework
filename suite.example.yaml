@@ -1,4 +1,4 @@
-# Copy this file to suite.yaml and replace the image, scenes, and model references.
+# Copy this file to suite.yaml and replace the image, scenes, and host ONNX paths.
 # Run: qa-run-suite suite.yaml
 
 # Your Docker image. Its existing entrypoint must read QA_TRIAL_CONFIG (JSON)
@@ -15,8 +15,15 @@ max_concurrent_trials: 2
 # Each invocation creates a separate suite directory here for status and outputs.
 output_dir: ./runs
 
+# Required host Unity Editor. Relative paths resolve beside this YAML.
+# Both conversion and the QA Unity runtime pin Inference Engine 2.4.1.
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+  timeout_seconds: 600 # optional positive integer, default 600
+
 # Add or remove environments. Keep at least one, with a unique, nonempty id.
-# scene is an example setting consumed by your image; use its expected fields.
+# scene is required: full build scene path or unique name. The first build scene
+# must contain QaPlatformBootstrap; each gameplay scene has one enabled adapter.
 environments:
   - id: dungeon
     scene: Dungeon
@@ -24,9 +31,10 @@ environments:
     scene: Arena
 
 # Add or remove agents. Keep at least one, with a unique, nonempty id.
-# model is an example reference consumed by your image. Make the referenced
-# models/assets available inside the image; the runner passes settings through
-# unchanged and mounts only the assignment JSON and the trial output directory.
+# model is required: an existing self-contained ONNX file (no external weights).
+# Relative host paths resolve beside this YAML. Each distinct path is converted
+# once per suite, then mounted read-only at /qa/model/agent.sentis. Compatible
+# models need one float input [1, observationSize] and output [1, actionSize].
 agents:
   - id: baseline
     model: models/baseline.onnx

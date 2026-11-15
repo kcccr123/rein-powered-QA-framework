@@ -1,4 +1,5 @@
 {
   "name": "Kcccr.QaFramework.Runtime",
-  "rootNamespace": "Kcccr.QaFramework"
+  "rootNamespace": "Kcccr.QaFramework",
+  "references": ["Unity.InferenceEngine"]
 }

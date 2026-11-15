@@ -1,8 +1,10 @@
 # QA Framework
 
-A reusable Unity unit adapter and Python QA evaluator with a TCP startup handshake.
+A reusable Unity unit adapter, Python QA evaluator, and container trial runtime with confirmed episode storage.
 
 See [Platform refactor](platform-refactor.md) for bounded parallel trial execution, modular testing, and the planned aggregated reporting design.
+
+The standalone integration keeps Unity in charge of starting its Python consumer:
 
 ```text
 +------------------------------------------------------------------+
@@ -58,6 +60,9 @@ image: my-trial-image:tag
 episodes_per_trial: 100
 max_concurrent_trials: 4
 output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+  timeout_seconds: 600
 
 environments:
   - id: dungeon
@@ -71,15 +76,56 @@ agents:
 - Counts must be positive integers. Both lists must be nonempty and have unique, nonempty string IDs within each list.
 - One fresh container runs each environment/agent pair, with at most `max_concurrent_trials` active at once in one Compose project.
 - The supplied image keeps its entrypoint and command. It reads `QA_TRIAL_CONFIG`, a read-only JSON file with `suite_id`, `trial_id`, `episodes_per_trial`, `environment`, and `agent`, and writes artifacts to `QA_OUTPUT_DIR`.
-- Environment/agent definitions pass through as JSON settings. The image owns model/asset loading, Unity startup, the episode loop, and shutdown.
-- Paths in environment/agent settings are passed through unchanged; only the assignment and output directory are mounted by the runner.
+- `model_preparation.unity_editor` must name an existing Unity Editor executable; `timeout_seconds` is a positive integer, default 600. Install `qa-framework[platform]` on the host for YAML and ONNX validation.
+- Each `agents[].model` must be an existing, self-contained ONNX file. Editor, model, and output paths resolve beside the YAML when relative. External weights are rejected. Other settings remain JSON pass-through.
+- Before any trial, an isolated temporary Unity project imports each distinct resolved ONNX path once with Inference Engine **2.4.1** and exports `.sentis`. Artifacts, `manifest.json`, `preparation.log`, and `unity.log` remain in `<suite-id>/models/`; the temporary project is removed after its Editor exits. There is no cross-suite cache. Failure/timeout stops the suite; cancellation stops the owned Editor and returns 130.
+- Each selected artifact is mounted read-only at `/qa/model/agent.sentis`; the generated assignment uses that path without changing the YAML or loaded agent settings.
+- `environments[].scene` is required: use a full build scene path or a unique scene name. Build a `QaPlatformBootstrap` scene first, followed by all supported gameplay scenes. The bootstrap selects the scene and requires exactly one active, enabled `QaPlatformAdapter` before gameplay starts.
 - `output_dir` resolves relative to the YAML file. Each invocation saves `<output_dir>/<suite-id>/status.jsonl` and `trials/<trial-id>/{assignment.json,container.log,output/}`. Launch failures also save `launch.log`.
 - Exited containers are logged and removed; free slots refill independently. Individual failures do not stop the remaining trials.
 - Ctrl+C or termination stops scheduling and cleans up this suite's containers/project resources while preserving output. Infrastructure failures stop scheduling and report cleanup failures if Docker is unreachable.
 - Exit codes: `0` for all container exits successful, `1` for trial/infrastructure failures, `2` for invalid configuration, `130` for cancellation. Execution status does not establish verifier success.
 - This version uses one Docker host, with no pair repetitions, retries, restart recovery, automatic resource sizing, or per-trial timeouts.
 
-## Per-game implementation
+## Run a platform trial
+
+Use `QaPlatformAdapter` to cap developer-driven episodes and confirm saved records before shutdown. Python owns the Unity Player process.
+
+```text
+qa-run-trial -- <Unity executable> [Player arguments]
+  -> read QA_TRIAL_CONFIG and QA_OUTPUT_DIR -> open output and TCP listener
+  -> start bootstrap -> load assigned scene -> require one enabled adapter
+  -> validate Python readiness -> load CPU model -> validate tensor contract -> On Ready
+  -> game calls StartUnit -> gameplay -> EndUnit -> append evidence to episodes.jsonl
+  -> after X episodes: drain reports -> trial_complete
+  -> Python flushes, fsyncs, and closes output -> trial_saved
+  -> Unity exits 0 -> Python exits 0 -> container exits -> suite runner frees the slot
+```
+
+Install this package in the project image and use `qa-run-trial -- /app/Game -batchmode -nographics` as its main command. The suite runner supplies `QA_TRIAL_CONFIG` and `QA_OUTPUT_DIR`. For a local Player run, set those variables to an assignment JSON and a fresh output directory yourself. The assignment contains `suite_id`, `trial_id`, positive `episodes_per_trial`, and `environment`/`agent` objects with string `id` fields. Reusable production base images remain separate work; [the actor-control sample](examples/actor-control/README.md) supplies a small Linux build and image recipe for verification.
+
+Derive your scene component from `Kcccr.QaFramework.QaPlatformAdapter`. Keep the `OnUnitStart()` / `OnUnitEnd()` hooks shown below and add the observation/action hooks:
+
+```csharp
+protected override int ObservationSize => 2;
+protected override int ActionSize => 1;
+protected override float[] CollectObservation() => new[] { actor.Position, 1f };
+protected override void ApplyAction(float[] actions) => actor.Move(actions[0]);
+```
+
+Reference the game-specific actor on the concrete adapter. The base loads `agent.model` and owns a CPU worker; no `RlModelRunner` or separate policy driver is needed. Models must have exactly one static float input `[1, ObservationSize]` and one float output `[1, ActionSize]`. A zero-input startup pass validates output shape/type/finite values without applying actions. **On Ready** fires only after that pass and Python readiness. During active episodes, the base `FixedUpdate` collects observations, runs inference, and applies actions every **0.1 simulated seconds** by default (Inspector `Decision Interval`). `StartUnit` resets timing; ended/replaced episodes cannot receive stale outputs. Nonfinite values, shape mismatches, inference errors, and mapping exceptions fail the trial. Inference resources are disposed on completion, failure, or disablement.
+
+Return a serializable `QaUnitReport` subclass with your typed `evidence`. Keep gameplay disabled until the adapter's **On Ready** event; call `StartUnit()` only when `CanStartUnit` is true, and call `EndUnit()` before resetting the environment. The game owns reset logic and episode end conditions. The adapter counts ended episodes, rejects overlapping/reentrant starts and starts after the limit, and ignores duplicate end calls. `CompletedEpisodes` counts queued reports; only the final acknowledgement confirms persistence.
+
+Use one platform adapter for the whole trial; disabling or destroying it before completion fails the trial. Do not attach `QaRecorderLauncher` for this path. If overriding `Start`, `FixedUpdate`, `OnDisable`, or `OnApplicationQuit`, call the base implementation. The existing `QaUnitAdapter` + launcher path remains available for standalone consumers.
+
+The generic collector validates schema version 2 and stores arbitrary JSON evidence with suite/trial/environment/agent IDs and a one-based episode index. Adding evidence fields needs no Python changes. It does not run predicates or model inference. Use the existing evaluator separately for developer-defined success rules.
+
+Startup and final completion each have a 30-second timeout; gameplay has no duration limit. After acknowledgement, Unity has five seconds to exit. Failures or cancellation produce a nonzero runtime exit, stop/reap Unity, and preserve partial output. Existing `episodes.jsonl` files are rejected to avoid mixing trials. See [the platform protocol](docs/integration-readiness.md#platform-trials) for the wire and output formats.
+
+See [the actor-control sample](examples/actor-control/README.md) for two environments and two embedded-weight policies that move the same actor in opposite directions without rebuilding the image. Linux verification uses Unity 6000.3.4f1 with Linux Build Support (Mono), a Linux x86-64 Player, CPU inference, and `-batchmode -nographics`. GPU inference, multi-input/recurrent models, and dungeon migration remain outside this iteration.
+
+## Standalone per-game implementation
 
 Derive a component from `Kcccr.QaFramework.QaUnitAdapter`, add it explicitly to your scene controller, and implement:
 

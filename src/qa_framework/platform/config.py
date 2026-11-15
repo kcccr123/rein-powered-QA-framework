@@ -1,4 +1,4 @@
-"""Load suite configuration without interpreting game or model settings."""
+"""Validate managed model and environment assignments before preparing a suite."""
 
 from __future__ import annotations
 
@@ -16,6 +16,8 @@ class SuiteConfig:
     output_dir: Path
     environments: list[dict[str, object]]
     agents: list[dict[str, object]]
+    unity_editor: Path
+    preparation_timeout: int = 600
 
 
 def load_suite(path: Path) -> SuiteConfig:
@@ -52,10 +54,35 @@ def load_suite(path: Path) -> SuiteConfig:
                 raise ValueError(f"duplicate {key} id: {identity}")
             seen.add(identity)
 
-    # Relative output paths belong to the suite file, regardless of the CLI's cwd.
-    output_dir = Path(data["output_dir"]).expanduser()
-    if not output_dir.is_absolute():
-        output_dir = path.resolve().parent / output_dir
+    def host_path(value: str) -> Path:
+        resolved = Path(value).expanduser()
+        if not resolved.is_absolute():
+            resolved = path.resolve().parent / resolved
+        return resolved.resolve()
+
+    preparation = data.get("model_preparation")
+    if not isinstance(preparation, dict):
+        raise ValueError("model_preparation is required")
+    editor = preparation.get("unity_editor")
+    if not isinstance(editor, str) or not editor.strip() or not host_path(editor).is_file():
+        raise ValueError("model_preparation.unity_editor must name an existing Unity Editor executable")
+    timeout = preparation.get("timeout_seconds", 600)
+    if type(timeout) is not int or timeout <= 0:
+        raise ValueError("model_preparation.timeout_seconds must be a positive integer")
+    for environment in data["environments"]:
+        scene = environment.get("scene")
+        if not isinstance(scene, str) or not scene.strip():
+            raise ValueError("each environment.scene must name a scene in the Player build")
+    for agent in data["agents"]:
+        model = agent.get("model")
+        if not isinstance(model, str) or not model.strip():
+            raise ValueError("each agent.model must name a self-contained ONNX file")
+        model_path = host_path(model)
+        if model_path.suffix.lower() != ".onnx" or not model_path.is_file():
+            raise ValueError(f"agent.model must be an existing ONNX file: {model}")
+        agent["model"] = str(model_path)
+
+    output_dir = host_path(data["output_dir"])
     return SuiteConfig(
         image=data["image"],
         episodes_per_trial=data["episodes_per_trial"],
@@ -63,4 +90,6 @@ def load_suite(path: Path) -> SuiteConfig:
         output_dir=output_dir.resolve(),
         environments=data["environments"],
         agents=data["agents"],
+        unity_editor=host_path(editor),
+        preparation_timeout=timeout,
     )

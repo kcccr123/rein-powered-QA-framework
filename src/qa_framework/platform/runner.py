@@ -14,6 +14,7 @@ import time
 from uuid import uuid4
 
 from qa_framework.platform.config import SuiteConfig
+from qa_framework.platform.preparation import PreparationError, prepare_models
 
 
 class DockerError(RuntimeError):
@@ -26,6 +27,7 @@ class Trial:
     directory: Path
     environment_id: str
     agent_id: str
+    model_path: Path
     container_id: str | None = None
 
     def context(self) -> dict[str, object]:
@@ -58,6 +60,7 @@ class Docker:
             "QA_TRIAL_IMAGE": image,
             "QA_TRIAL_CONFIG_HOST": str(suite_dir / "assignment.json"),
             "QA_OUTPUT_DIR_HOST": str(suite_dir),
+            "QA_MODEL_HOST": str(suite_dir / "model.sentis"),
         })
 
     def command(self, *args: str, log_path: Path | None = None) -> str:
@@ -92,6 +95,7 @@ class Docker:
         # per-trial mounts -> start fresh container
         self.env["QA_TRIAL_CONFIG_HOST"] = str(trial.directory / "assignment.json")
         self.env["QA_OUTPUT_DIR_HOST"] = str(trial.directory / "output")
+        self.env["QA_MODEL_HOST"] = str(trial.model_path)
         return self.command(
             *self.compose, "run", "--detach", "--no-deps",
             "--name", trial.trial_id, "trial",
@@ -121,6 +125,7 @@ class RunManager:
         self.active: dict[str, Trial] = {}
         self.completed = 0
         self.failed = 0
+        self.prepared_models: dict[str, Path] = {}
 
     def record(self, event: str, **details: object) -> None:
         record = {
@@ -139,12 +144,12 @@ class RunManager:
             for agent in self.config.agents:
                 trial_id = f"{self.suite_id}-trial-{next(sequence):06d}"
                 directory = self.directory / "trials" / trial_id
-                yield Trial(trial_id, directory, environment["id"], agent["id"]), {
+                yield Trial(trial_id, directory, environment["id"], agent["id"], self.prepared_models[agent["model"]]), {
                     "suite_id": self.suite_id,
                     "trial_id": trial_id,
                     "episodes_per_trial": self.config.episodes_per_trial,
                     "environment": environment,
-                    "agent": agent,
+                    "agent": {**agent, "model": "/qa/model/agent.sentis"},
                 }
 
     def launch(self, trial: Trial, assignment: dict) -> None:
@@ -239,6 +244,9 @@ class RunManager:
 
         # check docker before consuming assignments
         try:
+            self.record("model_preparation_started")
+            self.prepared_models = prepare_models(self.config, self.directory)
+            self.record("model_preparation_finished", distinct_models=len(self.prepared_models))
             self.docker.check_available()
             docker_checked = True
             assignments = iter(self.assignments())
@@ -268,7 +276,7 @@ class RunManager:
             self.record("suite_cancelled")
 
         # infrastructure failure -> stop scheduling
-        except (DockerError, OSError, ValueError) as error:
+        except (DockerError, PreparationError, OSError, ValueError) as error:
             infrastructure_failed = True
             self.record("infrastructure_failed", error=str(error))
             print(f"Infrastructure failure: {error}", flush=True)
