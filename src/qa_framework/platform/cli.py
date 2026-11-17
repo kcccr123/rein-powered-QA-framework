@@ -1,4 +1,4 @@
-"""Command line entry point for a YAML suite."""
+"""Command line entry point for a Unity training/evaluation DAG."""
 
 from __future__ import annotations
 
@@ -7,16 +7,16 @@ from pathlib import Path
 import signal
 import sys
 
-from qa_framework.platform.config import load_suite
+from qa_framework.platform.config import load_dag
 from qa_framework.platform.runner import RunManager
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run environment/agent trials on one Docker host.")
-    parser.add_argument("suite", type=Path, help="suite YAML file")
+    parser = argparse.ArgumentParser(description="Run a Unity training/evaluation DAG on one Docker host.")
+    parser.add_argument("suite", type=Path, help="DAG YAML file")
     args = parser.parse_args()
     try:
-        config = load_suite(args.suite)
+        config = load_dag(args.suite)
     except (OSError, TypeError, ValueError) as error:
         parser.error(str(error))
 

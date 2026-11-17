@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using Kcccr.QaFramework;
+using Kcccr.UnityReinforcementLearning;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEditor.SceneManagement;
@@ -20,13 +21,41 @@ public static class BuildSample
         CreateEnvironment("ShortLane", 0.25f);
         CreateEnvironment("LongLane", 0.5f);
         string[] scenes = { "Assets/Scenes/Bootstrap.unity", "Assets/Scenes/ShortLane.unity", "Assets/Scenes/LongLane.unity" };
+        BuildPlayer(scenes, "QA_SAMPLE_BUILD_PATH", "Build/Linux/ActorSample.x86_64");
+    }
+
+    [MenuItem("QA/Build Linux training sample")]
+    public static void BuildTraining()
+    {
+        ConfigureHeadless();
+        Directory.CreateDirectory("Assets/Scenes");
+        var bootstrap = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        new GameObject("Training bootstrap").AddComponent<QaTrainingBootstrap>();
+        EditorSceneManager.SaveScene(bootstrap, "Assets/Scenes/TrainingBootstrap.unity");
+        var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+        var actor = GameObject.CreatePrimitive(PrimitiveType.Cube).AddComponent<SampleActor>();
+        var environment = actor.gameObject.AddComponent<SampleTrainingEnvironment>();
+        environment.Configure(actor, 1f);
+        var host = new GameObject("RL training host").AddComponent<RlTrainingHost>();
+        var serializedHost = new SerializedObject(host);
+        serializedHost.FindProperty("environment").objectReferenceValue = environment;
+        serializedHost.FindProperty("autoStart").boolValue = false;
+        serializedHost.ApplyModifiedPropertiesWithoutUndo();
+        new GameObject("Training adapter").AddComponent<SampleTrainingAdapter>().Configure(actor, environment, host);
+        EditorSceneManager.SaveScene(scene, "Assets/Scenes/TrainingLane.unity");
+        BuildPlayer(new[] { "Assets/Scenes/TrainingBootstrap.unity", "Assets/Scenes/TrainingLane.unity" },
+            "QA_TRAINING_BUILD_PATH", "Build/Training/ActorTraining.x86_64");
+    }
+
+    private static void BuildPlayer(string[] scenes, string outputVariable, string defaultOutput)
+    {
         EditorBuildSettings.scenes = Array.ConvertAll(scenes, path => new EditorBuildSettingsScene(path, true));
         PlayerSettings.companyName = "QA Framework";
         PlayerSettings.productName = "Actor Control Sample";
         PlayerSettings.SetScriptingBackend(UnityEditor.Build.NamedBuildTarget.Standalone, ScriptingImplementation.Mono2x);
-        string output = Environment.GetEnvironmentVariable("QA_SAMPLE_BUILD_PATH");
+        string output = Environment.GetEnvironmentVariable(outputVariable);
         if (string.IsNullOrWhiteSpace(output))
-            output = Path.GetFullPath("Build/Linux/ActorSample.x86_64");
+            output = Path.GetFullPath(defaultOutput);
         var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
         {
             scenes = scenes, locationPathName = output,

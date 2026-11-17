@@ -18,7 +18,7 @@ public static class QaModelConverter
             foreach (var entry in manifest.models)
             {
                 string assetPath = "Assets/model-" + (++index) + ".onnx";
-                File.Copy(entry.source, assetPath);
+                File.Copy(entry.source, assetPath, true);
                 bool importFailed = false;
                 Application.LogCallback inspectLog = (message, trace, type) =>
                 {

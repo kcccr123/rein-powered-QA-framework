@@ -2,117 +2,44 @@
 
 ## Description
 
-A modular Unity QA platform. Developers define tests and success rules; the platform runs trials and reports what happened.
+A modular Unity training and QA platform. Developers define training environments, rewards, tests and success rules; a DAG connects curriculum stages and experimental branches to evaluation suites.
 
-The lifecycle hooks, generic evidence storage, confirmed trial shutdown, standalone verifier execution, bounded single-host orchestration, automated ONNX conversion, read-only model mounting, scene selection, and adapter-owned CPU inference exist. The [actor-control sample](examples/actor-control/README.md) supplies a runnable Linux image recipe. Reusable production base images and result aggregation remain planned.
+The platform runs containerized CPU PPO training through the existing Unity reinforcement learning library, resumes full checkpoints, exports ONNX policies, converts them for Unity inference, and runs bounded parallel trials. It saves lineage, execution status and evidence. Grading, result aggregation and the final comparison report remain planned.
 
-## Goal
+See [the DAG guide](docs/training-dag.md) for configuration and runtime contracts and [the actor sample](examples/actor-control/README.md) for runnable images.
 
-- Run independent trials in parallel, including comparisons between agent/model versions.
-- Let developers define test scenarios, state components, evidence, and success rules.
-- Collect trial results, aggregate repeated trials, and report feedback.
+## Configuration and execution
 
-## Platform Infrastructure
-
-### Configuration / setup
-
-The suite runner accepts the configuration below. `QaPlatformAdapter` and `qa-run-trial` implement episode counting, collection, and shutdown. Developers wire the actor, observation encoding, action mapping, and episode/evidence hooks. The platform prepares and mounts models, selects scenes, and drives CPU decisions.
-
-#### Scene setup
-
-Connect the scene's actor to model-driven gameplay and episode reporting so the platform can run and collect trials.
+- Each YAML node has an ID, image and type: training or test suite.
+- Training inputs are checkpoint paths or another training node's checkpoint output. Branches load separate copies of the same parent state and apply their own scene parameters.
+- Suite agents use host ONNX files or training-node ONNX outputs. A suite runs its environment/agent matrix using the existing trial runtime.
+- Artifact references define dependencies. Fixed-budget training completes before dependent work starts; there are no metric gates or model merges.
+- All containers share one limit and one Compose project. Suite nodes expand lazily into trials and consume no extra orchestration container.
+- Training produces a checkpoint, ONNX, resolved trainer settings and a manifest. Parent inputs are mounted read-only; outputs are isolated per node.
+- ONNX conversion runs on the host when evaluation needs an available artifact, once per resolved source path per run. Runtime inference remains CPU-only with Inference Engine 2.4.1.
+- Failure blocks dependent work while independent branches continue. Individual failed trials do not stop their suite's remaining trials. Cancellation and infrastructure failure stop scheduling and preserve partial files during cleanup.
 
 ```text
-Developer places one actor with its gameplay controller in the scene
-  -> derive QaPlatformAdapter; reference actor and evidence sources
-  -> declare ObservationSize/ActionSize; implement CollectObservation/ApplyAction
-  -> wire On Ready to enable gameplay after Python and model readiness
-  -> game calls StartUnit and EndUnit around each episode
-  -> OnUnitEnd returns typed evidence -> adapter counts episodes and sends JSON
-  -> base FixedUpdate owns observation -> CPU inference -> action every 0.1 simulated seconds
+Starting checkpoint (or fresh policy)
+              |
+       Walking training
+          /       \
+ Running training  Walking variant
+          \       /
+           Test suite
+      environment x agent trials
+              |
+      Saved episode evidence
+              |
+      Planned suite aggregation
+              |
+      Planned combined report
 ```
 
-#### Image preparation
+### Run manager
 
-Package each Unity project as a runnable trial image. Supply models separately so changing a compatible model does not require rebuilding the image.
-
-The sample uses Linux Build Support (Mono) in Unity 6000.3.4f1, a Linux x86-64 Player,
-CPU inference, and `-batchmode -nographics`. Its image sets `SDL_VIDEODRIVER=dummy`
-for native input initialization without a display. Windows build support is retained.
-
-```text
-Planned base image includes Python, the QA package, and qa-run-trial
-  -> developer builds Unity Player with bootstrap first, environments, and concrete QA adapter
-  -> developer adds the Unity build and scene assets to the base image
-  -> main command: qa-run-trial -- <Unity executable> [Player arguments]
-  -> build and tag the project image
-  -> reference the project image in suite YAML
-```
-
-#### Automated model conversion
-
-Convert each ONNX model once before scheduling trials. The conversion machine needs Unity Editor; no Inspector interaction is required.
-
-```text
-User supplies an ONNX file through agents[].model in suite YAML
-  -> automated Unity Editor job runs with -batchmode -executeMethod <conversion script>
-  -> isolated temporary project pins Inference Engine 2.4.1 (same as runtime)
-  -> reject malformed ONNX and external weights; import each resolved path once per suite
-  -> ModelWriter.Save(...) exports a .sentis file under <suite-id>/models
-  -> preserve manifest + preparation/unity logs; remove temporary project after Editor exits
-  -> fail or cancel before trials on conversion error, timeout, or cancellation
-```
-
-#### Model mounting and runtime loading
-
-Reuse the prepared model across its environment trials. Each container uses the compiled Player and initializes its own runtime model from the shared read-only artifact.
-
-```text
-Prepared .sentis file on the host
-  -> runner mounts the selected file read-only at /qa/model/agent.sentis
-  -> trial assignment sets agent.model to /qa/model/agent.sentis
-  -> Unity calls ModelLoader.Load(path) and initializes its own inference worker
-  -> QaPlatformBootstrap selects environment.scene and requires one enabled adapter
-  -> adapter validates one static float [1, ObservationSize] input and [1, ActionSize] output
-  -> zero-input startup inference validates compatibility without applying actions
-  -> model ready + Python ready -> begin episodes
-```
-
-#### YAML requirements
-
-- `image`: the developer's prepared project image; the reusable base image is planned.
-- `episodes_per_trial`: positive integer X.
-- `max_concurrent_trials`: positive integer C, limiting active containers.
-- `output_dir`: output root, resolved relative to the YAML file.
-- `environments`: nonempty list of Y definitions with unique, nonempty string IDs.
-- `agents`: nonempty list of K definitions with unique, nonempty string IDs.
-- `model_preparation.unity_editor`: existing host Editor executable; optional positive `timeout_seconds` defaults to 600. Editor/model/output relative paths resolve beside the YAML.
-- `agents[].model`: existing self-contained ONNX path; the generated assignment uses the mounted `.sentis` path.
-- `environments[].scene`: full scene path or unique scene name included in the Player build.
-- Other environment and agent settings pass through as JSON configuration, including scene references and any setup, seed, budget, or verifier settings.
-
-#### End-to-end setup flow
-
-1. The developer wires the actor, adapter, episode boundaries, and evidence sources in Unity.
-2. The developer builds the Unity Player for the image's target platform, including its bootstrap, environment scenes, and concrete adapter's observation/action mapping.
-3. The developer builds a versioned project image containing the QA package, Unity build, and scene assets; a reusable base image is planned.
-4. The user references that image, its supported scenes, and host ONNX files in the suite YAML.
-5. The user runs `qa-run-suite suite.yaml` after installing `qa-framework[platform]` and starting Docker.
-6. The runner validates YAML and prepares distinct models before checking Docker/Compose and scheduling trials.
-7. The runner generates a unique suite ID and lazily assigns one distinct trial per environment/agent pair.
-8. One Compose project launches fresh containers as slots become available, up to C at once.
-9. Each container receives a read-only assignment JSON through `QA_TRIAL_CONFIG` and a dedicated writable directory through `QA_OUTPUT_DIR`. The model mount exposes the selected `.sentis` file read-only, with its container path in the assignment.
-10. The image runs `qa-run-trial -- <Unity executable> [args]`; Python opens its listener and starts Unity. The bootstrap selects the scene and the adapter loads the mounted artifact, gating gameplay on model and Python readiness. `QaPlatformAdapter` counts the game's start/end calls up to X episodes.
-11. Unity sends episode evidence as JSON; the collector appends it with trial context without game-specific Python edits.
-12. After X episodes, Unity requests completion; Python flushes, fsyncs, and closes output, then acknowledges. Unity exits, Python exits, and the runner collects the container status.
-
-Conversion happens once per model in the preparation stage; runtime loading and worker initialization happen independently in each trial container.
-
-### Execution
-
-#### Run manager - runner.py
-
-The preparation stage runs before this scheduling loop and supplies prepared model paths for assignments and mounts. No cross-suite cache is used.
+- Ready training stages and suite trials share the same container limit.
+- The run loop preserves dependency ordering and continues independent branches after a node fails.
 
 ```text
 RunManager(config)
@@ -121,136 +48,233 @@ RunManager(config)
     .run()
        |
        v
-Initialize output + counters
-Prepare distinct models in isolated Editor; preserve artifacts/logs
-Check Docker + create assignment iterator
+Initialize DAG node states + output directories
+Check Docker + create the shared ready queue
        |
        v
 +-----------------------------------------------------+
-| RUN LOOP: assignments left or trials still active    |<--+
+| RUN LOOP: pending nodes or work still running       |<--+
 |                                                     |   |
-| Fill free slots up to max_concurrent_trials          |   |
-|   -> next environment/agent pair                     |   |
-|   -> save assignment -> launch trial container       |   |
+| Resolve dependencies                                |   |
+|   -> successful parents: make node ready            |   |
+|   -> failed parents: block dependent node           |   |
+|   -> suite ready: prepare available ONNX models     |   |
 |                                                     |   |
-| Active trials run in parallel                       |   |
-|   -> wait 1 second -> inspect active containers      |   |
-|   -> finished: save logs -> remove -> free slots     |   |
+| Fill free slots up to max_concurrent_containers     |   |
+|   -> next ready training job or suite trial         |   |
+|   -> save assignment -> launch container            |   |
+|                                                     |   |
+| Active training and trials run in parallel          |   |
+|   -> wait 1 second -> inspect active containers     |   |
+|   -> finished: save logs -> remove -> free slots    |   |
+|   -> validate outputs -> update node status         |   |
 +-----------------------------------------------------+   |
-       |                                                 |
-       +-- assignments left or active trials ------------+
+       |                                                  |
+       +-- pending nodes or running work -----------------+
        |
-       v  queue empty + no active trials
-Cleanup suite resources -> save final status -> return exit code
+       v  all nodes terminal + no active containers
+Cleanup run resources -> save final manifest -> return exit code
 ```
 
-- Read suite YAML through the optional `platform` dependency and manage one Docker Compose project per invocation.
-- Generate assignments lazily; keep at most C active containers without precreating containers or scheduling tasks.
-- Save `assignment.json` with suite/trial IDs, episode count, and the selected environment/agent definitions.
-- Model handling: select the prepared artifact for the agent, mount it read-only, and write its container path into the assignment.
-- Append lifecycle records to `<output_dir>/<suite-id>/status.jsonl`.
-- Inspect all active containers together once per second; save exit codes and logs, remove exited containers, and refill available slots.
-- Continue after individual launch failures and nonzero exits, without retries.
-- Return success only when every trial container exits with code zero; this records execution status rather than verifier success.
-- Stop scheduling on cancellation or Docker infrastructure failure; clean up this invocation's containers and project resources while preserving output.
+### Developer integration
 
-#### Parallel execution
+Training Players start in a QaTrainingBootstrap scene. Each training scene has a developer QaTrainingAdapter that applies assignment parameters, starts the existing RlTrainingHost, and returns its port. The Python entrypoint waits for a readiness file, calls the existing trainer/exporter, then stops and reaps its Player. See the DAG guide for the complete contract.
 
-- Run independent trials concurrently within the suite's Compose project, with separate state and output locations.
-- Each container occupies a slot until it exits or the suite is cancelled; different durations refill slots independently.
-- This version uses one Docker host, with no pair repetitions, retries, restart recovery, automatic resource sizing, or per-trial timeouts.
+Evaluation keeps QaPlatformBootstrap and QaPlatformAdapter: select a scene, load the mounted policy, validate the vector contract, count developer-owned episodes, and confirm saved evidence before shutdown. Training and evaluation must share observation/action shapes and meanings.
 
-#### Trial containerization
+### Output and reporting
 
-- One Docker container per trial.
-- Uses the supplied image's entrypoint, configured to run `qa-run-trial` as the main process.
-- Python owns one Unity Player child and receives reports over localhost.
-- Python confirms saved output before Unity exits; Python then returns the trial's exit status.
-- Runtime failure or cancellation stops and reaps Unity; partial output remains available.
+Each invocation saves a run manifest and status log, per-node configuration/dependency manifests, per-job assignments and logs, and the existing episode JSONL files. Training artifacts retain parent references. A final run manifest includes succeeded, failed, blocked and cancelled nodes; it is an execution index, not a graded report.
 
-#### Container launching
+The future aggregator will read suite trial files, grade each episode once, aggregate per trial/environment/agent/suite, and combine comparable suites into a final report after the DAG finishes. It must retain missing-episode and execution-failure information separately from failed QA requirements. Its execution location remains undecided.
 
-- Use the packaged `src/qa_framework/platform/compose.yaml` with one parameterized `trial` service.
-- One Compose project per test suite.
-- Launch each trial with `docker compose -p <suite-id> ... run --detach --no-deps --name <trial-id> trial` and track the returned container ID.
-- Mount the assignment read-only at `/qa/assignment.json`, exposed as `QA_TRIAL_CONFIG`.
-- Bind-mount the selected host `.sentis` file read-only at `/qa/model/agent.sentis`; set `agent.model` in the assignment to that container path.
-- Mount the trial's writable `output/` at `/qa/output`, exposed as `QA_OUTPUT_DIR`.
-- Preserve `container.log`, launch-failure diagnostics, and `output/` under `<suite-id>/trials/<trial-id>/`.
+Developers can define metrics around anything they can observe and clearly judge in the game. Some describe each episode; others summarize many episodes.
 
-### Results and reporting
+| Metric | Example definition | What it tells us |
+| --- | --- | --- |
+| Objective completion | Did the actor reach the exit with the required item? | Whether the intended task was completed |
+| Completion time | Simulated seconds taken to finish | How efficiently the agent completes the task |
+| Rule violations | Number of times the actor crossed a locked door or left valid boundaries | Whether gameplay rules were broken |
+| Interaction correctness | Did activating a switch produce the expected door-state change? | Whether mechanics behave as specified |
+| Coverage | Percentage of reachable rooms visited or mechanics exercised | How much of the game was actually tested |
+| Stuck duration | Time spent attempting movement without meaningful progress | Possible navigation or collision problems |
+| Resource outcomes | Damage taken, ammunition spent, items collected | Whether gameplay meets task-specific expectations |
+| Game stability | Crashes, exceptions, corrupted state | Whether testing exposed runtime defects |
 
-#### Result collection and storage
+## Training
 
-The generic collector preserves evidence without game-specific Python classes. Verifier execution remains separate and requires developer-supplied predicates.
+### Definition
 
-```text
-Schema-2 report -> validate envelope and unique attempt ID
-  -> attach suite, trial, environment, agent, and one-based episode index
-  -> append to QA_OUTPUT_DIR/episodes.jsonl -> flush each record
-  -> final completion request -> fsync and close -> acknowledge saved output
-  -> mounted files remain available after container exit
-```
+- Training environment: one Unity scene with its setup/reset configuration, observation/action contract, reward function, and episode-ending rules. Node parameters can vary its difficulty, movement constraints, or other developer-defined settings.
+- Training episode: one attempt from an environment reset until the environment reports completion. The trainer resets the environment for the next attempt.
+- Training step: one action followed by its resulting observation, reward, and completion flag. An action may span multiple Unity frames.
+- Training stage: one `train` node that learns in one configured environment for a timestep budget, starting from a fresh policy or a compatible checkpoint.
+- Curriculum: a sequence of stages, each continuing the checkpoint produced by its predecessor.
+- Training branch: an independent continuation of a parent checkpoint with its own environment parameters and stage settings. Multiple children can share the same parent without modifying it.
 
-#### Aggregation and comparison
+Each stage runs inside one Docker container containing the Python trainer and its Unity Player child. Training and trial containers share the DAG's Compose project and concurrency limit. A stage's `total_timesteps` is its additional training budget; PPO finishes whole rollouts, so it may exceed the requested count and does not promise a fixed number of episodes.
 
-- The platform aggregator reads the suite's Y x K trial files and processes each episode result once.
-- Aggregate results per trial, per agent across environments, and across the suite.
-- Compare agents on the same environments; show expected versus received episode counts.
-- Whether the aggregator runs on the host or in its own container is undecided.
-
-### Tooling
-
-Platform plugins that extract additional information from the environment or affect the environment.
-
-### Folder structure
-
-Current package locations:
+### Training workflow
 
 ```text
-Unity/Runtime/                 Unity integration components
-src/qa_framework/
-    receiver.py                Python report receiver
-    evaluation/                Report types and verifier execution
-    platform/                  Suite runner, Compose template, trial process/collector
-```
-
-### Workflow
-
-```text
-             Configuration / setup
+             Training node configuration
                        |
                        v
-             Automated ONNX conversion
-             Prepared .sentis files on host
+             Fresh policy or parent checkpoint
                        |
                        v
                  Run manager
                        |
                        v
             Docker Compose project
-                (one per suite)
-             Read-only model mounts
+                (one per DAG run)
+             Read-only checkpoint mounts
                  /    |    \
                 v     v     v
-             Trial 1 Trial 2 Trial 3   ... up to C active; refill on exit
+             Train 1 Train 2 Train 3   ... shared C slots; refill on exit
                 |     |     |
              Prepare independent environments
-             Load assigned model + initialize CPU worker
-             Adapter FixedUpdate drives active episode decisions
-             Capture evidence
-             Run verifiers
+             Apply each branch's scene parameters
+             Create or resume Python policy
+             Collect experience + update policy
+             Save checkpoint + export ONNX
                 |     |     |
                  \    |    /
                        v
-             Store results and traces
+             Publish each node's artifacts
                        |
-                       v
-             Aggregate trial results
-                       |
-                       v
-             Reports and comparisons
+              +--------+--------+
+              |                 |
+              v                 v
+       Next training stage   Test suite nodes
+       (checkpoint input)    (ONNX inputs)
+              |                 |
+              v                 v
+       Continue curriculum   Run trials + save evidence
+                                |
+                                v
+                    Planned aggregation + final report
 ```
+
+### Existing framework components
+
+#### Unity
+
+- `QaTrainingBootstrap`: selects the assigned build scene, requires exactly one enabled training adapter, and publishes readiness with the node identity, session, and listening port.
+- `QaTrainingAdapter`: developer extension point for applying assignment parameters and starting the training host through `ConfigureAndStart(string assignmentJson)`.
+- `RlEnvironmentBehaviour`: the Unity RL library's environment contract for reset, observation collection, action application/completion, reward, and episode termination.
+- `RlTrainingHost`: serves the Python trainer over loopback TCP and dispatches environment callbacks on Unity's main thread. Automatic startup is disabled so the adapter can configure the environment first.
+
+#### Python
+
+- `qa-run-training`: owns the Player process, resolves fresh/resumed trainer settings, waits for readiness, invokes training and export, and publishes completed artifacts.
+- `UnityGymEnv`: the Unity RL library's Gymnasium bridge for observations, actions, rewards, resets, and episode endings.
+- `train(config_path)`: runs the library's PPO trainer, optionally resumes a full checkpoint, and saves intermediate checkpoints when configured plus the final model.
+- `export_onnx(checkpoint, output)`: exports deterministic clipped policy actions for evaluation.
+- `RunManager`: schedules ready stages, mounts parent checkpoints read-only, validates completed outputs, and releases dependent training or suite nodes.
+
+### Developer-defined components
+
+- Training scene, actor mechanics, initial state, reset behavior, and seed handling.
+- Observation encoding and action mapping, with compatible shapes and meanings across curriculum stages and evaluation scenes.
+- Reward function, action-completion rules, and episode-ending conditions.
+- A concrete `QaTrainingAdapter` that reads `environment.parameters`, configures the environment, starts `RlTrainingHost`, and returns its listening port.
+- Stage budgets, environment variants, trainer settings, and checkpoint dependencies in the DAG YAML.
+- Evaluation environments and success criteria for comparing the resulting policies in test suites.
+
+### Training lifecycle
+
+The developer owns environment behavior and rewards. The Unity RL library owns the learning loop and checkpoint continuation. The QA platform owns container scheduling, Player startup/shutdown, artifact publication, and dependency handling.
+
+```text
+Run manager mounts assignment JSON + dedicated output directory
+              + optional read-only parent checkpoint
+                            |
+                            v
++--------------------------------------------------------+
+| ONE TRAINING CONTAINER                                 |
+|                                                        |
+|  qa-run-training resolves settings + starts Unity      |
+|          |                                             |
+|          v                                             |
+|  Bootstrap selects scene -> adapter applies parameters |
+|          |                                             |
+|          v                                             |
+|  Start RL host -> readiness file -> Python connects    |
+|          |                                             |
+|          v                                             |
+|  Create/resume policy -> reset environment             |
+|          |                                             |
+|          v                                             |
+|  Observe -> choose action -> apply -> wait             |
+|          |                                             |
+|          v                                             |
+|  Return reward + done + next observation to Python     |
+|          |                                             |
+|          v                                             |
+|  Reset ended episodes + collect rollouts + learn       |
+|          |                  Repeat until stage budget  |
+|          v                                             |
+|  Save checkpoint.zip -> export/validate model.onnx     |
+|          |                                             |
+|          v                                             |
+|  Stop Player -> publish artifacts.json -> exit         |
++--------------------------------------------------------+
+                            |
+                            v
+           Platform saves logs + validates artifacts
+                            |
+                            v
+              Release dependent training or suites
+```
+
+### QaTrainingAdapter flow
+
+`QaTrainingAdapter` configures and starts the training environment. Its `ConfigureAndStart(string assignmentJson)` hook runs after the selected scene's Awake/OnEnable callbacks and before Start. The developer applies `environment.parameters`, calls `RlTrainingHost.StartTraining()` with automatic startup disabled, and returns the listening port. Setup errors throw and fail the stage. The bootstrap then publishes readiness; Python validates it before connecting to the host.
+
+During training, `RlTrainingHost` dispatches the developer's `RlEnvironmentBehaviour` callbacks on Unity's main thread. The environment declares fixed `ObservationSize` and `ActionSize` values, supplies finite float observations, and accepts continuous actions in `[-1, 1]`. Python owns policy decisions and learning updates. Each action request advances the environment through `ApplyAction()` and waits until `IsActionRunning()` returns false before collecting its result.
+
+```text
+QaTrainingBootstrap selects scene -> finds one enabled QaTrainingAdapter
+  -> ConfigureAndStart(assignmentJson) -> apply parameters -> start RL host
+  -> return listening port -> publish readiness -> Python connects
+  -> host announces ObservationSize and ActionSize -> initialize/resume Python policy
+  -> Python requests reset -> ResetEpisode(seed) -> CollectObservation()
+  -> Python selects action -> ApplyAction(action)
+  -> IsActionRunning() is true -> wait across Unity updates
+  -> IsActionRunning() is false -> CalculateReward(out isDone)
+  -> CollectObservation() -> return observation, reward, and isDone to Python
+  -> isDone is false -> continue episode with the next action
+  -> isDone is true -> preserve terminal result -> require reset before another action
+  -> Python collects rollouts and updates policy -> repeat until stage budget completes
+  -> save checkpoint -> export policy -> stop Player -> publish completed artifacts
+```
+
+Reward and completion are calculated before the post-action observation. The environment preserves the terminal state until that observation has been returned, then resets only when Python requests the next episode. Python controls decision cadence through bridge requests; the environment determines how long each action takes. Readiness uses a file so checking startup does not consume the host's single trainer connection.
+
+```text
+Missing/ambiguous scene, invalid parameters, or host startup failure -> fail stage
+Missing or mismatched readiness -> fail stage -> stop Unity
+Action before reset or after episode completion -> reject action
+Invalid action/observation/reward or environment callback error -> fail training
+Disable training host or lose its connection -> trainer fails -> stop Player
+Training, bridge, or export failure -> stop Unity -> retain partial files and logs
+Cancellation -> stop and reap Unity -> retain partial output
+Nonzero container exit or invalid published artifacts -> fail node -> block descendants
+Independent DAG branches -> continue running
+```
+
+Startup allows 30 seconds. The trainer's socket timeout defaults to 300 seconds. Player cleanup terminates the child, waits two seconds, then kills and reaps it if necessary. Stage progression depends on successful budget completion and artifact validation; there are no performance gates or automatic retries.
+
+### Training outputs and handoff
+
+- `checkpoint.zip`: full policy, optimizer state, and saved training settings/counters for subsequent stages. Each child loads its own continuation from the read-only parent artifact.
+- `model.onnx`: exported policy for suite evaluation; the host converts it to `.sentis` when needed and reuses that conversion within the DAG run.
+- `training.yaml`: resolved trainer settings, including the mounted checkpoint path and stage output location.
+- `artifacts.json`: completion manifest with node/run identity, parent reference, environment parameters, trainer settings, and published output paths.
+- Training checkpoints, Unity/container logs, and node/job manifests remain available for inspection.
+
+The current integration supports CPU PPO `MlpPolicy`, flat observations, and continuous actions in `[-1, 1]`. Resumed stages inherit saved optimizer/rollout settings; explicit conflicting settings are rejected, while the supported entropy override can change `ent_coef`. A test suite evaluates the exported models on its environment/agent matrix. Grading, aggregation, and the combined comparison report remain planned. See [the DAG guide](docs/training-dag.md) for the configuration and image contracts.
 
 ## Trials
 
@@ -261,7 +285,45 @@ src/qa_framework/
 - Trial (simulation): runs X episodes for one environment and one agent.
 - Suite: runs each of K agents in each of Y environments, giving Y trials per agent, Y x K trial runs, and X x Y x K episodes.
 
-Each trial runs its X episodes inside one Docker container containing the Python runtime and its Unity Player child. One Docker Compose project groups the suite's trial containers.
+Each trial runs its X episodes inside one Docker container containing the Python runtime and its Unity Player child. One Docker Compose project groups all training and trial containers in the DAG.
+
+### Trial workflow
+
+```text
+             Configuration / setup
+                       |
+                       v
+             Suite model inputs become available
+             Automated ONNX conversion
+             Prepared .sentis files on host
+                       |
+                       v
+                 Run manager
+                       |
+                       v
+            Docker Compose project
+                (one per DAG run)
+             Read-only model mounts
+                 /    |    \
+                v     v     v
+             Trial 1 Trial 2 Trial 3   ... shared C slots; refill on exit
+                |     |     |
+             Prepare independent environments
+             Load assigned model + initialize CPU worker
+             Adapter FixedUpdate drives active episode decisions
+             Capture evidence
+             Confirm saved output
+                |     |     |
+                 \    |    /
+                       v
+             Store results and traces
+                       |
+                       v
+             Planned verifier execution + aggregation
+                       |
+                       v
+             Planned reports and comparisons
+```
 
 ### Existing framework components
 
@@ -295,21 +357,42 @@ Each trial runs its X episodes inside one Docker container containing the Python
 The game owns episode setup and end conditions. `QaPlatformAdapter` counts completed episodes and owns the completion handshake; Python owns the Player process. The adapter owns inference and timing; the developer owns episode boundaries and evidence.
 
 ```text
-Run manager mounts assignment JSON + output directory
-  -> mount selected prepared model read-only
-  -> qa-run-trial opens output and TCP listener -> starts Unity
-  -> bootstrap reads assignment -> selects scene -> requires one enabled adapter
-  -> adapter validates Python readiness -> loads model -> CPU validation pass
-  -> model ready + Python ready -> On Ready enables gameplay
-  -> game resets environment -> StartUnit -> OnUnitStart
-  -> FixedUpdate collects observation -> inference -> ApplyAction while episode active
-  -> game calls EndUnit -> OnUnitEnd gathers final evidence
-  -> adapter fills report identity -> queues JSON -> Python appends episode
-  -> repeat while CanStartUnit, until X episodes have ended
-  -> stop accepting new episodes -> drain reports -> send trial_complete
-  -> Python verifies X distinct attempts -> flush + fsync + close episodes.jsonl
-  -> send trial_saved -> Unity exits 0 -> Python exits 0 -> container exits
-  -> run manager saves logs/status -> removes container -> refills slot
+Run manager mounts assignment JSON + dedicated output directory
+                  + read-only prepared model
+                            |
+                            v
++--------------------------------------------------------+
+| ONE TRIAL CONTAINER                                    |
+|                                                        |
+|  qa-run-trial opens listener + starts Unity            |
+|          |                                             |
+|          v                                             |
+|  Bootstrap selects scene + one platform adapter        |
+|          |                                             |
+|          v                                             |
+|  Python ready + model ready -> enable gameplay         |
+|          |                                             |
+|          v                                             |
+|  StartUnit -> run test -> EndUnit                      |
+|          |                  Repeat for X episodes      |
+|          v                                             |
+|  Evidence sent to Python -> append episodes.jsonl      |
+|          |                                             |
+|          v                                             |
+|  Drain reports -> trial_complete                       |
+|          |                                             |
+|          v                                             |
+|  Python validates count -> flush + fsync + close       |
+|          |                                             |
+|          v                                             |
+|  trial_saved -> Unity exits -> Python exits            |
++--------------------------------------------------------+
+                            |
+                            v
+              Platform collects the result
+                            |
+                            v
+              Save logs + status -> free slot
 ```
 
 ### QaPlatformAdapter flow
@@ -335,3 +418,14 @@ GPU inference, general multi-input/recurrent policies, dungeon migration, and re
 - Con: distributed runs need an additional file-transfer or ingestion step.
 - Con: file-writing and output-format maintenance become Unity's responsibility.
 - Preference: Unity exports evidence; the platform handles analysis and report generation for ease of use.
+
+## TODO
+
+Training DAG execution, checkpoint branching, trial storage, and cleanup are implemented. Remaining work:
+
+- [ ] Connect the existing `evaluate_unit()` to saved episode records for suite-level QA evaluation.
+- [ ] Aggregate graded results per trial, environment, agent, and suite, including expected versus received episode counts.
+- [ ] Report agent comparisons on the same environments, keeping execution failures separate from failed QA requirements.
+- [ ] Build a reusable production runtime base image containing Python, the QA runtime, and Linux dependencies.
+- [ ] Package each actual game's Unity build as a project image using the runtime base image.
+- [ ] Migrate the dungeon game's observations, actions, evidence, and episode boundaries into `QaPlatformAdapter`.

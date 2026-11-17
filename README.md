@@ -1,8 +1,8 @@
 # QA Framework
 
-A reusable Unity unit adapter, Python QA evaluator, and container trial runtime with confirmed episode storage.
+A reusable Unity unit adapter, Python QA evaluator, and DAG runner for containerized training and trials with confirmed episode storage.
 
-See [Platform refactor](platform-refactor.md) for bounded parallel trial execution, modular testing, and the planned aggregated reporting design.
+See [Platform refactor](platform-refactor.md) for training curricula, bounded parallel trials, and the planned aggregated reporting design.
 
 The standalone integration keeps Unity in charge of starting its Python consumer:
 
@@ -44,48 +44,20 @@ python -m pip install -e path/to/rein-powered-QA-framework
 
 Install the Unity package from `Unity/package.json` through Package Manager. Supply the interpreter, consumer script, and packages on each test machine, including desktop builds.
 
-## Run a containerized suite
+## Run a training/evaluation DAG
 
-Install the optional YAML dependency and start a local Docker engine with Compose:
-
-Copy [suite.example.yaml](suite.example.yaml) to `suite.yaml` and fill in the image, episode count, concurrency limit, output directory, environments, and agents. The template explains each field and includes two environments and two agents.
+Install the optional platform dependencies and start Docker with Compose:
 
 ```shell
 python -m pip install -e ".[platform]"
-qa-run-suite suite.yaml
+qa-run-suite workflow.yaml
 ```
 
-```yaml
-image: my-trial-image:tag
-episodes_per_trial: 100
-max_concurrent_trials: 4
-output_dir: ./runs
-model_preparation:
-  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
-  timeout_seconds: 600
+Copy [suite.example.yaml](suite.example.yaml) for a training curriculum that branches and joins at a comparison suite. For evaluation without training, use [the suite-only sample](examples/actor-control/suite.yaml). The old flat suite format is replaced.
 
-environments:
-  - id: dungeon
-    scene: Dungeon
+Each training node runs the existing Unity RL trainer in its own container and publishes a full checkpoint plus ONNX. Children resume checkpoints independently; suite nodes consume ONNX and expand into the existing trial containers. All jobs share one concurrency limit. Failed producers block descendants while unrelated branches continue.
 
-agents:
-  - id: baseline
-    model: models/baseline.onnx
-```
-
-- Counts must be positive integers. Both lists must be nonempty and have unique, nonempty string IDs within each list.
-- One fresh container runs each environment/agent pair, with at most `max_concurrent_trials` active at once in one Compose project.
-- The supplied image keeps its entrypoint and command. It reads `QA_TRIAL_CONFIG`, a read-only JSON file with `suite_id`, `trial_id`, `episodes_per_trial`, `environment`, and `agent`, and writes artifacts to `QA_OUTPUT_DIR`.
-- `model_preparation.unity_editor` must name an existing Unity Editor executable; `timeout_seconds` is a positive integer, default 600. Install `qa-framework[platform]` on the host for YAML and ONNX validation.
-- Each `agents[].model` must be an existing, self-contained ONNX file. Editor, model, and output paths resolve beside the YAML when relative. External weights are rejected. Other settings remain JSON pass-through.
-- Before any trial, an isolated temporary Unity project imports each distinct resolved ONNX path once with Inference Engine **2.4.1** and exports `.sentis`. Artifacts, `manifest.json`, `preparation.log`, and `unity.log` remain in `<suite-id>/models/`; the temporary project is removed after its Editor exits. There is no cross-suite cache. Failure/timeout stops the suite; cancellation stops the owned Editor and returns 130.
-- Each selected artifact is mounted read-only at `/qa/model/agent.sentis`; the generated assignment uses that path without changing the YAML or loaded agent settings.
-- `environments[].scene` is required: use a full build scene path or a unique scene name. Build a `QaPlatformBootstrap` scene first, followed by all supported gameplay scenes. The bootstrap selects the scene and requires exactly one active, enabled `QaPlatformAdapter` before gameplay starts.
-- `output_dir` resolves relative to the YAML file. Each invocation saves `<output_dir>/<suite-id>/status.jsonl` and `trials/<trial-id>/{assignment.json,container.log,output/}`. Launch failures also save `launch.log`.
-- Exited containers are logged and removed; free slots refill independently. Individual failures do not stop the remaining trials.
-- Ctrl+C or termination stops scheduling and cleans up this suite's containers/project resources while preserving output. Infrastructure failures stop scheduling and report cleanup failures if Docker is unreachable.
-- Exit codes: `0` for all container exits successful, `1` for trial/infrastructure failures, `2` for invalid configuration, `130` for cancellation. Execution status does not establish verifier success.
-- This version uses one Docker host, with no pair repetitions, retries, restart recovery, automatic resource sizing, or per-trial timeouts.
+The runner converts models as they become available, mounts inputs read-only, and saves node manifests, trial evidence and logs. Aggregation and grading remain planned. See [the DAG configuration and integration guide](docs/training-dag.md) for the YAML fields, resume rules, image contract, output layout and failure behavior. The [actor sample](examples/actor-control/README.md) includes runnable training and evaluation images.
 
 ## Run a platform trial
 

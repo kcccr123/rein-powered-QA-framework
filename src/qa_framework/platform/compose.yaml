@@ -1,19 +1,14 @@
 services:
-  trial:
-    image: "${QA_TRIAL_IMAGE:?trial image is required}"
+  job:
+    image: "${QA_JOB_IMAGE:?job image is required}"
     restart: "no"
     environment:
       QA_TRIAL_CONFIG: /qa/assignment.json
+      QA_TRAIN_CONFIG: /qa/assignment.json
       QA_OUTPUT_DIR: /qa/output
     volumes:
       - type: bind
-        source: "${QA_MODEL_HOST:?prepared model path is required}"
-        target: /qa/model/agent.sentis
-        read_only: true
-        bind:
-          create_host_path: false
-      - type: bind
-        source: "${QA_TRIAL_CONFIG_HOST:?assignment path is required}"
+        source: "${QA_CONFIG_HOST:?assignment path is required}"
         target: /qa/assignment.json
         read_only: true
         bind:

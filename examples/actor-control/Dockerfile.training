@@ -1,0 +1,19 @@
+# Build with --build-context unity-rl=<path to the pinned Unity RL checkout>.
+FROM python:3.11-slim-bookworm
+ENV SDL_VIDEODRIVER=dummy
+ENV QA_RL_PYTHON=/opt/unity-rl/PythonEnv
+ENV OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libglib2.0-0 libgomp1 libatomic1 libgl1 libx11-6 libgtk-3-0 \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=unity-rl PythonEnv /opt/unity-rl/PythonEnv
+# Install CPU Torch first so the library requirements reuse it without CUDA wheels.
+RUN pip install --no-cache-dir torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r /opt/unity-rl/PythonEnv/requirements-export.txt
+WORKDIR /framework
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir .
+COPY examples/actor-control/Build/Training /app
+RUN chmod +x /app/ActorTraining.x86_64
+ENTRYPOINT ["qa-run-training", "--", "/app/ActorTraining.x86_64", "-batchmode", "-nographics", "-logFile", "/qa/output/unity.log"]

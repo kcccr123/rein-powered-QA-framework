@@ -17,6 +17,7 @@ platform = ["PyYAML>=6", "onnx>=1.16"]
 [project.scripts]
 qa-run-suite = "qa_framework.platform.cli:main"
 qa-run-trial = "qa_framework.platform.trial:main"
+qa-run-training = "qa_framework.platform.training:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

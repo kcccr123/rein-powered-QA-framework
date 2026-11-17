@@ -1,17 +1,16 @@
-image: qa-actor-sample:local
-episodes_per_trial: 3
-max_concurrent_trials: 2
+max_concurrent_containers: 2
 output_dir: ./runs
 model_preparation:
   unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
   timeout_seconds: 600
-environments:
-  - id: short
-    scene: ShortLane
-  - id: long
-    scene: Assets/Scenes/LongLane.unity
-agents:
-  - id: right
-    model: models/right.onnx
-  - id: left
-    model: models/left.onnx
+nodes:
+  - id: comparison
+    type: suite
+    image: qa-actor-sample:local
+    episodes_per_trial: 3
+    environments:
+      - {id: short, scene: ShortLane}
+      - {id: long, scene: Assets/Scenes/LongLane.unity}
+    agents:
+      - {id: right, model: models/right.onnx}
+      - {id: left, model: models/left.onnx}

@@ -1,1 +1,1 @@
-"""Single-host orchestration of containerized QA trials."""
+"""Single-host DAG orchestration of containerized Unity training and QA trials."""

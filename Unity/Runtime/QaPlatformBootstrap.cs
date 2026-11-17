@@ -1,8 +1,5 @@
 using System;
-using System.IO;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace Kcccr.QaFramework
 {
@@ -14,37 +11,8 @@ namespace Kcccr.QaFramework
             try
             {
                 var assignment = QaTrialAssignment.Read();
-                string reference = assignment.environment.scene;
-                int selected = -1;
-                for (int index = 0; index < SceneManager.sceneCountInBuildSettings; index++)
-                {
-                    string path = SceneUtility.GetScenePathByBuildIndex(index);
-                    if (reference != path && reference != Path.GetFileNameWithoutExtension(path))
-                        continue;
-                    if (selected != -1)
-                        throw new InvalidOperationException("Ambiguous environment.scene: " + reference);
-                    selected = index;
-                }
-                if (selected < 0 || selected == gameObject.scene.buildIndex)
-                    throw new InvalidOperationException("environment.scene must select a gameplay scene in this build: " + reference);
-
-                // sceneLoaded runs after OnEnable and before gameplay components' Start.
-                UnityAction<Scene, LoadSceneMode> loaded = null;
-                loaded = (scene, mode) =>
-                {
-                    SceneManager.sceneLoaded -= loaded;
-                    InitializeScene(assignment);
-                };
-                SceneManager.sceneLoaded += loaded;
-                try
-                {
-                    SceneManager.LoadScene(selected, LoadSceneMode.Single);
-                }
-                catch
-                {
-                    SceneManager.sceneLoaded -= loaded;
-                    throw;
-                }
+                QaSceneLoader.Load(assignment.environment.scene, gameObject.scene.buildIndex,
+                    () => InitializeScene(assignment));
             }
             catch (Exception error)
             {
