@@ -1,4 +1,4 @@
-"""A normalized action contract for shared RL policies, without ML dependencies."""
+"""Deprecated player action encoding retained for reference; unused by unit reporting."""
 
 from __future__ import annotations
 
@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 ACTION_ENCODING_VERSION = 1
 
 
+# Deprecated: player action encoding belongs to the game's RL integration.
 @dataclass(frozen=True, slots=True)
 class QAActionCodec:
     """Encode move_x, move_y, attack, interact, ability into five values in [-1, 1].

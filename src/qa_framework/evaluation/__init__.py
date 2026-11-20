@@ -1,17 +1,15 @@
-"""Descriptive outcomes for completed QA episodes."""
+"""Evaluate environment output and produce QA requirement results."""
 
-from qa_framework.evaluation.result import EpisodeResult, TerminalReason
 from qa_framework.evaluation.runner import (
     EVALUATION_SCHEMA_VERSION,
     EvaluationReport,
-    EvaluationRequest,
-    QAContractError,
-    QAPolicy,
-    evaluate_episode,
+    UnitReport,
+    evaluate_unit,
 )
 
 __all__ = [
-    "EpisodeResult", "TerminalReason", "EVALUATION_SCHEMA_VERSION",
-    "EvaluationReport", "EvaluationRequest", "QAContractError", "QAPolicy",
-    "evaluate_episode",
+    "EVALUATION_SCHEMA_VERSION",
+    "EvaluationReport",
+    "UnitReport",
+    "evaluate_unit",
 ]

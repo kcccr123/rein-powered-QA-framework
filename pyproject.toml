@@ -5,21 +5,26 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "qa-framework"
 version = "0.1.0"
-description = "A lightweight environment contract for automated gameplay QA"
+description = "Receive game environment output and evaluate automated gameplay QA requirements"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]
 test = ["pytest>=7"]
-rl = ["gymnasium>=0.29,<2", "numpy>=1.24"]
-inference = ["gymnasium>=0.29,<2", "numpy>=1.24", "stable-baselines3>=2.5,<3"]
+platform = ["PyYAML>=6", "onnx>=1.16"]
+
+[project.scripts]
+qa-run-suite = "qa_framework.platform.cli:main"
+qa-run-trial = "qa_framework.platform.trial:main"
+qa-run-training = "qa_framework.platform.training:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 qa_framework = ["py.typed"]
+"qa_framework.platform" = ["compose.yaml", "converter/*.cs"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

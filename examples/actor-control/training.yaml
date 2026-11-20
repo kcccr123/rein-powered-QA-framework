@@ -1,0 +1,51 @@
+# Small lifecycle demonstration, not a performance benchmark.
+max_concurrent_containers: 2
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+nodes:
+  - id: walking
+    type: train
+    image: qa-actor-training:local
+    environment:
+      id: walking
+      scene: TrainingLane
+      parameters: {step_distance: 0.25, target_direction: 1}
+    trainer:
+      total_timesteps: 128
+      n_steps: 64
+      ppo: {batch_size: 32}
+      checkpoint_freq: 64
+      seed: 0
+  - id: running
+    type: train
+    image: qa-actor-training:local
+    checkpoint: {node: walking, output: checkpoint}
+    environment:
+      id: running
+      scene: TrainingLane
+      parameters: {step_distance: 0.5, target_direction: 1}
+    trainer:
+      total_timesteps: 128
+  - id: left
+    type: train
+    image: qa-actor-training:local
+    checkpoint: {node: walking, output: checkpoint}
+    environment:
+      id: left
+      scene: TrainingLane
+      parameters: {step_distance: 0.25, target_direction: -1}
+    trainer:
+      total_timesteps: 128
+      ent_coef: 0.01
+  - id: comparison
+    type: suite
+    image: qa-actor-sample:local
+    episodes_per_trial: 3
+    environments:
+      - {id: short, scene: ShortLane}
+      - {id: long, scene: LongLane}
+    agents:
+      - {id: walking, model: {node: walking, output: onnx}}
+      - {id: running, model: {node: running, output: onnx}}
+      - {id: left, model: {node: left, output: onnx}}

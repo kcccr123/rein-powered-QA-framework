@@ -1,4 +1,4 @@
-"""Immutable PCG recipe references for future level handoffs and evaluation replay."""
+"""Deprecated PCG recipe model retained for reference; unused by unit reporting."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ LEVEL_SCHEMA_VERSION = 1
 _MAX_GENERATION_SEED = 2**31 - 1
 
 
+# Deprecated: include level metadata in developer-defined evidence when needed.
 @dataclass(frozen=True, slots=True)
 class LevelSpec:
     """A level identity and generation recipe, not generated or loaded geometry.

@@ -1,0 +1,59 @@
+# qa-run-suite suite.example.yaml
+# DAG-only format. Relative file/output paths resolve beside this YAML.
+max_concurrent_containers: 2
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+  timeout_seconds: 600
+
+nodes:
+  - id: walking
+    type: train
+    image: my-training-image:tag
+    # Optional: checkpoint: models/starting-policy.zip
+    environment:
+      id: walking
+      scene: Walking
+      parameters: {difficulty: 1}
+    trainer:
+      total_timesteps: 10000
+      seed: 0
+      checkpoint_freq: 2000
+
+  - id: running
+    type: train
+    image: my-training-image:tag
+    checkpoint: {node: walking, output: checkpoint}
+    environment:
+      id: running
+      scene: Running
+      parameters: {difficulty: 2}
+    trainer:
+      total_timesteps: 10000
+
+  - id: walking_variant
+    type: train
+    image: my-training-image:tag
+    checkpoint: {node: walking, output: checkpoint}
+    environment:
+      id: walking-hard
+      scene: Walking
+      parameters: {difficulty: 3}
+    trainer:
+      total_timesteps: 10000
+      ent_coef: 0.01
+
+  - id: comparison
+    type: suite
+    image: my-trial-image:tag
+    episodes_per_trial: 100
+    environments:
+      - {id: walking-test, scene: WalkingTest}
+      - {id: running-test, scene: RunningTest}
+    agents:
+      - id: walking
+        model: {node: walking, output: onnx}
+      - id: running
+        model: {node: running, output: onnx}
+      - id: variant
+        model: {node: walking_variant, output: onnx}

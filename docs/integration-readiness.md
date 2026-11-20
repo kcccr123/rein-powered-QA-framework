@@ -1,271 +1,215 @@
-# Unity gameplay QA integration
+# Unity units to Python QA
 
-QA connects to the game's existing `QaTcpHost` using newline-delimited JSON over
-TCP. Unity generates the requested dungeon and owns player controls, raycasts,
-combat and outcomes. Python processes typed observations, chooses actions,
-evaluates complete episodes and selects the next level recipe. No sibling
-repository changes are required for these QA features.
+Both integrations share schema-2 unit reports. [Platform trials](#platform-trials) use Python as the parent process and confirm saved output before shutdown. The standalone launcher/consumer flow is:
 
-## Goal and current status
-
-The gameplay QA goal is a policy that controls the Unity player from game
-observations, navigates generated dungeons without human input and reaches the
-exit. A level counts as cleared only when Unity reports exit completion.
-Generation success, structural validation or a synthetic `--fake` episode
-cannot establish that result. A training reward average alone does not show
-whether the policy clears other generated levels.
-
-The game has a movable QA player and `QaTcpHost`; this repository has the
-Unity adapter, observation/action codec, heuristic baseline, training example
-and checkpoint inference. The training example can produce a PPO/A2C checkpoint
-for one fixed dungeon recipe. No trained gameplay QA checkpoint or measured
-level-clearing performance is included. Generalization to other generated
-levels, and use of QA results as PCG training feedback, remain unverified.
-
-## Run rounds
-
-From this repository, using Python 3.10+:
-
-```shell
-python -m pip install -e ".[test]"
-python -m pytest
-python examples/play_generated_level_live.py --fake --episodes 3
+```text
++------------------------------------------------------------------+
+| STARTUP                                                          |
+| Python receiver -> TCP readiness once per connection.            |
+| Unity validates the launch session -> enables controller.        |
++------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| DEVELOPER UNIT LIFECYCLE                                         |
+| StartUnit -> gameplay -> EndUnit.                                |
+| OnUnitEnd aggregates final state snapshots.                      |
++------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| UNITY QA ADAPTER                                                 |
+| QaUnitAdapter.SendReport -> newline JSON on the same connection. |
++------------------------------------------------------------------+
+             |
+             v
++------------------------------------------------------------------+
+| PYTHON QA CONSUMER                                               |
+| QAReportReceiver -> evaluate_unit with named predicates.         |
++------------------------------------------------------------------+
 ```
 
-`--fake` runs synthetic contract fixtures: completion does not prove gameplay or
-playability. For live QA, open `InitialGenerationScene` in the sibling game,
-ensure `QaTcpHost` is configured with the generator/validator, and press Play.
-The console should show `QaTcpHost listening on 127.0.0.1:8800`.
+Python listens on `127.0.0.1:8800`. Unity connects and validates Python's readiness message before sending reports. Python sends one UTF-8 JSON line per accepted connection: `{"type":"ready","schema_version":2,"process_id":1234,"session_id":"..."}`. `schema_version` identifies the supported report schema; `process_id` identifies the receiver process. The receiver echoes `QA_RECORDER_SESSION` from its environment as `session_id` (empty for a manual receiver without that variable). Unity then writes one UTF-8 JSON line per ended attempt on that same connection. Python sends no per-report acknowledgement, gameplay command, or QA result. TCP itself still handles transport acknowledgements.
 
-```shell
-python examples/play_generated_level_live.py --episodes 10 --seed 42 --max-steps 1000 --report-path artifacts/qa-rounds.jsonl
+## Platform trials
+
+For Linux containers, add Linux Build Support (Mono) to Unity 6000.3.4f1 and build
+a Linux x86-64 Player. Use CPU inference with `-batchmode -nographics` and set
+`SDL_VIDEODRIVER=dummy` in the image to avoid Unity's native input startup crash
+when no display driver exists. The [sample build](../examples/actor-control/README.md)
+also keeps the inference package's App UI dependency editor-only.
+
+Start the Player in a small scene containing `QaPlatformBootstrap`. Include every target environment in Build Settings, referenced by its full scene path or unique scene name. Missing/ambiguous references and missing/multiple active enabled adapters fail startup. Derive the gameplay scene adapter from `QaPlatformAdapter`, using the state sources and typed reports below plus the [observation/action hooks](../README.md#run-a-platform-trial). Keep one adapter alive throughout the trial and enable the gameplay controller through its **On Ready** event. The game still owns resets and end conditions; the adapter reads `episodes_per_trial` and stops accepting episodes at that limit.
+
+```text
+qa-run-trial -- <Unity executable> [arguments]
+  -> Python reads QA_TRIAL_CONFIG and opens QA_OUTPUT_DIR/episodes.jsonl
+  -> listen on an available loopback port -> start Player with port and session
+  -> bootstrap selects environment.scene -> require exactly one enabled adapter
+  -> adapter validates Python readiness -> loads agent.model on CPU
+  -> zero-input validation inference -> On Ready enables gameplay
+  -> CanStartUnit -> StartUnit -> gameplay -> EndUnit -> JSON report
+  -> Python validates and appends report with trial context
+  -> final EndUnit blocks new starts -> drain queue -> trial_complete
+  -> Python flushes + fsyncs + closes output -> trial_saved
+  -> Unity exits successfully -> Python exits -> container exits
 ```
 
-Use `--episodes 0` for indefinite rounds, `--host`/`--port` for the QA endpoint,
-and `--timeout-seconds` for each network operation. `--max-duration-seconds`
-limits simulated episode time. Ctrl+C closes the connection. Each completed
-round is flushed as a separate JSONL record; infrastructure failure records its
-error and exits with status 1. `--run-id` distinguishes runs and
-`--generator-version` records game/settings revision context.
+The runtime sets `QA_REPORT_PORT` and `QA_RECORDER_SESSION` in its child's environment. `QA_TRIAL_CONFIG` points to JSON containing nonempty `suite_id`/`trial_id`, a positive integer `episodes_per_trial`, and `environment`/`agent` objects with nonempty string `id` fields. The runtime passes the assignment and output paths as absolute paths. `environment.scene` and `agent.model` are also required. The suite prepares each distinct self-contained ONNX path once in an isolated Editor with Inference Engine 2.4.1; it mounts the selected `.sentis` read-only at `/qa/model/agent.sentis` and puts that path in the generated assignment. Local Player runs must supply a prepared `.sentis` path themselves. Other environment/agent settings remain available to developer code.
 
-The baseline `RayHeuristicPolicy` seeks visible exits, then loot, then enemies;
-it selects clear space when no target is visible, attacks/interacts at close
-range and retreats from visible enemies at low health. It has no global map or
-pathfinding, so it may loop or fail to finish a reachable level.
+The concrete adapter declares `ObservationSize` and `ActionSize`, implements `CollectObservation()` and `ApplyAction(float[] actions)`, and holds its actor reference. One static float input `[1, ObservationSize]` and one float output `[1, ActionSize]` are supported. The adapter owns its CPU worker and validates it with a zero-input pass before **On Ready**, without applying actions. The active episode loop runs from base `FixedUpdate` every configurable 0.1 simulated seconds. `StartUnit` resets its timer; `EndUnit` or replacing an episode invalidates pending actions. Shape/type/nonfinite values, model/inference failures, or observation/action hook exceptions fail the trial and dispose inference resources. Completion and disablement also dispose them. No separate policy-driving component is required.
 
-## Rays, health and model inference
+Messages use one UTF-8 JSON object per line on one connection. Platform readiness extends the standalone handshake without changing the report schema:
 
-The existing socket decoder constructs `QAObservation` from `observation.rays`,
-`observation.health_01`, powerup count and previous action. The live example now
-passes each observation into its policy before the next action.
-
-Current Unity sensor geometry is world aligned:
-
-| Ray index (16 rays) | World direction | QA movement |
-| --- | --- | --- |
-| 0 | +Z | `(0, 1)` |
-| 4 | +X | `(1, 0)` |
-| 8 | -Z | `(0, -1)` |
-| 12 | -X | `(-1, 0)` |
-
-For index `i` and `N` rays, direction is `(sin(2*pi*i/N), cos(2*pi*i/N))` in
-`(move_x, move_y)`. Rays do not rotate with the player. The current sensor range
-is 12 world units, so normalized distance 0.1 is approximately 1.2 units. Keep
-this geometry consistent with policy training. The handshake advertises 16 rays;
-every received observation is checked against the negotiated requirement.
-
-The sibling RL trainer uses Stable-Baselines3 PPO/A2C and saves `.zip`
-checkpoints. `StableBaselinesPolicy` can run a gameplay QA checkpoint locally:
-
-```shell
-python -m pip install -e ".[inference,test]"
-python examples/play_generated_level_live.py --episodes 10 --model-path artifacts/qa/final_model.zip --algorithm ppo
+```json
+{"type":"ready","schema_version":2,"platform_protocol_version":1,"process_id":1234,"session_id":"session-token","suite_id":"suite-1","trial_id":"trial-1","episodes_per_trial":3}
 ```
 
-The adapter validates the model spaces, encodes the observation as float32 using
-`flatten_observation`, calls `predict(..., deterministic=True)`, and decodes the
-result with `QAActionCodec`. Observation schema v1 has `7 + 7*N` values (119 at
-16 rays): health, raw powerup count, previous action, then hit/distance/type
-one-hot values for every ordered ray. Outputs must be a five-component floating
-Box in `[-1, 1]`: movement X/Y, attack, interact, ability. The current Unity
-handshake supports no abilities (`max_ability_slot=0`).
+After exactly three reports, Unity sends the completion request. Python checks the IDs, count, and distinct attempt IDs before acknowledging the closed output file:
 
-Dimensions do not prove semantic compatibility. Use a checkpoint trained with
-this exact QA encoding and sensor geometry. The existing game PCG checkpoints
-produce generation controls, not player actions; their dimensions differ and
-the adapter rejects them. No trained gameplay QA checkpoint is included.
-External observation normalization and recurrent models are not supported by
-this feedforward adapter. Importing the core package or using the baseline
-does not require NumPy, Gymnasium, Torch or SB3.
-
-## Train a QA gameplay checkpoint
-
-The sibling `PythonEnv/train.py` constructs its own `UnityGymEnv` for the
-separate RL bridge; it does not select this JSON gameplay environment. A local
-example supplies QA's Gymnasium wrapper to the same PPO/A2C algorithms:
-
-```shell
-python examples/train_unity_qa.py --algorithm ppo --total-timesteps 100000 --output artifacts/qa/final_model.zip
-python examples/play_generated_level_live.py --model-path artifacts/qa/final_model.zip --episodes 10
+```json
+{"type":"trial_complete","suite_id":"suite-1","trial_id":"trial-1","completed_episodes":3}
+{"type":"trial_saved","suite_id":"suite-1","trial_id":"trial-1","saved_episodes":3}
 ```
 
-Start the same Unity scene first. Training repeatedly resets a fixed complete
-recipe through `GymnasiumQAEnvironment(UnityQAEnvironment(...))`, learns a
-feedforward `MlpPolicy`, saves an SB3 checkpoint, and closes its session. A2C is
-also available with `--algorithm a2c`. Pass the matching algorithm at inference.
-`--fake` exercises training plumbing only, and its resulting model is synthetic.
-Each reset in this example uses the same complete dungeon recipe and
-generation seed. Unity returns reward 0 during play and 1 on exit completion;
-death or an episode limit ends the attempt without a completion reward.
-Training against this one recipe and sparse reward is a starting point, not
-evidence that the policy can clear other generated levels. Training duration
-and gameplay quality have not been validated here. Learning remains in the
-example and optional external library, outside the core QA package.
+Each line in `episodes.jsonl` contains the original validated report and its trial context:
 
-After training, run the saved checkpoint against Unity with
-`play_generated_level_live.py --model-path` and record terminal reasons and
-completion counts across held-out generation seeds and recipes. Compare those
-results with the heuristic baseline under the same episode limits. The live
-round command and JSONL reports support inspection, but this repository does
-not include a held-out benchmark or a demonstrated success threshold. Treat a
-saved checkpoint as a training artifact until gameplay completion is measured.
+```json
+{
+  "suite_id": "suite-1",
+  "trial_id": "trial-1",
+  "environment_id": "interaction-room",
+  "agent_id": "baseline",
+  "episode_index": 1,
+  "report": {
+    "schema_version": 2,
+    "unit_id": "interaction-check",
+    "attempt_id": "unique-attempt-id",
+    "evidence": {"activated": true, "checkpoints": ["switch", "door"]}
+  }
+}
+```
 
-## Adaptive round loop
+Python preserves arbitrary finite JSON evidence without game-specific classes or required evidence-schema configuration. It does not run verifiers; use `evaluate_unit()` separately with developer-supplied predicates. An existing output file is rejected, and invalid/duplicate/excess reports fail the trial while preserving records already written.
 
-`iter_adaptive_rounds` runs each bounded `evaluate_episode` to completion, death,
-step limit or duration limit before constructing the next `LevelSpec`:
+`StartUnit()` requires `CanStartUnit`; overlapping starts, starts during the end hook, and starts after the limit throw. Repeated or reentrant `EndUnit()` calls do nothing. `CompletedEpisodes` counts queued reports; the final acknowledgement confirms saved records. Call `EndUnit()` before resetting sources, and keep the adapter enabled until it quits the Player. Disablement, hook errors, or delivery failure fail the platform trial. If overriding `Start`, `FixedUpdate`, `OnDisable`, or `OnApplicationQuit`, call the base implementation. Do not use `QaRecorderLauncher` on this path.
+
+Startup and final report-draining/acknowledgement each have a 30-second deadline. Python also requires the completion request within 30 seconds of the final report. After acknowledgement, Unity has five seconds to exit with code zero. Failure or cancellation stops the child, waits two seconds, then kills/reaps it if necessary. Python returns `0` for confirmed storage plus a successful Player exit, `1` for trial failure, `2` for CLI misuse, or `130` for cancellation. No gameplay duration timeout is imposed.
+
+## Automatic recorder startup (standalone)
+
+Use the package's **QA Framework > QA Recorder Launcher** component to start a Python script or `-m module` on scene startup. Configure the executable, arguments, working directory, and optional source directory for `PYTHONPATH`. Python and the consumer must already be available on the machine; the component installs nothing.
+
+Assign the launcher's **Adapter**, or place it on the same GameObject as your unit adapter. The adapter supplies the host/port and owns the shared readiness/report connection. Keep your gameplay controller disabled in the saved scene. Wire **On Ready** to enable it and **On Stopped** to disable it. Run the ordinary Python receive loop: `receive()` accepts Unity's connection and sends readiness automatically before waiting for a report. No special print or game-owned handshake implementation is required. The launcher sets a fresh session value in its child's environment, retries refused connections while Python starts, and checks the receiver's schema and echoed session before releasing gameplay. This also supports interpreters that launch a child process, such as Windows virtual environments. Startup failures and the configurable real-time timeout do not release gameplay. An unexpected recorder exit invokes **On Stopped**.
+
+The launcher mirrors stdout/stderr into the Unity Console and closes the report connection and stops its own child process on disable, scene unload, or stopping Play. `{timestamp}` in arguments expands to a fresh UTC session timestamp, suitable for output filenames. Relative paths resolve from the configured working directory; that directory is relative to the project root in the Editor or the executable directory in desktop builds. Builds require you to supply Python and the scripts/package at those configured paths. Stdout is used for logs; readiness is a TCP message.
+
+See [the package README](../README.md#start-the-recorder-from-unity) for example Inspector values. The unit adapter and evaluation contracts below are unchanged; manual receiver startup also remains supported.
+
+## Unity integration
+
+Install `Unity/package.json` through Unity Package Manager's **Install package from disk** command. The package assembly is `Kcccr.QaFramework.Runtime`, and its namespace is `Kcccr.QaFramework`. It pins Unity Inference Engine 2.4.1 for the platform CPU policy path. The standalone unit/launcher behavior is unchanged. If your consumer uses an assembly definition, reference `Kcccr.QaFramework.Runtime` from it.
+
+The state-source contract is:
+
+```csharp
+public interface IQaStateSource<TState>
+{
+    TState GetState();
+}
+```
+
+Add your concrete adapter to the scene controller explicitly. Implement the state-source interface on your actor wrapper components. Return a plain snapshot; the framework never finds or polls sources itself. For example, this adapter expects a developer-provided component on the same GameObject implementing `IQaStateSource<InteractionEvidence>`:
+
+```csharp
+using System;
+using Kcccr.QaFramework;
+
+[Serializable]
+public struct InteractionEvidence
+{
+    public int interaction_count;
+    public bool activated;
+    public string[] checkpoints;
+}
+
+[Serializable]
+public sealed class InteractionReport : QaUnitReport
+{
+    public InteractionEvidence evidence;
+}
+
+public sealed class InteractionQaAdapter : QaUnitAdapter
+{
+    private IQaStateSource<InteractionEvidence> source;
+
+    protected override void OnUnitStart()
+    {
+        source = GetComponent<IQaStateSource<InteractionEvidence>>();
+        // Initialize any developer-owned tracking for this attempt here.
+    }
+
+    protected override QaUnitReport OnUnitEnd()
+    {
+        return new InteractionReport { evidence = source.GetState() };
+    }
+}
+```
+
+For multiple actors, obtain their components in `OnUnitStart()` and combine their final snapshots into your typed evidence in `OnUnitEnd()`. Snapshotting and aggregation happen only when developer code calls `EndUnit()`.
+
+Call `adapter.StartUnit("interaction-check")` when your unit begins, then `adapter.EndUnit()` at the developer-chosen end. `StartUnit` validates a nonempty ID, generates a fresh attempt ID, and calls `OnUnitStart`. Starting while an attempt is active throws `InvalidOperationException`. Every attempt, including retries of the same unit, has a different attempt ID.
+
+`EndUnit` marks the attempt ended before calling `OnUnitEnd`, fills the returned report's identity, and calls protected `SendReport(QaUnitReport report)` automatically. Return the report from your hook; do not also send it there. Repeated or reentrant end calls cannot send the same attempt again. Ending without an active attempt is a no-op. The hook must return a non-null report; a throwing hook or serialization error leaves that attempt ended and propagates to the caller.
+
+Disabling/re-enabling the component changes transport availability, closes its connection, and preserves attempt state. It does not call either unit hook or clear duplicate protection. Call `EndUnit` while the adapter is enabled, before disabling/destroying it or refreshing the unit, and allow asynchronous delivery to finish before shutdown. Pending sends may be discarded when disabled. If you override `OnEnable` or `OnDisable`, call the base implementation.
+
+`QaUnitReport` owns the identity fields. The concrete subclass owns a public typed `evidence` field. The adapter passes the concrete object to `JsonUtility.ToJson`, retaining subclass fields. Use serializable classes/structs and supported fields; dictionaries require other handling and are not supported by `JsonUtility`. See [Unity JSON serialization](https://docs.unity3d.com/6000.3/Documentation/Manual/json-serialization.html).
+
+## Unit record
+
+```json
+{
+  "schema_version": 2,
+  "unit_id": "interaction-check",
+  "attempt_id": "9ee6e4270b594cfb93df020861fe95b3",
+  "evidence": {
+    "interaction_count": 3,
+    "activated": true,
+    "checkpoints": ["switch", "door"]
+  }
+}
+```
+
+The example is formatted for reading; the TCP record occupies one line. `unit_id` identifies the developer's unit; `attempt_id` identifies this execution of it. Both must be nonempty strings. Evidence must be a finite JSON object, including nested objects, arrays, booleans, strings, numbers, and nulls. No dungeon fields are required. Python rejects malformed or unsupported records; it does not convert validation errors into QA failures. Version 1 episode envelopes are no longer accepted, and there is no compatibility layer.
+
+## QA results
 
 ```python
-from qa_framework import EpisodeConfig, LevelSpec, UnityQAEnvironment
-from qa_framework.orchestration import iter_adaptive_rounds
-from qa_framework.policies import RayHeuristicPolicy
+from qa_framework import evaluate_unit
 
-baseline = LevelSpec("qa-level", 42, {
-    "RoomCount": 10, "AreaWidth": 100, "AreaHeight": 100,
-    "MinRoomWidth": 5, "MaxRoomWidth": 10,
-    "MinRoomHeight": 5, "MaxRoomHeight": 10,
+result = evaluate_unit(report, {
+    "target_activated": lambda unit: unit.evidence["activated"],
+    "within_interaction_budget": lambda unit: unit.evidence["interaction_count"] <= 3,
 })
-env = UnityQAEnvironment()
-try:
-    for report in iter_adaptive_rounds(
-        env, RayHeuristicPolicy(), baseline, rounds=10,
-        config=EpisodeConfig(max_steps=1000), policy_id="ray-heuristic-v1",
-    ):
-        print(report.state_after, report.next_level)
-finally:
-    env.close()
+print(result.to_dict())
 ```
 
-Pass `rounds=None` to stream indefinitely. An optional policy `reset_episode()`
-hook runs before each evaluation. A round report records the evaluation,
-before/after `AdaptiveState`, `skill_signal`, next recipe, original baseline and
-adaptation settings. `to_dict`/`from_dict` preserve and validate these decisions.
-To resume, pass the original baseline, report's `adaptation` and `state_after`,
-and the same original QA seed/run ID. The next recipe can also be inspected or
-evaluated separately.
+The result contains the original `report`, a boolean per named requirement, and `passed`, which is `all(requirements.values())`. Requirements are mandatory and nonempty; names must be nonempty strings and predicates must return booleans. Predicate errors propagate to the caller. The framework has no default completion check or special failure override. If a game's failure reason should fail QA, supply a predicate for it. Consumers decide how results affect generation or learning.
 
-The controller is an explicit heuristic:
+## Connection behavior
 
-1. Successful completion scores `1 - 0.5 * budget_fraction`, where the fraction
-   is the larger used proportion of step and optional duration budgets.
-2. Capped damage and stuck-event penalties are subtracted, then the score is
-   clamped to `[0, 1]`. Defaults subtract up to 0.25 each, using damage scale 10
-   raw health units and stuck scale 5 events. Damage is not `health_01`.
-3. Death and budget truncation score zero. An exponential average with default
-   update rate 0.25 updates the skill estimate. Difficulty moves toward that
-   estimate by at most 0.1 per round and remains in `[0, 1]`.
-4. Room count and area dimensions interpolate around the original recipe within
-   `AdaptiveDifficultyConfig` bounds. Default bounds are 6..14 rooms and 80..120
-   per area axis, with the default recipe at difficulty 0.5. Room dimensions
-   remain fixed. Seeds advance independently of the feedback decision.
+The launcher calls `QaUnitAdapter.ConnectAsync()` before enabling gameplay. Manual consumers can also await this method, or let the first report connect automatically. Each new connection must complete the readiness handshake before reports are written. Unity serializes on the main thread, then sends asynchronously in order. If delivery fails, Unity logs `QA report delivery failed: ...` and closes that connection; the failed report is not retried. A later report can reconnect and consume a new readiness message. Python accepts another connection after a clean disconnect. There is no persistent report queue or per-report application acknowledgement. Connection startup never invokes unit hooks or reads actor snapshots.
 
-Choose bounds compatible with the game's generation settings; the baseline must
-include all seven geometry fields and lie inside those bounds. Larger geometry
-is assumed to increase navigation demand. This is neither a trained PCG policy
-nor a validated human-skill measurement, and generated geometry may still fail
-validation. The currently unsupported `EnemyDensity`, `ContentDensity` and
-`AdjacentRoomConnections` fields are never added.
+## Local verification
 
-Infrastructure failure provides no skill signal, holds calibration and stops
-after yielding its report because the evaluator closes that session. Policy
-exceptions and malformed adapter output propagate instead of becoming level
-difficulty evidence. Reward alone never establishes success.
+Run `python -m pytest` and `python examples/evaluate_unit.py`. For Unity verification, use a temporary consumer project with this local package and developer-owned state components; no persistent test application is needed.
 
-## Current wire contract and metrics
+1. Start the Python receiver. Call `StartUnit`, change source state over several frames, and confirm no reports or snapshot reads happen before `EndUnit`. End the unit and confirm the latest snapshots arrive as typed evidence, including an example with no dungeon fields.
+2. Call `EndUnit` repeatedly and reentrantly from the hook; expect one report. Disable/re-enable between end calls; expect no duplicate. Disable/re-enable during an active attempt; expect no lifecycle hooks or loss of that attempt. Starting another active attempt must fail.
+3. Run two attempts with the same unit ID; confirm different attempt IDs. Send several reports in order on one connection, then reconnect. Confirm explicit predicates produce both passing and failing results, and Python sends exactly one readiness message per connection with no per-report acknowledgement.
+4. Send a JSON record in fragmented TCP writes and multiple records in one write; `receive()` must still return one validated report at a time. Reject version 1, empty identities, and nonfinite evidence.
 
-Unity hosts the listener; Python connects without launching Unity. Unity first
-sends a `UnityQACapabilities` JSON object declaring gameplay role, schema/action
-encoding version 1, 16 rays, 119 observation values, five action values, no
-abilities, and support for recipes, level acknowledgement, explicit terminal
-reasons, metrics and separate termination flags. Incompatible hosts are rejected.
+## Worked example
 
-Every subsequent request is one JSON line answered by one JSON line:
-
-| Command | Request | Reply |
-| --- | --- | --- |
-| `reset` | Seed, episode limits, level identity and concrete generation parameters | `ok`, serialized observation, info |
-| `step` | `action` with `move_x`, `move_y`, `attack`, `interact`, `ability` | `ok`, observation, reward, terminated, truncated, info |
-| `close` | Command only | Acknowledgement; the client closes without awaiting it |
-
-Optional reset fields use explicit boolean flags for Unity's `JsonUtility`:
-`seed_provided`, `max_duration_provided`, `level_provided` and
-`generator_version_provided`. `generation_parameters` includes the seven
-geometry fields plus `Seed`. `LevelSpec.pcg_parameters()` supplies a matching
-seed without mutating the original recipe. The game generates and validates
-the requested recipe before acknowledging reset.
-
-Info includes `schema_version`, `step`, `episode_id`, `level_acknowledged`,
-`level_id`, `generation_seed`, `has_episode_result` and `episode_result`.
-False acknowledgement/result flags remove their placeholder fields when
-decoded. Ending results use the existing `EpisodeResult`/`EpisodeMetrics`
-serialization. Completion/death terminate; step/time limits truncate. Errors
-are `{"ok": false, "error": "..."}` and become `QAEnvironmentError`.
-
-The current host only sends event metrics in the ending result. Intermediate
-`last_metrics` snapshots use the confirmed `info.step` and the controller's
-fixed 0.1 simulated seconds per step; event fields remain unobserved zero
-defaults. `info["metrics_source"]` distinguishes `step_bookkeeping` from
-`unity_episode_result`. Set the adapter's `step_duration_seconds` if the
-controller changes; this value is not negotiated. Final event measurements
-come from Unity, and float32 elapsed-time rounding is reconciled to the matching
-step clock (`reported_elapsed_seconds` retains the original). Movement
-acknowledgements allow float32 rounding before restoring the sent action in
-`previous_action`. Boolean flags, ability slots and step counters remain strict.
-
-Socket reads/writes have timeouts. Bad frames retire the session. Evaluation
-checks level acknowledgement, action consistency, step counts, limits and
-explicit final evidence. A lost connection preserves the last confirmed
-progress; unreported combat metrics cannot be recovered from health alone.
-
-## Known game-side limitations
-
-These remain outside the QA repository:
-
-- `QaTcpHost.HandleStep` checks `remotePlayer.EpisodeActive` before examining
-  final metrics. Physics callbacks can mark death/exit between requests, causing
-  `No active remote episode` instead of a terminal result. QA records an
-  environment failure and stops. Correcting the host requires a separate
-  authorized game change; QA cannot reconstruct an unreported outcome.
-- With a supplied recipe, the game uses `generation_seed` and overrides the QA
-  reset seed. Reports retain both, but the current game does not implement
-  independent QA randomness.
-- `generator_version` is recorded by QA but not enforced by the current host.
-  A recipe alone does not snapshot prefabs, settings or geometry.
-- Elapsed metrics use simulation steps; enemy contact damage uses real frame
-  time. Execution speed can therefore affect gameplay. Generation validation
-  does not establish reachability or playability.
-
-Source references: [QA host](../../kawaii-power-little-adventure/Assets/PCGDungeon/Scripts/QA/Transport/QaTcpHost.cs),
-[wire records](../../kawaii-power-little-adventure/Assets/PCGDungeon/Scripts/QA/Transport/QaWireMessages.cs),
-[player sensors/controller](../../kawaii-power-little-adventure/Assets/PCGDungeon/Scripts/QA/QaPlayerController.cs),
-[PCG fields](../../kawaii-power-little-adventure/Assets/PCGDungeon/Scripts/Generation/PcgGenerationParameters.cs),
-[shared trainer](../../unity-reinforcement-learning/PythonEnv/train.py).
-
-## Verification scope
-
-Tests cover schema/serialization, synthetic evaluations, a real local TCP test
-host mirroring the JSON protocol, float32 acknowledgement/duration boundaries,
-policy inference contracts, adaptive feedback/bounds, failure handling and report
-resumption. Optional training/inference paths use API-compatible test doubles
-when SB3 is unavailable. No test here launches Unity, trains a useful gameplay
-policy, or proves live dungeon completion.
+The sibling game's [QA integration](../../kawaii-power-little-adventure/QA/README.md) applies these contracts to dungeon attempts. Use its adapter, evidence, recorder, and lifecycle wiring as an example; choose your own unit boundaries and predicates for another game. Player control and training remain outside the QA receiver/evaluator.

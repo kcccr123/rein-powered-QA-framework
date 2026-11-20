@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Bootstrap.unity
+    guid: efc5b3994c2f8b14c88a46b6fce57729
+  - enabled: 1
+    path: Assets/Scenes/ShortLane.unity
+    guid: 80863bea30d914d43aaa648f91540c73
+  - enabled: 1
+    path: Assets/Scenes/LongLane.unity
+    guid: b0c25558152fdf840a322093f74ca5ef
+  m_configObjects:
+    com.unity.dt.app-ui: {fileID: 11400000, guid: 7dfc49230041721429f6f384e57a6642, type: 2}
+  m_UseUCBPForAssetBundles: 0

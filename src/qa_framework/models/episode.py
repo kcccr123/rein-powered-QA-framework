@@ -1,4 +1,4 @@
-"""Caller-supplied limits and context for one QA episode."""
+"""Deprecated episode settings retained for reference; the game owns unit lifecycle."""
 
 from __future__ import annotations
 
@@ -12,6 +12,7 @@ from qa_framework.schema.json_data import copy_json_object
 from qa_framework.schema.validation import validate_finite_number, validate_integer
 
 
+# Deprecated: unit lifecycle and limits belong to developer integration.
 @dataclass(frozen=True, slots=True)
 class EpisodeConfig:
     """Generic episode limits; metadata is a shallow, read-only snapshot.
