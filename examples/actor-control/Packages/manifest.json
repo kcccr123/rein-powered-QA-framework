@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "com.kcccr.qa-framework": "file:../../../Unity",
-    "com.kcccr.unity-reinforcement-learning": "https://github.com/kcccr123/unity-reinforcement-learning.git#b8ff299e91009311459c7b83f25f0f036d5df740",
+    "com.kcccr.unity-reinforcement-learning": "https://github.com/kcccr123/unity-reinforcement-learning.git#25e7611be4e08a85f7bdf450e7b98c2dc89be3d8",
     "com.unity.ai.inference": "2.4.1",
     "com.unity.modules.physics": "1.0.0"
   }

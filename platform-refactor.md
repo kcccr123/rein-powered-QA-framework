@@ -4,17 +4,18 @@
 
 A modular Unity training and QA platform. Developers define training environments, rewards, tests and success rules; a DAG connects curriculum stages and experimental branches to evaluation suites.
 
-The platform runs containerized CPU PPO training through the existing Unity reinforcement learning library, resumes full checkpoints, exports ONNX policies, converts them for Unity inference, and runs bounded parallel trials. It saves lineage, execution status and evidence. Grading, result aggregation and the final comparison report remain planned.
+The platform runs containerized CPU PPO training through the existing Unity reinforcement learning library, resumes full checkpoints, exports ONNX policies, converts them for Unity inference, and runs bounded parallel trials. A finalizer can collect the saved training and trial data and run developer-defined analysis in Docker.
 
 See [the DAG guide](docs/training-dag.md) for configuration and runtime contracts and [the actor sample](examples/actor-control/README.md) for runnable images.
 
 ## Configuration and execution
 
-- Each YAML node has an ID, image and type: training or test suite.
+- Each YAML node has an ID, image and type (`train`, `suite` or `finalizer`).
 - Training inputs are checkpoint paths or another training node's checkpoint output. Branches load separate copies of the same parent state and apply their own scene parameters.
 - Suite agents use host ONNX files or training-node ONNX outputs. A suite runs its environment/agent matrix using the existing trial runtime.
 - Artifact references define dependencies. Fixed-budget training completes before dependent work starts; there are no metric gates or model merges.
 - All containers share one limit and one Compose project. Suite nodes expand lazily into trials and consume no extra orchestration container.
+- A finalizer runs after training and trials finish. It collects selected node outputs before launching its script container.
 - Training produces a checkpoint, ONNX, resolved trainer settings and a manifest. Parent inputs are mounted read-only; outputs are isolated per node.
 - ONNX conversion runs on the host when evaluation needs an available artifact, once per resolved source path per run. Runtime inference remains CPU-only with Inference Engine 2.4.1.
 - Failure blocks dependent work while independent branches continue. Individual failed trials do not stop their suite's remaining trials. Cancellation and infrastructure failure stop scheduling and preserve partial files during cleanup.
@@ -31,9 +32,9 @@ Starting checkpoint (or fresh policy)
               |
       Saved episode evidence
               |
-      Planned suite aggregation
+      Finalizer collects data
               |
-      Planned combined report
+      Developer analysis report
 ```
 
 ### Run manager
@@ -59,12 +60,13 @@ Check Docker + create the shared ready queue
 |   -> successful parents: make node ready            |   |
 |   -> failed parents: block dependent node           |   |
 |   -> suite ready: prepare available ONNX models     |   |
+|   -> finalizer ready: collect selected results       |   |
 |                                                     |   |
 | Fill free slots up to max_concurrent_containers     |   |
-|   -> next ready training job or suite trial         |   |
+|   -> next training, trial, or finalizer job          |   |
 |   -> save assignment -> launch container            |   |
 |                                                     |   |
-| Active training and trials run in parallel          |   |
+| Active containers run in parallel                  |   |
 |   -> wait 1 second -> inspect active containers     |   |
 |   -> finished: save logs -> remove -> free slots    |   |
 |   -> validate outputs -> update node status         |   |
@@ -86,7 +88,7 @@ Evaluation keeps QaPlatformBootstrap and QaPlatformAdapter: select a scene, load
 
 Each invocation saves a run manifest and status log, per-node configuration/dependency manifests, per-job assignments and logs, and the existing episode JSONL files. Training artifacts retain parent references. A final run manifest includes succeeded, failed, blocked and cancelled nodes; it is an execution index, not a graded report.
 
-The future aggregator will read suite trial files, grade each episode once, aggregate per trial/environment/agent/suite, and combine comparable suites into a final report after the DAG finishes. It must retain missing-episode and execution-failure information separately from failed QA requirements. Its execution location remains undecided.
+Each finalizer saves its selected training metadata, training snapshots, and raw trial episodes under `dataset/`. After collection, developer-defined scripts run in the finalizer image and write their metrics and checks to `output/report.json`. Incomplete inputs stay available with their missing-episode counts and execution errors, and the scripts are skipped. See the [finalizer contract](docs/training-dag.md#finalizer-nodes).
 
 Developers can define metrics around anything they can observe and clearly judge in the game. Some describe each episode; others summarize many episodes.
 
@@ -153,7 +155,7 @@ Each stage runs inside one Docker container containing the Python trainer and it
        Continue curriculum   Run trials + save evidence
                                 |
                                 v
-                    Planned aggregation + final report
+                    Finalizer dataset + analysis report
 ```
 
 ### Existing framework components
@@ -274,7 +276,7 @@ Startup allows 30 seconds. The trainer's socket timeout defaults to 300 seconds.
 - `artifacts.json`: completion manifest with node/run identity, parent reference, environment parameters, trainer settings, and published output paths.
 - Training checkpoints, Unity/container logs, and node/job manifests remain available for inspection.
 
-The current integration supports CPU PPO `MlpPolicy`, flat observations, and continuous actions in `[-1, 1]`. Resumed stages inherit saved optimizer/rollout settings; explicit conflicting settings are rejected, while the supported entropy override can change `ent_coef`. A test suite evaluates the exported models on its environment/agent matrix. Grading, aggregation, and the combined comparison report remain planned. See [the DAG guide](docs/training-dag.md) for the configuration and image contracts.
+The current integration supports CPU PPO `MlpPolicy`, flat observations, and continuous actions in `[-1, 1]`. Resumed stages inherit saved optimizer/rollout settings; explicit conflicting settings are rejected, while the supported entropy override can change `ent_coef`. A test suite evaluates the exported models on its environment/agent matrix. Select training nodes and suites in a finalizer to analyze them after execution. See [the DAG guide](docs/training-dag.md) for the configuration and image contracts.
 
 ## Trials
 
@@ -319,11 +321,48 @@ Each trial runs its X episodes inside one Docker container containing the Python
              Store results and traces
                        |
                        v
-             Planned verifier execution + aggregation
+             Collect selected results in finalizer dataset
                        |
                        v
-             Planned reports and comparisons
+             Run developer scripts and save their report
 ```
+
+#### Worked example: Test whether an agent moves right
+
+1. **Define the rule.** The actor starts at position zero and the episode ends after ten decisions. An episode passes if the actor's final position is greater than zero.
+2. **Record the evidence in Unity.** Attach a concrete `QaPlatformAdapter` to the test scene. The [sample adapter](examples/actor-control/Assets/Scripts/SampleAdapter.cs) resets the actor at `StartUnit()`, maps observations and actions, and reports the final `position` when `EndUnit()` runs. Build the Linux Player with a `QaPlatformBootstrap` scene first, and package it with `qa-run-trial` as the entrypoint. Follow the [sample build instructions](examples/actor-control/README.md#build-the-players) for the Player and trial image.
+3. **Choose what runs.** The [sample YAML](examples/actor-control/suite.yaml) selects the trial image, two Unity scenes, two ONNX models, and three episodes per agent and environment pair. Set `model_preparation.unity_editor` to your Editor path and run `qa-run-suite examples/actor-control/suite.yaml` from the framework root. The four trials each save one `output/episodes.jsonl` file with three episode records.
+4. **Grade the saved evidence.** A [finalizer node](docs/training-dag.md#finalizer-nodes) can run your checks inside an analysis image. This evaluation-only example also supports manual grading. Once the suite manifest shows `succeeded`, save the following as `grade_trials.py` and run `python grade_trials.py <suite-directory>`, using `examples/actor-control/runs/<run-id>/nodes/comparison` as the suite directory.
+
+```python
+import json
+import sys
+from collections import Counter
+from pathlib import Path
+
+from qa_framework import UnitReport, evaluate_unit
+
+
+checks = {"moved_right": lambda report: report.evidence["position"] > 0}
+suite_dir = Path(sys.argv[1])
+totals = Counter()
+passes = Counter()
+
+for path in sorted(suite_dir.glob("trials/*/output/episodes.jsonl")):
+    with path.open(encoding="utf-8") as episodes:
+        for line in episodes:
+            episode = json.loads(line)
+            pair = (episode["agent_id"], episode["environment_id"])
+            report = UnitReport.from_dict(episode["report"])
+            totals[pair] += 1
+            passes[pair] += int(evaluate_unit(report, checks).passed)
+
+for agent, environment in sorted(totals):
+    pair = (agent, environment)
+    print(f"{agent} / {environment}: {passes[pair]}/{totals[pair]} passed")
+```
+
+The `right` policy should pass 3/3 episodes in each scene, and the `left` policy should pass 0/3 in each scene. For your own game, keep the workflow and supply your scene, compatible model, evidence fields, and checks.
 
 ### Existing framework components
 
@@ -421,11 +460,8 @@ GPU inference, general multi-input/recurrent policies, dungeon migration, and re
 
 ## TODO
 
-Training DAG execution, checkpoint branching, trial storage, and cleanup are implemented. Remaining work:
+Training DAG execution, checkpoint branching, trial storage, finalizer analysis, and cleanup are implemented. Remaining work:
 
-- [ ] Connect the existing `evaluate_unit()` to saved episode records for suite-level QA evaluation.
-- [ ] Aggregate graded results per trial, environment, agent, and suite, including expected versus received episode counts.
-- [ ] Report agent comparisons on the same environments, keeping execution failures separate from failed QA requirements.
 - [ ] Build a reusable production runtime base image containing Python, the QA runtime, and Linux dependencies.
 - [ ] Package each actual game's Unity build as a project image using the runtime base image.
 - [ ] Migrate the dungeon game's observations, actions, evidence, and episode boundaries into `QaPlatformAdapter`.

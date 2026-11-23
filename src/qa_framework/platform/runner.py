@@ -17,11 +17,8 @@ from uuid import uuid4
 import zipfile
 
 from qa_framework.platform.config import DAGConfig, NodeConfig
+from qa_framework.platform.finalizer import collect_dataset, read_object, skip_analysis, write_json
 from qa_framework.platform.preparation import PreparationError, conversion_project, prepare_models, validate_onnx
-
-
-def write_json(path: Path, value: object) -> None:
-    path.write_text(json.dumps(value, indent=2, allow_nan=False) + "\n", encoding="utf-8")
 
 
 class DockerError(RuntimeError):
@@ -206,10 +203,52 @@ class RunManager:
                     }, {"/qa/model/agent.sentis": models[agent["id"]]},
                 )
 
+    def activate_finalizer(self, state: NodeState) -> None:
+        if any(node.config.type != "finalizer" and node.status in ("pending", "running")
+               for node in self.nodes.values()):
+            return
+        self.set_status(state, "running")
+        try:
+            settings = state.config.settings
+            groups = {kind: [self.nodes[node_id].directory for node_id in settings[kind]["nodes"]]
+                      for kind in ("training", "testing") if kind in settings}
+            scripts = {kind: settings[kind]["scripts"] for kind in groups}
+            dataset = state.directory / "dataset"
+            output = state.directory / "output"
+            report = output / "report.json"
+            index = collect_dataset(dataset, groups)
+            state.outputs = {path.stem: path for path in sorted(dataset.iterdir())}
+            if not index["complete"]:
+                reason = "selected results are incomplete; see dataset/index.json"
+                skip_analysis(output, scripts, reason)
+                state.outputs["report"] = report
+                blocked = any(self.nodes[node_id].status != "succeeded" for node_id in state.config.dependencies)
+                self.set_status(state, "blocked" if blocked else "failed", reason)
+                return
+            if not any(scripts.values()):
+                output.mkdir()
+                write_json(report, {"status": "succeeded", "inputs_complete": True, "scripts": []})
+                state.outputs["report"] = report
+                self.set_status(state, "succeeded")
+                return
+            mounts = {"/qa/dataset": dataset}
+            for node_id in sorted(state.config.dependencies):
+                mounts[f"/qa/upstream/{node_id}"] = self.nodes[node_id].directory
+            assignment = {"run_id": self.run_id, "node_id": state.config.id, "scripts": scripts}
+            job = Job(f"{self.run_id}-{state.config.id}", state.config.id, "finalizer",
+                      state.directory, state.config.image, assignment, mounts)
+            state.jobs = iter((job,))
+            self.ready.append(state.config.id)
+        except (OSError, KeyError, TypeError, ValueError) as error:
+            self.set_status(state, "failed", str(error))
+
     def activate_nodes(self) -> None:
         # YAML order breaks ties; a deque gives each ready node one slot per turn.
         for state in self.nodes.values():
             if state.status != "pending":
+                continue
+            if state.config.type == "finalizer":
+                self.activate_finalizer(state)
                 continue
             parents = [self.nodes[key] for key in state.config.dependencies]
             if any(parent.status in ("failed", "blocked", "cancelled") for parent in parents):
@@ -268,6 +307,16 @@ class RunManager:
                 state.outputs = {"checkpoint": checkpoint, "onnx": output / "model.onnx"}
             except (OSError, ValueError, PreparationError) as failure:
                 error = str(failure)
+        if job.kind == "finalizer":
+            report = job.directory / "output" / "report.json"
+            try:
+                outcome = read_object(report)
+                state.outputs["report"] = report
+                if error is None and outcome.get("status") != "succeeded":
+                    error = "finalizer did not report successful script execution"
+            except (OSError, TypeError, ValueError) as failure:
+                if error is None:
+                    error = f"missing or invalid finalizer report: {failure}"
         if error is not None:
             state.failed += 1
         record = {**job.context(), "exit_code": exit_code, "error": error,
@@ -346,6 +395,9 @@ class RunManager:
             if state.config.type == "suite":
                 settings = state.config.settings
                 state.total = len(settings["environments"]) * len(settings["agents"])
+            elif state.config.type == "finalizer":
+                state.total = int(any(state.config.settings.get(group, {}).get("scripts")
+                                      for group in ("training", "testing")))
             self.save_node(state)
         print(f"Run {self.run_id}: {self.directory}", flush=True)
         self.record("run_started", max_concurrent_containers=self.config.max_concurrent_containers)

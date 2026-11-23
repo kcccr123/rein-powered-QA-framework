@@ -1,0 +1,8 @@
+# Build with the framework root as context.
+FROM python:3.11-slim-bookworm
+WORKDIR /framework
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir .
+COPY examples/actor-control/analysis /analysis
+ENTRYPOINT ["qa-run-finalizer"]
