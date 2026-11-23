@@ -1,10 +1,10 @@
-# Training and evaluation DAGs
+# Training, evaluation, and finalizer DAGs
 
 Run `qa-run-suite workflow.yaml` with `qa-framework[platform]` installed on the Docker host. The name of the command is unchanged; its YAML format is now a DAG. See [the complete template](../suite.example.yaml) and [runnable sample](../examples/actor-control/training.yaml).
 
 ## Configuration
 
-Top-level fields are `nodes`, `max_concurrent_containers`, `output_dir`, and `model_preparation`. Each node has a unique `id` (lowercase letter followed by letters, digits, hyphens or underscores; up to 63 characters), `type: train | suite`, and `image`. The image's entrypoint determines its runtime. There is no separate `depends_on`: artifact references define dependencies.
+Top-level fields are `nodes`, `max_concurrent_containers`, `output_dir`, and `model_preparation`. Each node has a unique `id` (lowercase letter followed by letters, digits, hyphens or underscores; up to 63 characters), `type: train | suite | finalizer`, and `image`. The image's entrypoint determines its runtime. Model references and finalizer source lists define dependencies.
 
 Training nodes contain:
 
@@ -48,7 +48,7 @@ Build the training Player with a first scene containing `QaTrainingBootstrap`. E
 
 The bootstrap writes an atomic readiness file containing the port and session identity. Python waits up to 30 seconds without opening a probe connection, then calls the library's existing `train(config_path)` and `export_onnx(checkpoint, output)`. Training and export failures stop and reap the Player and produce no successful artifact manifest.
 
-Training publishes `checkpoint.zip` and `model.onnx`, then `artifacts.json` after export validation and Player cleanup. The ZIP preserves optimizer/training state; ONNX contains deterministic clipped actions for evaluation. This integration uses PPO MlpPolicy with flat observations and continuous actions in [-1, 1].
+Training publishes `checkpoint.zip` and `model.onnx`, then `artifacts.json` after export validation and Player cleanup. A trainer with `metrics_dir` support also saves `progress.json` alongside the usual console output. Each line contains one Stable-Baselines3 logging snapshot with keys such as `time/total_timesteps` and `rollout/ep_rew_mean`. The ZIP preserves optimizer/training state. ONNX contains deterministic clipped actions for evaluation. This integration uses PPO MlpPolicy with flat observations and continuous actions in [-1, 1].
 
 The core QA Unity assembly does not depend on the RL assembly: the concrete training adapter supplies that integration. Trial-only consumers still need only the QA package. The actor sample includes both packages and pins Inference Engine 2.4.1 directly to align training exports with the trial converter/runtime.
 
@@ -62,7 +62,31 @@ A suite converts each required ONNX file when it becomes available, using the co
 
 Trial images keep `qa-run-trial`, `QA_TRIAL_CONFIG`, `QA_OUTPUT_DIR`, the read-only `/qa/model/agent.sentis` mount, and their existing saved-output handshake. Other environment/agent fields remain JSON pass-through for developer code.
 
-## Saved output and planned reporting
+## Finalizer nodes
+
+Use `training` to select `train` nodes and `testing` to select `suite` nodes. Supply either group or both. Leave `scripts` out to collect the selected data for later use. The finalizer waits for all training and suite nodes to finish, then collects only its selected sources.
+
+```yaml
+- id: review
+  type: finalizer
+  image: my-qa-analysis:local
+  training:
+    nodes: [baseline, variant]
+    scripts: [/analysis/compare_rewards.py]
+  testing:
+    nodes: [comparison]
+    scripts: [/analysis/count_stuck_episodes.py]
+```
+
+Build the image with `qa-framework`, your Python dependencies and scripts, and `qa-run-finalizer` as the entrypoint. Script paths are absolute inside that image. The host writes the dataset first and mounts it read-only at `/qa/dataset`. Raw selected node directories are available read-only at `/qa/upstream/<node-id>`.
+
+Each script defines `analyze(context)`. `context.records()` iterates training-node records for a training script or raw episode records for a testing script. `context.training_metrics()` iterates training snapshots, each with a `node_id` and `metrics` object. `context.index` contains the source statuses and episode counts, and `context.output_dir` is a writable directory for that script's files. `context.upstream_dir` points to the original inputs. In training datasets from older images, `metrics_available` is false and those nodes have no snapshot rows. Undefined numeric metrics are represented as `null`.
+
+Return a Python dictionary with optional `metrics` and `checks` objects. Metrics may contain any finite JSON data. Each check value must be a boolean. Testing scripts must know what the Unity adapter exports in `report.evidence` and how it samples those fields. For example, the [stuck-episode script](../examples/actor-control/analysis/count_stuck_episodes.py) uses a position sequence recorded at decision time. The [reward script](../examples/actor-control/analysis/compare_rewards.py) reads Stable-Baselines3 metric snapshots.
+
+The finalizer saves available data and skips its scripts if any selected result is incomplete. The dataset index distinguishes job failures and missing episodes. A script error fails the finalizer and the remaining scripts still run. A reported `false` check is a QA finding in `report.json`. The command's exit status tracks execution.
+
+## Saved output and reporting
 
 ```text
 runs/<run-id>/
@@ -73,10 +97,14 @@ runs/<run-id>/
     manifest.json               config, dependencies, counts and published outputs
     jobs.jsonl                  completed/failed jobs and trial assignments
     assignment.json             training assignment
-    output/                     training checkpoint, ONNX, config, logs and manifest
+    output/                     training artifacts, logs, and optional progress.json
     trials/<trial-id>/           suite job assignment, container log, output/episodes.jsonl
+    dataset/                    finalizer index.json and selected raw JSONL datasets
+    output/report.json          finalizer script outcomes and checks
 ```
 
 Each job assignment records run/node identity; suite/trial IDs remain globally unique. The node config and training artifact manifest preserve parent references and environment parameters. Cancelled jobs retain their assignments, partial files and logs; `jobs.jsonl` lists jobs whose completion was collected, while `status.jsonl` records cleanup stops.
 
-Exit codes are 0 for complete execution success, 1 for failed/blocked work or infrastructure failure, 2 for invalid YAML, and 130 for cancellation. Execution success is separate from QA correctness. Episode evidence remains ungraded. Connecting verifiers, aggregating per-suite results, and producing one cross-suite comparison report after DAG completion remain planned.
+The finalizer dataset contains `index.json` and the selected groups' files. `training.jsonl` has a row per training node with its status, config and published artifact manifest. `training_metrics.jsonl` contains logging snapshots. `episodes.jsonl` preserves the suite, trial, environment, agent and evidence fields for every collected episode. The framework keeps these files available for reuse after analysis.
+
+Exit codes are 0 for complete execution success, 1 for failed or blocked work or infrastructure failure, 2 for invalid YAML, and 130 for cancellation.

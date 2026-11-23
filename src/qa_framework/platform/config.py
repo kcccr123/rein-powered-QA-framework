@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 import math
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 
 from qa_framework.schema.json_data import copy_json_object
@@ -82,6 +82,24 @@ def trainer_settings(value: object, *, resuming: bool) -> dict:
     return settings
 
 
+def finalizer_group(value: object, name: str) -> dict:
+    group = copy_json_object(value, name=name)
+    if set(group) - {"nodes", "scripts"}:
+        raise ValueError(f"{name} accepts only nodes and scripts")
+    nodes = group.get("nodes")
+    if not isinstance(nodes, list) or not nodes or any(not isinstance(node, str) or not node for node in nodes):
+        raise ValueError(f"{name}.nodes must be a nonempty list of node IDs")
+    if len(set(nodes)) != len(nodes):
+        raise ValueError(f"{name}.nodes contains duplicate IDs")
+    scripts = group.setdefault("scripts", [])
+    if not isinstance(scripts, list) or any(
+        not isinstance(script, str) or not PurePosixPath(script).is_absolute()
+        or PurePosixPath(script).suffix != ".py" for script in scripts
+    ):
+        raise ValueError(f"{name}.scripts must list absolute .py paths inside the image")
+    return group
+
+
 def load_dag(path: Path) -> DAGConfig:
     try:
         import yaml
@@ -121,8 +139,8 @@ def load_dag(path: Path) -> DAGConfig:
             raise ValueError(f"duplicate node id: {identity}")
         identities.add(identity)
         kind = node.get("type")
-        if kind not in ("train", "suite"):
-            raise ValueError(f"{identity}: node.type must be train or suite")
+        if kind not in ("train", "suite", "finalizer"):
+            raise ValueError(f"{identity}: node.type must be train, suite, or finalizer")
         image = text(node.get("image"), f"{identity}.image")
         dependencies = set()
 
@@ -157,7 +175,7 @@ def load_dag(path: Path) -> DAGConfig:
             if node.get("checkpoint") is not None:
                 node["checkpoint"] = model_input(node["checkpoint"], "checkpoint")
             node["trainer"] = trainer_settings(node.get("trainer"), resuming=node.get("checkpoint") is not None)
-        else:
+        elif kind == "suite":
             if set(node) - {"id", "type", "image", "environments", "agents", "episodes_per_trial"}:
                 raise ValueError(f"{identity}: unknown suite node fields")
             positive_int(node.get("episodes_per_trial"), "episodes_per_trial")
@@ -179,11 +197,26 @@ def load_dag(path: Path) -> DAGConfig:
                         entry["model"] = model_input(entry.get("model"), "onnx")
                     normalized.append(entry)
                 node[key] = normalized
+        else:
+            if set(node) - {"id", "type", "image", "training", "testing"}:
+                raise ValueError(f"{identity}: unknown finalizer node fields")
+            if not {"training", "testing"}.intersection(node):
+                raise ValueError(f"{identity}: provide training or testing inputs")
+            for group in ("training", "testing"):
+                if group in node:
+                    node[group] = finalizer_group(node[group], f"{identity}.{group}")
+                    dependencies.update(node[group]["nodes"])
         nodes.append(NodeConfig(identity, kind, image, node, frozenset(dependencies)))
 
     # Validate all components, including cycles disconnected from runnable roots.
     by_id = {node.id: node for node in nodes}
     for node in nodes:
+        if node.type == "finalizer":
+            for group, kind in (("training", "train"), ("testing", "suite")):
+                for source in node.settings.get(group, {}).get("nodes", []):
+                    if source not in by_id or by_id[source].type != kind:
+                        raise ValueError(f"{node.id}.{group}: {source} must name a {kind} node")
+            continue
         for dependency in node.dependencies:
             if dependency not in by_id or by_id[dependency].type != "train":
                 raise ValueError(f"{node.id}: producer {dependency} must name a training node")

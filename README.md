@@ -2,7 +2,7 @@
 
 A reusable Unity unit adapter, Python QA evaluator, and DAG runner for containerized training and trials with confirmed episode storage.
 
-See [Platform refactor](platform-refactor.md) for training curricula, bounded parallel trials, and the planned aggregated reporting design.
+See [Platform refactor](platform-refactor.md) for training curricula, bounded parallel trials, and result finalization.
 
 The standalone integration keeps Unity in charge of starting its Python consumer:
 
@@ -57,7 +57,7 @@ Copy [suite.example.yaml](suite.example.yaml) for a training curriculum that bra
 
 Each training node runs the existing Unity RL trainer in its own container and publishes a full checkpoint plus ONNX. Children resume checkpoints independently; suite nodes consume ONNX and expand into the existing trial containers. All jobs share one concurrency limit. Failed producers block descendants while unrelated branches continue.
 
-The runner converts models as they become available, mounts inputs read-only, and saves node manifests, trial evidence and logs. Aggregation and grading remain planned. See [the DAG configuration and integration guide](docs/training-dag.md) for the YAML fields, resume rules, image contract, output layout and failure behavior. The [actor sample](examples/actor-control/README.md) includes runnable training and evaluation images.
+The runner converts models as they become available, mounts inputs read-only, and saves node manifests, trial evidence and logs. Add a `finalizer` node to collect selected training and trial data and run your analysis scripts in Docker. See [the DAG guide](docs/training-dag.md#finalizer-nodes) for the script contract and [the actor sample](examples/actor-control/README.md) for a runnable workflow.
 
 ## Run a platform trial
 

@@ -92,7 +92,8 @@ def run_training(assignment_path: Path, output_dir: Path, command: list[str]) ->
         if (ready.get("session_id") != session or ready.get("node_id") != assignment["node_id"]
                 or type(ready.get("port")) is not int or not 1 <= ready["port"] <= 65535):
             raise ValueError("Unity training readiness does not match this assignment")
-        config.update({"port": ready["port"], "output_dir": str(output_dir / "training"), "resume_from": checkpoint})
+        config.update({"port": ready["port"], "output_dir": str(output_dir / "training"), "resume_from": checkpoint,
+                       "metrics_dir": str(output_dir)})
         config_path = output_dir / "training.yaml"
         config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
         final_checkpoint = trainer.train(config_path)
@@ -118,6 +119,8 @@ def run_training(assignment_path: Path, output_dir: Path, command: list[str]) ->
     manifest = {"run_id": assignment["run_id"], "node_id": assignment["node_id"],
                 "parent": assignment.get("parent"), "environment": assignment["environment"],
                 "trainer": config, "outputs": {"checkpoint": "checkpoint.zip", "onnx": "model.onnx"}}
+    if (output_dir / "progress.json").is_file():
+        manifest["metrics"] = "progress.json"
     temporary = output_dir / "artifacts.tmp"
     with temporary.open("x", encoding="utf-8") as stream:
         json.dump(manifest, stream, indent=2, allow_nan=False)

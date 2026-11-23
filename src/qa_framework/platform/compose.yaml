@@ -5,6 +5,7 @@ services:
     environment:
       QA_TRIAL_CONFIG: /qa/assignment.json
       QA_TRAIN_CONFIG: /qa/assignment.json
+      QA_FINALIZER_CONFIG: /qa/assignment.json
       QA_OUTPUT_DIR: /qa/output
     volumes:
       - type: bind

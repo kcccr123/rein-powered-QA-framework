@@ -10,13 +10,13 @@
       }
     },
     "com.kcccr.unity-reinforcement-learning": {
-      "version": "https://github.com/kcccr123/unity-reinforcement-learning.git#b8ff299e91009311459c7b83f25f0f036d5df740",
+      "version": "https://github.com/kcccr123/unity-reinforcement-learning.git#25e7611be4e08a85f7bdf450e7b98c2dc89be3d8",
       "depth": 0,
       "source": "git",
       "dependencies": {
         "com.unity.ai.inference": "2.2.2"
       },
-      "hash": "b8ff299e91009311459c7b83f25f0f036d5df740"
+      "hash": "25e7611be4e08a85f7bdf450e7b98c2dc89be3d8"
     },
     "com.unity.ai.inference": {
       "version": "2.4.1",

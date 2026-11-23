@@ -49,3 +49,13 @@ nodes:
       - {id: walking, model: {node: walking, output: onnx}}
       - {id: running, model: {node: running, output: onnx}}
       - {id: left, model: {node: left, output: onnx}}
+
+  - id: review
+    type: finalizer
+    image: qa-actor-finalizer:local
+    training:
+      nodes: [walking, running, left]
+      scripts: [/analysis/compare_rewards.py]
+    testing:
+      nodes: [comparison]
+      scripts: [/analysis/count_stuck_episodes.py]
