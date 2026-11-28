@@ -1,0 +1,63 @@
+--- a/Assets/PCGDungeon/Scripts/Generation/Generator.cs
++++ b/Assets/PCGDungeon/Scripts/Generation/Generator.cs
+@@ -6,7 +6,7 @@
+ using UnityEngine.SocialPlatforms;
+ using UnityEngine.AI;
+ 
+-public class Generator : MonoBehaviour
++public partial class Generator : MonoBehaviour
+ {
+     //[SerializeField] private GameObject m_wall;
+ 
+@@ -126,11 +126,21 @@
+         //     parameters.AdjacentRoomConnections;
+ 
+         InitialiseEmptyObjects();
++        if (generationSettings.generation.levelStyle == Data.LevelStyle.Caves)
++        {
++            area = new GameObject[areaWidth, areaHeight];
++            parents = new GameObject[rooms];
++            parentRooms = new Room[rooms];
++            roomArea = new Vector2Int[rooms];
++            roomPos = new Vector2Int[rooms];
++            return GenerateCaves(parameters);
++        }
+         return Generate();
+     }
+ 
+     private void ClearChildren()
+     {
++        CurrentCaveLayout = null;
+         // Generated corridors are destroyed with the generator's children, so
+         // discard their cached references before the next generation pass.
+         if (emptyObject != null) DestroyImmediate(emptyObject);
+--- a/Assets/PCGDungeon/Scripts/Data/GenerationSettings.cs
++++ b/Assets/PCGDungeon/Scripts/Data/GenerationSettings.cs
+@@ -20,6 +20,17 @@
+ [Serializable]
+ public class Data
+ {
++    public enum LevelStyle { Cathedral, Caves }
++    [Header("Level theme")]
++    public LevelStyle levelStyle;
++    [Header("Caves only")]
++    [Range(1, 4)] public int caveLavaPools = 2;
++    [Range(1, 3)] public int caveLavaRivers = 1;
++    public Material caveFloorMaterial;
++    public Material caveRockMaterial;
++    public Material caveLavaMaterial;
++    public Material caveWoodMaterial;
++
+     [SerializeField] public DungeonType dungeonType;
+     // Parameters for the Cathedral dungeon type. Empty uses the CathedralParameters defaults.
+     [SerializeField] public CathedralSettings cathedral;
+--- a/Assets/PCGDungeon/Scripts/Generation/Room.cs
++++ b/Assets/PCGDungeon/Scripts/Generation/Room.cs
+@@ -26,6 +26,7 @@
+ 
+     public Vector2Int GeneratedSize { get; set; }
+     public RoomType Type { get; set; }
++    public List<Room> ConnectedRooms { get; } = new List<Room>();
+     public List<GameObject> MidPoints { get => midPoints; }
+     public List<GameObject> Corners { get => corners; set => corners = value; }
+     public bool IsPlayerInside { get => isPlayerInside; set => isPlayerInside = value; }

@@ -14,6 +14,8 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
     protected float MinArrivalRadius;
     protected bool PastVisibleDoors, GeometricDoorSteering, AssistStalledWaypoints;
     protected bool CollectBlockingLoot;
+    protected bool UseCombatAndLoot;
+    protected bool ExploreKnownFloor;
     protected Vector2 PolicyActionStd;
     protected CathedralDoorways Doorways;
     protected abstract QaPlayerController CreateEpisode(int episodeIndex);
@@ -32,6 +34,15 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
     private MovementSample? pendingMovement;
     private DungeonNavigationTrace trace;
     private System.Random policyRandom;
+
+    protected void ConfigurePolicySampling(float[] deviation)
+    {
+        if (deviation == null || deviation.Length == 0) return;
+        if (deviation.Length != 2 || deviation[0] <= 0f || deviation[1] <= 0f ||
+            !float.IsFinite(deviation[0]) || !float.IsFinite(deviation[1]))
+            throw new InvalidOperationException("policy_action_std requires two positive finite values.");
+        PolicyActionStd = new Vector2(deviation[0], deviation[1]);
+    }
 
     protected override int ObservationSize => QaWaypointPolicyMapping.ObservationSize;
     protected override int ActionSize => QaWaypointPolicyMapping.ActionSize;
@@ -59,7 +70,7 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
         navigator = new QaNavigator4(RejectByApproach)
         {
             MinArrivalRadius = MinArrivalRadius, AssistStalledWaypoints = AssistStalledWaypoints,
-            CollectBlockingLoot = CollectBlockingLoot
+            CollectBlockingLoot = CollectBlockingLoot, ExploreKnownFloor = ExploreKnownFloor
         };
         if (GeometricDoorSteering)
             navigator.VisiblePassage = (target, exploring) => Doorways.VisiblePassage(sensors, actor.transform.position, target, exploring);
@@ -113,6 +124,8 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
         }
         else
             unguidedActions++;
+        if (UseCombatAndLoot)
+            command = new QaAction(command.MoveX, command.MoveY, true, true, 0);
         trace?.BeginAction(movement.Count + 1, actor.transform.position, sensors.NavigationTraces);
         player.ApplyAction(command);
         pendingMovement = new MovementSample
@@ -188,6 +201,8 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
                 first_exit_discovery_step = firstExitDiscoveryStep,
                 exit_visible_at_spawn = exitVisibleAtSpawn, unguided_actions = unguidedActions,
                 stuck_events = metrics.StuckEvents, waypoint_arrivals = navigator.WaypointArrivals,
+                enemies_killed = metrics.EnemiesKilled, damage_taken = metrics.DamageTaken, loot_collected = metrics.PowerupsUsed,
+                coverage_searches = navigator.CoverageSearches,
                 viewed_open_cells = sensors.ViewedOpenCellCount, recovery_attempts = navigator.RecoveryAttempts,
                 spawn = spawn, exit = ExitPosition, final_position = player.transform.position,
                 movement = movement.ToArray()
@@ -230,10 +245,15 @@ public abstract class DungeonNavigationTrial : QaPlatformAdapter
         public bool reached_exit, exit_discovered, exit_visible_at_spawn;
         public string end_reason;
         public int unguided_actions, stuck_events, waypoint_arrivals;
+        public int enemies_killed, loot_collected;
+        public int coverage_searches;
+        public float damage_taken;
         public int first_exit_discovery_step, viewed_open_cells, recovery_attempts;
         public Vector3 spawn, exit, final_position;
         public MovementSample[] movement;
         public string navigation_trace;
+        public int cave_walkable_tiles;
+        public Vector2Int[] lava_tiles, bridge_tiles;
     }
 
     [Serializable] public struct MovementSample

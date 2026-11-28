@@ -26,11 +26,15 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
     private float episodeReward;
     private double actionEndsAt;
     private bool fullNavigation, actorSteered;
+    private bool caves;
     private CathedralDoorways doorways;
     private readonly List<RectInt> roomFloors = new();
     private readonly HashSet<int> visitedRooms = new();
     private Vector3 beforeAction;
     private QaAction referenceAction;
+    private readonly HashSet<Vector2Int> visitedCaveTiles = new();
+    private Dictionary<Vector2Int, int> caveExitDistances;
+    private float damageBeforeAction;
 
     public override int ObservationSize => QaWaypointPolicyMapping.ObservationSize;
     public override int ActionSize => QaWaypointPolicyMapping.ActionSize;
@@ -38,7 +42,13 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
     public void Prepare(bool waypointFollowing, string movementDrill, bool fullNavigation)
     {
         this.fullNavigation = fullNavigation;
-        dungeon = new CathedralDungeon(manager, generator, cathedralSettings);
+        caves = generator.GenerationSettings.generation.levelStyle == Data.LevelStyle.Caves;
+        if (caves)
+        {
+            if (!fullNavigation) throw new ArgumentException("Caves training requires full_navigation.");
+            manager.RemoteControlActive = true;
+        }
+        else dungeon = new CathedralDungeon(manager, generator, cathedralSettings);
         focusedMode = string.IsNullOrEmpty(movementDrill) ? null : movementDrill;
         if (focusedMode != null && (waypointFollowing || focusedMode != "hard_stop" && focusedMode != "doorway"))
             throw new ArgumentException("Select one supported Cathedral movement drill.");
@@ -62,7 +72,7 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
     public override void ResetEpisode(int episodeSeed)
     {
         seed = episodeSeed;
-        player = dungeon.BeginEpisode(seed);
+        player = caves ? CavesTrial.BeginCaveEpisode(manager, generator, seed, out _) : dungeon.BeginEpisode(seed);
         actor = player.GetComponent<CharacterController>();
         sensors = player.GetComponent<ModelSensorPackage>();
         Physics.SyncTransforms();
@@ -83,18 +93,28 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
         navigator = new QaNavigator4(fullNavigation);
         if (fullNavigation)
         {
-            doorways = new CathedralDoorways(generator);
             navigator.AssistStalledWaypoints = true;
             navigator.CollectBlockingLoot = true;
-            navigator.VisiblePassage = (target, exploring) => doorways.VisiblePassage(sensors, actor.transform.position, target, exploring);
-            visitedRooms.Clear();
-            roomFloors.Clear();
-            foreach (Room room in generator.GetComponentsInChildren<Room>())
+            if (caves)
             {
-                Vector3 first = room.transform.GetChild(0).position;
-                roomFloors.Add(new RectInt((int)first.x, (int)first.z, room.GeneratedSize.x, room.GeneratedSize.y));
+                var layout = generator.CurrentCaveLayout;
+                caveExitDistances = layout.Distances(layout.Centres[1]);
+                visitedCaveTiles.Clear();
+                visitedCaveTiles.Add(FloorTile(actor.transform.position));
             }
-            VisitRoom(actor.transform.position);
+            else
+            {
+                doorways = new CathedralDoorways(generator);
+                navigator.VisiblePassage = (target, exploring) => doorways.VisiblePassage(sensors, actor.transform.position, target, exploring);
+                visitedRooms.Clear();
+                roomFloors.Clear();
+                foreach (Room room in generator.GetComponentsInChildren<Room>())
+                {
+                    Vector3 first = room.transform.GetChild(0).position;
+                    roomFloors.Add(new RectInt((int)first.x, (int)first.z, room.GeneratedSize.x, room.GeneratedSize.y));
+                }
+                VisitRoom(actor.transform.position);
+            }
         }
         navigator.Advance(sensors, actor, false);
         rewards.Reset();
@@ -131,6 +151,11 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
             }
         }
 
+        if (caves)
+        {
+            damageBeforeAction = player.Metrics.DamageTaken;
+            command = new QaAction(command.MoveX, command.MoveY, true, true, 0);
+        }
         player.ApplyAction(command);
         actionEndsAt = Time.fixedTimeAsDouble + QaPlayerController.StepDurationSeconds;
         Time.timeScale = 100f;
@@ -157,6 +182,8 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
         float reward = fullNavigation ? ScoreFullNavigation(position) : rewards.Measure(position) - 0.001f;
         if (metrics.Completed)
             reward += 50f;
+        else if (caves && metrics.PlayerDied)
+            reward -= 20f;
         episodeReward += reward;
 
         if (isDone)
@@ -166,21 +193,25 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
                 reason = "exit";
             else if (metrics.PlayerDied)
                 reason = "death";
-            dungeon.EndEpisode(reason);
+            if (caves) manager.EndPlayerEpisode(reason);
+            else dungeon.EndEpisode(reason);
             var record = new Episode
             {
-                episode = ++episodes, seed = seed, steps = metrics.StepCount, room_count = dungeon.Rooms,
+                episode = ++episodes, seed = seed, steps = metrics.StepCount, room_count = manager.GeneratedRoomCount,
                 reached_exit = metrics.Completed,
                 exit_discovered = sensors.Grid.ExitDiscoveryVersion > 0 || sensors.Memory.ExitVersion > 0,
                 end_reason = reason, reward = episodeReward, waypoint_reward = rewards.PositiveRewardTotal,
                 rooms_visited = visitedRooms.Count, waypoint_arrivals = navigator.WaypointArrivals,
-                recovery_assists = navigator.AssistAttempts
+                recovery_assists = navigator.AssistAttempts, cave_tiles_visited = visitedCaveTiles.Count,
+                damage_taken = metrics.DamageTaken, enemies_killed = metrics.EnemiesKilled
             };
             File.AppendAllText(episodesPath, JsonUtility.ToJson(record) + "\n");
         }
         else
         {
             sensors.Capture();
+            if (caves && navigator.Status == "observed_space_exhausted")
+                navigator.StallMemoryActions = 60;
             navigator.Advance(sensors, actor, true);
             rewards.Assign(navigator.HasWaypoint, navigator.WaypointVersion, navigator.Waypoint, position);
         }
@@ -189,8 +220,24 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
 
     private float ScoreFullNavigation(Vector3 position)
     {
-        doorways.Track(beforeAction, position);
-        float reward = VisitRoom(position) ? 3f : 0f;
+        float reward;
+        if (caves)
+        {
+            // Use the generated floor distances for reward only. The actor still sees its local sensors.
+            var tile = FloorTile(position);
+            reward = -0.5f * (player.Metrics.DamageTaken - damageBeforeAction);
+            if (caveExitDistances.TryGetValue(tile, out int current))
+            {
+                if (visitedCaveTiles.Add(tile)) reward += 0.25f;
+                if (caveExitDistances.TryGetValue(FloorTile(beforeAction), out int previous))
+                    reward += 0.12f * (previous - current);
+            }
+        }
+        else
+        {
+            doorways.Track(beforeAction, position);
+            reward = VisitRoom(position) ? 3f : 0f;
+        }
         if (actorSteered)
         {
             float dx = command.MoveX - referenceAction.MoveX;
@@ -204,11 +251,14 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
 
     private bool VisitRoom(Vector3 position)
     {
-        var tile = new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.z + 0.5f));
+        var tile = FloorTile(position);
         for (int i = 0; i < roomFloors.Count; i++)
             if (roomFloors[i].Contains(tile)) return visitedRooms.Add(i);
         return false;
     }
+
+    private static Vector2Int FloorTile(Vector3 position) =>
+        new Vector2Int(Mathf.FloorToInt(position.x + 0.5f), Mathf.FloorToInt(position.z + 0.5f));
 
     private float ScoreMovementDrill(QaEpisodeMetrics metrics, out bool isDone)
     {
@@ -281,8 +331,9 @@ public sealed class CathedralTrainingEnvironment : RlEnvironmentBehaviour
     private sealed class Episode
     {
         public int episode, seed, steps, room_count, rooms_visited, waypoint_arrivals, recovery_assists;
+        public int cave_tiles_visited, enemies_killed;
         public bool reached_exit, exit_discovered;
         public string end_reason;
-        public float reward, waypoint_reward;
+        public float reward, waypoint_reward, damage_taken;
     }
 }

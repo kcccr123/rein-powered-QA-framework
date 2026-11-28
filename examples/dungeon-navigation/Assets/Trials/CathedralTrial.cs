@@ -43,14 +43,7 @@ public sealed class CathedralTrial : DungeonNavigationTrial
             GeometricDoorSteering = parameters?.geometric_door_steering ?? false;
             AssistStalledWaypoints = parameters?.assist_stalled_waypoints ?? false;
             CollectBlockingLoot = parameters?.collect_blocking_loot ?? false;
-            var deviation = parameters?.policy_action_std;
-            if (deviation != null && deviation.Length > 0)
-            {
-                if (deviation.Length != 2 || deviation[0] <= 0f || deviation[1] <= 0f ||
-                    !float.IsFinite(deviation[0]) || !float.IsFinite(deviation[1]))
-                    throw new InvalidOperationException("policy_action_std requires two positive finite values.");
-                PolicyActionStd = new Vector2(deviation[0], deviation[1]);
-            }
+            ConfigurePolicySampling(parameters?.policy_action_std);
             if (MinArrivalRadius < 0f)
                 throw new InvalidOperationException("Cathedral min_arrival_radius must be nonnegative.");
             RejectByApproach = parameters?.reject_by_approach ?? false;

@@ -13,6 +13,7 @@ $assets = Join-Path $PSScriptRoot 'Assets'
 $build = Join-Path $PSScriptRoot 'Build'
 $gameRevision = '2d4336881f9de9ed5bf4b8d182378a36ed805452'
 $cathedralRevision = '4d97815fff9509e4c540a30066846d2f2af608fa'
+$cavesRevision = 'c17f1cbe47d290a03786a6a66cdd084e020fe7ec'
 if (!(Test-Path -LiteralPath $Unity -PathType Leaf)) { throw "Missing Unity Editor: $Unity" }
 
 function Expand-GameSources([string] $revision, [string[]] $paths) {
@@ -24,7 +25,7 @@ function Expand-GameSources([string] $revision, [string[]] $paths) {
     Remove-Item -LiteralPath $archive
 }
 
-# Read both game revisions without switching or modifying the game's checkout.
+# Read pinned game sources without switching or modifying the game's checkout.
 New-Item -ItemType Directory -Force -Path $build, "$assets/BuildSupport/Editor", "$assets/Settings" | Out-Null
 Copy-Item -LiteralPath "$sample/ProjectSettings" -Destination $PSScriptRoot -Recurse -Force
 Expand-GameSources $gameRevision @(
@@ -45,6 +46,17 @@ Expand-GameSources $cathedralRevision @(
     'Assets/PCGDungeon/Settings/Cathedral Settings.asset*',
     'Assets/PCGDungeon/Settings/Settings.asset'
 )
+Expand-GameSources $cavesRevision @(
+    'Assets/PCGDungeon/Materials/Caves*',
+    'Assets/PCGDungeon/Scripts/Gameplay/CaveVisuals.cs*',
+    'Assets/PCGDungeon/Scripts/Generation/CaveLayout.cs*',
+    'Assets/PCGDungeon/Scripts/Generation/Generator.Caves.cs*',
+    'Assets/PCGDungeon/Settings/CavesSettings.asset*'
+)
+# Combine the two generation entry points in the example's imported game sources.
+$examplePath = 'examples/dungeon-navigation'
+git -c "safe.directory=$($framework.Replace('\','/'))" -C $framework apply --no-index --ignore-space-change "--directory=$examplePath" -- "$examplePath/fixtures/caves-generation.patch"
+if ($LASTEXITCODE -ne 0) { throw 'Could not integrate the pinned Caves generator.' }
 tar.exe -xf "$PSScriptRoot/fixtures/qa85-navigation-sources.zip" -C $PSScriptRoot
 if ($LASTEXITCODE -ne 0) { throw 'Could not unpack the historical navigation sources.' }
 $navigation = 'Assets/PCGDungeon/Scripts/QA'
