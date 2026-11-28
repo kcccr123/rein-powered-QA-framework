@@ -1,0 +1,26 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: frontier-replay
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 1
+    environments:
+      - {id: cathedral-768092, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 92, trace_navigation: true}}
+      - {id: cathedral-768002, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 2, trace_navigation: true}}
+      - {id: cathedral-768100, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 100, trace_navigation: true}}
+      - {id: cathedral-768200, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 200, trace_navigation: true}}
+      - {id: cathedral-768305, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 305, trace_navigation: true}}
+      - {id: cathedral-768400, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 400, trace_navigation: true}}
+      - {id: cathedral-768012, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 12, trace_navigation: true}}
+      - {id: cathedral-768078, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 78, trace_navigation: true}}
+      - {id: cathedral-768011, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 11, trace_navigation: true}}
+    agents:
+      - {id: qa-86-waypoint-following-3000, model: models/qa-86-waypoint-following-3000/model.onnx}
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing: {nodes: [frontier-replay], scripts: []}

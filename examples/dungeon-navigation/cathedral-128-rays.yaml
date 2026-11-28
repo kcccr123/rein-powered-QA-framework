@@ -1,0 +1,26 @@
+max_concurrent_containers: 5
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: cathedral-128-rays
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 100
+    environments:
+      - {id: cathedral, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 0}}
+      - {id: cathedral-768100, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 100}}
+      - {id: cathedral-768200, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 200}}
+      - {id: cathedral-768300, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 300}}
+      - {id: cathedral-768400, scene: Cathedral, parameters: {action_limit: 3600, seed_offset: 400}}
+    agents:
+      - id: qa-86-waypoint-following-3000
+        model: models/qa-86-waypoint-following-3000/model.onnx
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing:
+      nodes: [cathedral-128-rays]
+      scripts: []

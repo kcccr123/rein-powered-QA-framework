@@ -1,0 +1,32 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - &suite
+    id: door-control
+    type: suite
+    image: qa-dungeon-trials:local
+    agents:
+      - id: qa-86-base-hard-stop
+        model: models/qa-86-base-hard-stop/model.onnx
+    episodes_per_trial: 25
+    environments:
+      - {id: cathedral-0, scene: Cathedral, parameters: {<<: &control {action_limit: 3600, grid_cell_size: 0.25, reject_by_approach: true, geometric_door_steering: true}, seed_offset: 0}}
+      - {id: cathedral-25, scene: Cathedral, parameters: {<<: *control, seed_offset: 25}}
+      - {id: cathedral-50, scene: Cathedral, parameters: {<<: *control, seed_offset: 50}}
+      - {id: cathedral-75, scene: Cathedral, parameters: {<<: *control, seed_offset: 75}}
+
+  - <<: *suite
+    id: stall-assist
+    environments:
+      - {id: cathedral-0, scene: Cathedral, parameters: {<<: &assist {<<: *control, assist_stalled_waypoints: true}, seed_offset: 0}}
+      - {id: cathedral-25, scene: Cathedral, parameters: {<<: *assist, seed_offset: 25}}
+      - {id: cathedral-50, scene: Cathedral, parameters: {<<: *assist, seed_offset: 50}}
+      - {id: cathedral-75, scene: Cathedral, parameters: {<<: *assist, seed_offset: 75}}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing: {nodes: [door-control, stall-assist], scripts: []}

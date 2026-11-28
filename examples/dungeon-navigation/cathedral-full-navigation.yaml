@@ -1,0 +1,42 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: train-qa-86
+    type: train
+    image: qa-cathedral-training:local
+    checkpoint: models/qa-86-base-hard-stop/checkpoint.zip
+    environment: &training {id: cathedral-full-navigation, scene: CathedralTraining, parameters: {full_navigation: true}}
+    trainer: &budget {seed: 800000, max_episodes: 64, total_timesteps: 230400, checkpoint_freq: 10000, ent_coef: 0.002}
+
+  - id: train-fresh
+    type: train
+    image: qa-cathedral-training:local
+    environment: *training
+    trainer: {<<: *budget, learning_rate: 0.0003}
+
+  - id: test-qa-86
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 25
+    agents: [{id: qa-86-full-navigation, model: {node: train-qa-86, output: onnx}}]
+    environments: &validation
+      - {id: cathedral-100, scene: Cathedral, parameters: {<<: &cathedral {action_limit: 3600, grid_cell_size: 0.25, reject_by_approach: true, geometric_door_steering: true, assist_stalled_waypoints: true, collect_blocking_loot: true}, seed_offset: 100}}
+      - {id: cathedral-125, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 125}}
+      - {id: cathedral-150, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 150}}
+      - {id: cathedral-175, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 175}}
+
+  - id: test-fresh
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 25
+    agents: [{id: fresh-full-navigation, model: {node: train-fresh, output: onnx}}]
+    environments: *validation
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    training: {nodes: [train-qa-86, train-fresh]}
+    testing: {nodes: [test-qa-86, test-fresh], scripts: []}

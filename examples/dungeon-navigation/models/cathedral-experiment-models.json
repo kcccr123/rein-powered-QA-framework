@@ -1,0 +1,42 @@
+{
+  "models/qa-86-waypoint-following-3000/model.onnx": {
+    "run": "qa-run-b6876ee42e2a43f2a9467d56150bc267",
+    "node": "train-waypoint-following",
+    "sha256": "9f0d9d20685aa5ee1f5636f0ef51518a2a60a3c501ca0ff08d6b35809a25b836"
+  },
+  "models/qa-86-cathedral-1000/model.onnx": {
+    "run": "qa-run-ebd50f8048a1411691d14f4f32e12be7",
+    "node": "train-cathedral",
+    "sha256": "f5ea5b38352ef3e23295ce5dd76e515c60e0ccbb2474827fed84ec5d327eebec"
+  },
+  "models/qa-86-cathedral-3000/model.onnx": {
+    "run": "qa-run-35f0d1f7fc2f4c448c166bfa3a8db0f9",
+    "node": "train-cathedral",
+    "sha256": "8afc11e6669d54720e4311868dba36d617725bcdee1343e1986e38458017c2ba"
+  },
+  "models/qa-86-base-hard-stop/model.onnx": {
+    "run": "qa-run-8847ca6b477a4490a7d9dc0b1d9cc951",
+    "node": "train-base-hard-stop",
+    "sha256": "26b586d85b01565a321ef8e4d34dda701f35dd40631097570a32c438f16da9f7"
+  },
+  "models/qa-86-base-hard-stop/checkpoint.zip": {
+    "run": "qa-run-8847ca6b477a4490a7d9dc0b1d9cc951",
+    "node": "train-base-hard-stop",
+    "sha256": "6b0fa20c37ab81e31c9384613c9b7cd15566460a4e98f90cd7ba0c2693396577"
+  },
+  "models/qa-86-hard-stop-2000/checkpoint.zip": {
+    "run": "qa-run-c68dada17bbe44b587a5bafab500928c",
+    "node": "train-hard-stop",
+    "sha256": "56acaac1b2ffa8003b88ac18b526a22a3d317828f37637afa0637b235cfe81ec"
+  },
+  "models/qa-86-doorway-2000/checkpoint.zip": {
+    "run": "qa-run-c68dada17bbe44b587a5bafab500928c",
+    "node": "train-doorway",
+    "sha256": "76f1319d9335c81b559614b55d8b7248812f580643b4723545ce1a5a1115c118"
+  },
+  "models/qa-86-waypoint-following-3000/checkpoint.zip": {
+    "run": "qa-run-b6876ee42e2a43f2a9467d56150bc267",
+    "node": "train-waypoint-following",
+    "sha256": "a11a54cce4da9f1d8da1533c57e7e2dd9d849aa905101ab53e6d84a52eb7e409"
+  }
+}

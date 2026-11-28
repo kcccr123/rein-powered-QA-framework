@@ -1,0 +1,49 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - &control
+    id: directed-control
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 1
+    agents:
+      - {id: qa-86-waypoint-following-3000, model: models/qa-86-waypoint-following-3000/model.onnx}
+    environments:
+      - {id: cathedral-768092, scene: Cathedral, parameters: {<<: &base {reject_by_approach: true, grid_cell_size: 0.25, action_limit: 3600, trace_navigation: true}, seed_offset: 92}}
+      - {id: cathedral-768002, scene: Cathedral, parameters: {<<: *base, seed_offset: 2}}
+      - {id: cathedral-768100, scene: Cathedral, parameters: {<<: *base, seed_offset: 100}}
+      - {id: cathedral-768200, scene: Cathedral, parameters: {<<: *base, seed_offset: 200}}
+      - {id: cathedral-768305, scene: Cathedral, parameters: {<<: *base, seed_offset: 305}}
+      - {id: cathedral-768400, scene: Cathedral, parameters: {<<: *base, seed_offset: 400}}
+      - {id: cathedral-768012, scene: Cathedral, parameters: {<<: *base, seed_offset: 12}}
+      - {id: cathedral-768078, scene: Cathedral, parameters: {<<: *base, seed_offset: 78}}
+      - {id: cathedral-768011, scene: Cathedral, parameters: {<<: *base, seed_offset: 11}}
+
+  - <<: *control
+    id: six-second-memory
+    environments:
+      - {id: cathedral-768092, scene: Cathedral, parameters: {<<: &finite {<<: *base, stall_memory_actions: 60}, seed_offset: 92}}
+      - {id: cathedral-768002, scene: Cathedral, parameters: {<<: *finite, seed_offset: 2}}
+      - {id: cathedral-768100, scene: Cathedral, parameters: {<<: *finite, seed_offset: 100}}
+      - {id: cathedral-768200, scene: Cathedral, parameters: {<<: *finite, seed_offset: 200}}
+      - {id: cathedral-768305, scene: Cathedral, parameters: {<<: *finite, seed_offset: 305}}
+      - {id: cathedral-768400, scene: Cathedral, parameters: {<<: *finite, seed_offset: 400}}
+      - {id: cathedral-768012, scene: Cathedral, parameters: {<<: *finite, seed_offset: 12}}
+      - {id: cathedral-768078, scene: Cathedral, parameters: {<<: *finite, seed_offset: 78}}
+      - {id: cathedral-768011, scene: Cathedral, parameters: {<<: *finite, seed_offset: 11}}
+
+  - <<: *control
+    id: expiry-at-blockage
+    environments:
+      - {id: cathedral-768092, scene: Cathedral, parameters: {<<: &delayed {<<: *finite, expire_after_exhaustion: true}, seed_offset: 92}}
+      - {id: cathedral-768100, scene: Cathedral, parameters: {<<: *delayed, seed_offset: 100}}
+      - {id: cathedral-768200, scene: Cathedral, parameters: {<<: *delayed, seed_offset: 200}}
+      - {id: cathedral-768012, scene: Cathedral, parameters: {<<: *delayed, seed_offset: 12}}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing: {nodes: [directed-control, six-second-memory, expiry-at-blockage], scripts: []}

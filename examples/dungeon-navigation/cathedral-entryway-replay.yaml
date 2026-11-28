@@ -1,0 +1,38 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - &replay
+    id: entryway-replay
+    type: suite
+    image: qa-dungeon-trials:local
+    agents:
+      - id: qa-86-base-hard-stop
+        model: models/qa-86-base-hard-stop/model.onnx
+    episodes_per_trial: 1
+    environments:
+      - {id: cathedral-23, scene: Cathedral, parameters: {<<: &cathedral {action_limit: 900, grid_cell_size: 0.25, reject_by_approach: true, geometric_door_steering: true, assist_stalled_waypoints: true, trace_navigation: true}, seed_offset: 23}}
+      - {id: cathedral-24, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 24}}
+      - {id: cathedral-43, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 43}}
+      - {id: cathedral-62, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 62}}
+      - {id: cathedral-65, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 65}}
+      - {id: cathedral-84, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 84}}
+      - {id: cathedral-92, scene: Cathedral, parameters: {<<: *cathedral, seed_offset: 92}}
+
+  - <<: *replay
+    id: entryway-collect-loot
+    environments:
+      - {id: cathedral-23, scene: Cathedral, parameters: {<<: &treatment {<<: *cathedral, collect_blocking_loot: true}, seed_offset: 23}}
+      - {id: cathedral-24, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 24}}
+      - {id: cathedral-43, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 43}}
+      - {id: cathedral-62, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 62}}
+      - {id: cathedral-65, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 65}}
+      - {id: cathedral-84, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 84}}
+      - {id: cathedral-92, scene: Cathedral, parameters: {<<: *treatment, seed_offset: 92}}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing: {nodes: [entryway-replay, entryway-collect-loot], scripts: []}

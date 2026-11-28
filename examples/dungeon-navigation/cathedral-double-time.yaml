@@ -1,0 +1,25 @@
+# Run the 3,000-episode waypoint checkpoint on the usual Cathedral seeds.
+max_concurrent_containers: 1
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: cathedral-double-time
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 100
+    environments:
+      - id: cathedral
+        scene: Cathedral
+        parameters: {action_limit: 3600}
+    agents:
+      - id: qa-86-waypoint-following-3000
+        model: models/qa-86-waypoint-following-3000/model.onnx
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing:
+      nodes: [cathedral-double-time]
+      scripts: []
