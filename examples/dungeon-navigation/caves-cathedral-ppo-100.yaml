@@ -1,0 +1,21 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: test-caves
+    type: suite
+    image: qa-dungeon-trials:local
+    agents: [{id: cathedral-ppo, model: models/cathedral-ppo/mean.onnx}]
+    episodes_per_trial: 25
+    environments:
+      - {id: caves-0, scene: Caves, parameters: {<<: &caves {action_limit: 3600, policy_action_std: [0.6868821978569031, 0.716850221157074]}, seed_offset: 0}}
+      - {id: caves-25, scene: Caves, parameters: {<<: *caves, seed_offset: 25}}
+      - {id: caves-50, scene: Caves, parameters: {<<: *caves, seed_offset: 50}}
+      - {id: caves-75, scene: Caves, parameters: {<<: *caves, seed_offset: 75}}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing: {nodes: [test-caves], scripts: []}

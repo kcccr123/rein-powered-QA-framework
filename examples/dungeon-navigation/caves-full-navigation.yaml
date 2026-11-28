@@ -1,0 +1,29 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: train-caves
+    type: train
+    image: qa-cathedral-training:local
+    checkpoint: models/cathedral-ppo/checkpoint.zip
+    environment: {id: caves-full-navigation, scene: CavesTraining, parameters: {full_navigation: true}}
+    trainer: {seed: 820000, max_episodes: 64, total_timesteps: 230400, checkpoint_freq: 10000, ent_coef: 0.002}
+
+  - id: test-caves-mean
+    type: suite
+    image: qa-dungeon-trials:local
+    agents: [{id: caves-ppo, model: {node: train-caves, output: onnx}}]
+    episodes_per_trial: 25
+    environments:
+      - {id: caves-0, scene: Caves, parameters: {<<: &caves {action_limit: 3600, stall_memory_actions: 60, use_combat_and_loot: true}, seed_offset: 0}}
+      - {id: caves-25, scene: Caves, parameters: {<<: *caves, seed_offset: 25}}
+      - {id: caves-50, scene: Caves, parameters: {<<: *caves, seed_offset: 50}}
+      - {id: caves-75, scene: Caves, parameters: {<<: *caves, seed_offset: 75}}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    training: {nodes: [train-caves]}
+    testing: {nodes: [test-caves-mean], scripts: []}
