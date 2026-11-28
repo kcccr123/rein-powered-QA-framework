@@ -1,0 +1,1744 @@
+{
+  "run": "qa-run-8164f14e45564dc8a6ae99e3a7a17e34",
+  "summary": {
+    "known_floor": {
+      "episodes": 100,
+      "outcomes": {
+        "exit": 95,
+        "timeout": 5
+      },
+      "saw_exit": 95,
+      "exhausted": 4,
+      "kills": 160,
+      "loot": 602,
+      "searched_known_floor": 25,
+      "bridge_crossings": 4,
+      "blocked_lava_entries": 0
+    }
+  },
+  "gained_exits": [
+    810001,
+    810003,
+    810015,
+    810016,
+    810026,
+    810028,
+    810029,
+    810039,
+    810041,
+    810045,
+    810048,
+    810050,
+    810057,
+    810066,
+    810067,
+    810071,
+    810075,
+    810078,
+    810081,
+    810082
+  ],
+  "lost_exits": [],
+  "episodes": {
+    "810000": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 853,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 2,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810001": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1980,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 15,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810002": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 528,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 1,
+      "loot": 13,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810003": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 771,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810004": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 116,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810005": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 117,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810006": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 213,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810007": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 999,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 2,
+      "loot": 12,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810008": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 102,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810009": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 994,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810010": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 476,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 1,
+      "loot": 7,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810011": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 130,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 1,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810012": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 282,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810013": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 553,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 6,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810014": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 277,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810015": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 2073,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 6,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810016": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1648,
+      "exhausted_tail": 0,
+      "damage": 2.4000000953674316,
+      "kills": 4,
+      "loot": 17,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810017": {
+      "exit": false,
+      "seen": false,
+      "reason": "timeout",
+      "actions": 3600,
+      "exhausted_tail": 2370,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 16,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810018": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 278,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810019": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 110,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810020": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 83,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810021": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 67,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810022": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 199,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810023": {
+      "exit": false,
+      "seen": false,
+      "reason": "timeout",
+      "actions": 3600,
+      "exhausted_tail": 2636,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 15,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 4,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810024": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 109,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 0,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810025": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 108,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810026": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 3182,
+      "exhausted_tail": 0,
+      "damage": 1.7000000476837158,
+      "kills": 6,
+      "loot": 29,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 3,
+      "bridge_crossings": 3,
+      "blocked_lava_center_entry": false
+    },
+    "810027": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 81,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 0,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810028": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 2678,
+      "exhausted_tail": 0,
+      "damage": 2.0999999046325684,
+      "kills": 4,
+      "loot": 15,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 5,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810029": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1291,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 3,
+      "loot": 13,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 3,
+      "bridge_crossings": 1,
+      "blocked_lava_center_entry": false
+    },
+    "810030": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 184,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810031": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 238,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 7,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810032": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 201,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810033": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 628,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810034": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 103,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810035": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 62,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810036": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 150,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810037": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 886,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 10,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810038": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 99,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810039": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 986,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810040": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 829,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 3,
+      "loot": 13,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810041": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1381,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 8,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810042": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 131,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810043": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 254,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 3,
+      "loot": 6,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810044": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 541,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 3,
+      "loot": 11,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810045": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1378,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810046": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 202,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810047": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 287,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 10,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810048": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1178,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810049": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 173,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810050": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 3245,
+      "exhausted_tail": 0,
+      "damage": 2.0999999046325684,
+      "kills": 7,
+      "loot": 25,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810051": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 123,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810052": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 72,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810053": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1427,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 3,
+      "loot": 17,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810054": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 953,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810055": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 106,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810056": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 98,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810057": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1543,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 4,
+      "loot": 7,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810058": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 360,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 2,
+      "loot": 6,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810059": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 162,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810060": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 173,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810061": {
+      "exit": false,
+      "seen": false,
+      "reason": "timeout",
+      "actions": 3600,
+      "exhausted_tail": 3229,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810062": {
+      "exit": false,
+      "seen": false,
+      "reason": "timeout",
+      "actions": 3600,
+      "exhausted_tail": 1743,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 14,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 5,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810063": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 374,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 4,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810064": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 108,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 0,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810065": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 670,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 12,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810066": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 2572,
+      "exhausted_tail": 0,
+      "damage": 2.0999999046325684,
+      "kills": 5,
+      "loot": 7,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810067": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1624,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 1,
+      "loot": 9,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810068": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 82,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810069": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 316,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810070": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 429,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810071": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1903,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 3,
+      "loot": 14,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 2,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810072": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1287,
+      "exhausted_tail": 0,
+      "damage": 2.0999999046325684,
+      "kills": 4,
+      "loot": 6,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810073": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 92,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 0,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810074": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 61,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810075": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1114,
+      "exhausted_tail": 0,
+      "damage": 1.0,
+      "kills": 2,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810076": {
+      "exit": false,
+      "seen": false,
+      "reason": "timeout",
+      "actions": 3600,
+      "exhausted_tail": 0,
+      "damage": 1.7000000476837158,
+      "kills": 6,
+      "loot": 14,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 4,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810077": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 150,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810078": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1329,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810079": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 670,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810080": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 97,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810081": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 1634,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810082": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 701,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 1,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810083": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 55,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810084": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 90,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810085": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 168,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810086": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 51,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810087": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 943,
+      "exhausted_tail": 0,
+      "damage": 1.399999976158142,
+      "kills": 3,
+      "loot": 5,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810088": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 258,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 7,
+      "loot": 8,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810089": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 304,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 2,
+      "loot": 10,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810090": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 68,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 2,
+      "loot": 0,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810091": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 60,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 2,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810092": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 837,
+      "exhausted_tail": 0,
+      "damage": 1.399999976158142,
+      "kills": 3,
+      "loot": 15,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810093": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 264,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 1,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810094": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 122,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810095": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 101,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810096": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 86,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 1,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810097": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 70,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 3,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810098": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 881,
+      "exhausted_tail": 0,
+      "damage": 0.699999988079071,
+      "kills": 2,
+      "loot": 17,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    },
+    "810099": {
+      "exit": true,
+      "seen": true,
+      "reason": "exit",
+      "actions": 613,
+      "exhausted_tail": 0,
+      "damage": 0.0,
+      "kills": 0,
+      "loot": 4,
+      "policy_action_std": {
+        "x": 0.6868821978569031,
+        "y": 0.716850221157074
+      },
+      "coverage_searches": 0,
+      "bridge_crossings": 0,
+      "blocked_lava_center_entry": false
+    }
+  }
+}

@@ -1,0 +1,4249 @@
+{
+  "run": "qa-run-8c7bf207e0cf4551a4691d37ad798408",
+  "baseline": "qa-run-eac4ccddc8ba418495bb67e8a3ac305a",
+  "summary": {
+    "baseline": {
+      "episodes": 100,
+      "outcomes": {
+        "exit": 68,
+        "death": 17,
+        "timeout": 15
+      },
+      "saw_exit": 69,
+      "exhausted": 19,
+      "kills": 0,
+      "loot": 0
+    },
+    "recovery": {
+      "episodes": 100,
+      "outcomes": {
+        "exit": 68,
+        "death": 17,
+        "timeout": 15
+      },
+      "saw_exit": 69,
+      "exhausted": 19,
+      "kills": 0,
+      "loot": 0
+    },
+    "recovery-combat-loot": {
+      "episodes": 100,
+      "outcomes": {
+        "exit": 75,
+        "timeout": 25
+      },
+      "saw_exit": 75,
+      "exhausted": 25,
+      "kills": 129,
+      "loot": 495
+    }
+  },
+  "by_seed": {
+    "baseline": {
+      "810025": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 111,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810026": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 366,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810027": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 85,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810028": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 927,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810029": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 70,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810030": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 188,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810031": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 244,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810032": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 204,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810033": {
+        "exit": false,
+        "seen": true,
+        "reason": "death",
+        "actions": 322,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810034": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 107,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810035": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 66,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810036": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 154,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810037": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 366,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810038": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 124,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810039": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3298,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810040": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 833,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810041": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2889,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810042": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 135,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810043": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 268,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810044": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 544,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810045": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1199,
+        "exhausted_tail": 85,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810046": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 205,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810047": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 310,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810048": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2724,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810049": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 180,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810075": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3142,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810076": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1674,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810077": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 153,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810078": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3357,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810079": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810080": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 101,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810081": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 297,
+        "exhausted_tail": 126,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810082": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3185,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810083": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 58,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810084": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 93,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810085": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 201,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810086": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 54,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810087": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 989,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810088": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 262,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810089": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 309,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810090": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 71,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810091": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 62,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810092": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 842,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810093": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 267,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810094": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 140,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810095": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 104,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810096": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 89,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810097": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 75,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810098": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 698,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810099": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 616,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810000": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 856,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810001": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 346,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810002": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 534,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810003": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3477,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810004": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 120,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810005": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 120,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810006": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 216,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810007": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 1003,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810008": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 105,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810009": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 997,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810010": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 479,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810011": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 133,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810012": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 286,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810013": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 556,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810014": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 282,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810015": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1048,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810016": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3074,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810017": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2556,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810018": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 282,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810019": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 114,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810020": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 88,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810021": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 71,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810022": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 203,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810023": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3005,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810024": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 113,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810050": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2643,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810051": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 128,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810052": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 76,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810053": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 485,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810054": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 351,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810055": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 118,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810056": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 102,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810057": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 268,
+        "exhausted_tail": 34,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810058": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 364,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810059": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 167,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810060": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 177,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810061": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3231,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810062": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3316,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810063": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 379,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810064": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 133,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810065": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 699,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810066": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810067": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3350,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810068": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 86,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810069": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 320,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810070": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 434,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810071": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3489,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810072": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 443,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810073": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 117,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810074": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 64,
+        "exhausted_tail": 0,
+        "damage": null,
+        "kills": null,
+        "loot": null,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      }
+    },
+    "recovery": {
+      "810025": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 111,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810026": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 366,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810027": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 85,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810028": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 927,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810029": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 70,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810030": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 188,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810031": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 244,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810032": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 204,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810033": {
+        "exit": false,
+        "seen": true,
+        "reason": "death",
+        "actions": 322,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810034": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 107,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810035": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 66,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810036": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 154,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810037": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 366,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810038": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 124,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810039": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3298,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810040": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 833,
+        "exhausted_tail": 0,
+        "damage": 6.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810041": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2889,
+        "damage": 5.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810042": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 135,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810043": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 268,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810044": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 544,
+        "exhausted_tail": 0,
+        "damage": 9.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810045": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1199,
+        "exhausted_tail": 85,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810046": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 205,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810047": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 310,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810048": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2724,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810049": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 180,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810000": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 856,
+        "exhausted_tail": 0,
+        "damage": 4.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810001": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 346,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810002": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 534,
+        "exhausted_tail": 0,
+        "damage": 4.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810003": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3477,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810004": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 120,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810005": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 120,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810006": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 216,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810007": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 1003,
+        "exhausted_tail": 0,
+        "damage": 2.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810008": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 105,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810009": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 997,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810010": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 479,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810011": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 133,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810012": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 286,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810013": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 556,
+        "exhausted_tail": 0,
+        "damage": 7.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810014": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 282,
+        "exhausted_tail": 0,
+        "damage": 5.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810015": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1048,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810016": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3074,
+        "damage": 5.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810017": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2556,
+        "damage": 4.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810018": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 282,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810019": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 114,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810020": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 88,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810021": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 71,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810022": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 203,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810023": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3005,
+        "damage": 9.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810024": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 113,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810050": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2643,
+        "damage": 7.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810051": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 128,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810052": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 76,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810053": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 485,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810054": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 351,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810055": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 118,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810056": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 102,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810057": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 268,
+        "exhausted_tail": 34,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810058": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 364,
+        "exhausted_tail": 0,
+        "damage": 6.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810059": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 167,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810060": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 177,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810061": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3231,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810062": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3316,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810063": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 379,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810064": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 133,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810065": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 699,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810066": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810067": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3350,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810068": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 86,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810069": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 320,
+        "exhausted_tail": 0,
+        "damage": 2.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810070": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 434,
+        "exhausted_tail": 0,
+        "damage": 2.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810071": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3489,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810072": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 443,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810073": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 117,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810074": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 64,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810075": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3142,
+        "damage": 6.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810076": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 1674,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810077": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 153,
+        "exhausted_tail": 0,
+        "damage": 2.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810078": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3357,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810079": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 314,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810080": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 101,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810081": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 297,
+        "exhausted_tail": 126,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810082": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3185,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810083": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 58,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810084": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 93,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810085": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 201,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810086": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 54,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810087": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 989,
+        "exhausted_tail": 0,
+        "damage": 6.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810088": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 262,
+        "exhausted_tail": 0,
+        "damage": 2.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810089": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 309,
+        "exhausted_tail": 0,
+        "damage": 6.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810090": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 71,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810091": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 62,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810092": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 842,
+        "exhausted_tail": 0,
+        "damage": 7.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810093": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 267,
+        "exhausted_tail": 0,
+        "damage": 3.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810094": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 140,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810095": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 104,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810096": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 89,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810097": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 75,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810098": {
+        "exit": false,
+        "seen": false,
+        "reason": "death",
+        "actions": 698,
+        "exhausted_tail": 0,
+        "damage": 10.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810099": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 616,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      }
+    },
+    "recovery-combat-loot": {
+      "810000": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 853,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 2,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810001": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2555,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810002": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 528,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 1,
+        "loot": 13,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810003": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3477,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810004": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 116,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810005": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 117,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810006": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 213,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810007": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 999,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 2,
+        "loot": 12,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810008": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 102,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810009": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 994,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810010": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 476,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 1,
+        "loot": 7,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810011": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 130,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810012": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 282,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810013": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 553,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810014": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 277,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 3,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810015": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 1681,
+        "damage": 0.0,
+        "kills": 5,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810016": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3074,
+        "damage": 1.0,
+        "kills": 1,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810017": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2556,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 16,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810018": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 278,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810019": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 110,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810020": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 83,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810021": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 67,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810022": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 199,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810023": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3005,
+        "damage": 0.0,
+        "kills": 3,
+        "loot": 15,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810024": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 109,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810025": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 108,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810026": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2096,
+        "damage": 1.0,
+        "kills": 2,
+        "loot": 18,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810027": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 81,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810028": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2259,
+        "damage": 2.0999999046325684,
+        "kills": 3,
+        "loot": 11,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810029": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3356,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810030": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 184,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810031": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 238,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 7,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810032": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 201,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810033": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 628,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810034": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 103,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810035": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 62,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810036": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 150,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 3,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810037": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 886,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 3,
+        "loot": 10,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810038": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 99,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810039": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3298,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810040": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 829,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 3,
+        "loot": 13,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810041": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2889,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810042": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 131,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810043": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 254,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 3,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810044": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 541,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 3,
+        "loot": 11,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810045": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2486,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810046": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 202,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810047": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 287,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 10,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810048": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2724,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810049": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 173,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810050": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 2643,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 11,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810051": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 123,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810052": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 72,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810053": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 1427,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 3,
+        "loot": 17,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810054": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 953,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810055": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 106,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810056": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 98,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810057": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3366,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810058": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 360,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 2,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810059": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 162,
+        "exhausted_tail": 0,
+        "damage": 1.0,
+        "kills": 1,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810060": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 173,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810061": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3231,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810062": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3316,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810063": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 374,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 4,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810064": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 108,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810065": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 670,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 12,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810066": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 1840,
+        "damage": 2.0999999046325684,
+        "kills": 4,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810067": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3350,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810068": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 82,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810069": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 316,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810070": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 429,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810071": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3489,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810072": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 1287,
+        "exhausted_tail": 0,
+        "damage": 2.0999999046325684,
+        "kills": 4,
+        "loot": 6,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810073": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 92,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810074": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 61,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810075": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3142,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810076": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 1215,
+        "damage": 1.0,
+        "kills": 5,
+        "loot": 10,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810077": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 150,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810078": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3357,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810079": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 670,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810080": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 97,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810081": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3429,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810082": {
+        "exit": false,
+        "seen": false,
+        "reason": "timeout",
+        "actions": 3600,
+        "exhausted_tail": 3185,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810083": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 55,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810084": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 90,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810085": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 168,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810086": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 51,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810087": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 943,
+        "exhausted_tail": 0,
+        "damage": 1.399999976158142,
+        "kills": 3,
+        "loot": 5,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810088": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 258,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 7,
+        "loot": 8,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810089": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 304,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 2,
+        "loot": 10,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810090": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 68,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 2,
+        "loot": 0,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810091": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 60,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 2,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810092": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 837,
+        "exhausted_tail": 0,
+        "damage": 1.399999976158142,
+        "kills": 3,
+        "loot": 15,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810093": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 264,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 1,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810094": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 122,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810095": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 101,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810096": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 86,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 1,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810097": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 70,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 3,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810098": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 881,
+        "exhausted_tail": 0,
+        "damage": 0.699999988079071,
+        "kills": 2,
+        "loot": 17,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      },
+      "810099": {
+        "exit": true,
+        "seen": true,
+        "reason": "exit",
+        "actions": 613,
+        "exhausted_tail": 0,
+        "damage": 0.0,
+        "kills": 0,
+        "loot": 4,
+        "policy_action_std": {
+          "x": 0.6868821978569031,
+          "y": 0.716850221157074
+        }
+      }
+    }
+  }
+}

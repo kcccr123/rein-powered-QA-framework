@@ -1,0 +1,108 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+nodes:
+- id: caves-clearance-holdout
+  type: suite
+  image: qa-dungeon-trials:local
+  agents:
+  - id: cathedral-ppo
+    model: models/cathedral-ppo/mean.onnx
+  episodes_per_trial: 25
+  environments:
+  - id: caves-200
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 200
+  - id: caves-225
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 225
+  - id: caves-250
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 250
+  - id: caves-275
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 275
+  - id: caves-300
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 300
+  - id: caves-325
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 325
+  - id: caves-350
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 350
+  - id: caves-375
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 375
+- id: collect
+  type: finalizer
+  image: qa-dungeon-trials:local
+  testing:
+    nodes:
+    - caves-clearance-holdout
+    scripts: []

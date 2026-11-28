@@ -1,0 +1,58 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+nodes:
+- id: fine-tuned-caves
+  type: suite
+  image: qa-dungeon-trials:local
+  agents:
+  - id: caves-ppo
+    model: models/caves-ppo-finetune/mean.onnx
+  episodes_per_trial: 25
+  environments:
+  - id: caves-0
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std: &id001
+      - 0.41964051127433777
+      - 0.44585689902305603
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 0
+  - id: caves-25
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std: *id001
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 25
+  - id: caves-50
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std: *id001
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 50
+  - id: caves-75
+    scene: Caves
+    parameters:
+      action_limit: 3600
+      policy_action_std: *id001
+      stall_memory_actions: 60
+      use_combat_and_loot: true
+      explore_known_floor: true
+      seed_offset: 75
+- id: collect
+  type: finalizer
+  image: qa-dungeon-trials:local
+  testing:
+    nodes:
+    - fine-tuned-caves
+    scripts: []
