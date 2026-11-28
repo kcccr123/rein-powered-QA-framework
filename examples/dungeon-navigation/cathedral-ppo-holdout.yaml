@@ -1,0 +1,124 @@
+max_concurrent_containers: 4
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+nodes:
+- id: test-held-out
+  type: suite
+  image: qa-dungeon-trials:local
+  agents:
+  - id: fresh-trained
+    model: models/cathedral-ppo/mean.onnx
+  episodes_per_trial: 25
+  environments:
+  - id: cathedral-500
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 500
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-525
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 525
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-550
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 550
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-575
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 575
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-600
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 600
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-625
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 625
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-650
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 650
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+  - id: cathedral-675
+    scene: Cathedral
+    parameters:
+      action_limit: 3600
+      grid_cell_size: 0.25
+      reject_by_approach: true
+      geometric_door_steering: true
+      assist_stalled_waypoints: true
+      collect_blocking_loot: true
+      seed_offset: 675
+      policy_action_std:
+      - 0.6868821978569031
+      - 0.716850221157074
+- id: collect
+  type: finalizer
+  image: qa-dungeon-trials:local
+  testing:
+    nodes:
+    - test-held-out
+    scripts: []

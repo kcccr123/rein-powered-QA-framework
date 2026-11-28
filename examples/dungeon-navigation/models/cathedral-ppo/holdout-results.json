@@ -1,0 +1,1637 @@
+{
+  "run": "qa-run-6aa03e6b812b45dc900d4a89758651e6",
+  "trained_policy": "fresh-trained",
+  "checkpoint": "checkpoint.zip",
+  "checkpoint_sha256": "9725627935e76ece7fc9ee8f9808f5eae592faad49e8c994efc156db41e2a91c",
+  "source_model": "mean.onnx",
+  "source_model_sha256": "af667067255fd9b923dd840ba1ccd2c94b530f0fd01da0da466722e65669a7d2",
+  "sentis_sha256": "d60fe73b68aabb9fe9a23bd09415101b5ebab2f0eca16fd77a03c997371abffe",
+  "policy_action_std": [
+    0.6868821978569031,
+    0.716850221157074
+  ],
+  "summary": {
+    "episodes": 200,
+    "exits": 192,
+    "exit_rate": 0.96,
+    "end_reasons": {
+      "exit": 192,
+      "timeout": 8
+    },
+    "exit_seen": 192,
+    "median_actions_to_exit": 408.0,
+    "failed_seeds": [
+      768542,
+      768561,
+      768607,
+      768613,
+      768620,
+      768634,
+      768669,
+      768682
+    ]
+  },
+  "episodes": {
+    "768500": {
+      "exit": true,
+      "seen": true,
+      "steps": 353,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768501": {
+      "exit": true,
+      "seen": true,
+      "steps": 71,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768502": {
+      "exit": true,
+      "seen": true,
+      "steps": 811,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768503": {
+      "exit": true,
+      "seen": true,
+      "steps": 808,
+      "reason": "exit",
+      "room_count": 37,
+      "last_navigation_status": "exit"
+    },
+    "768504": {
+      "exit": true,
+      "seen": true,
+      "steps": 319,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768505": {
+      "exit": true,
+      "seen": true,
+      "steps": 596,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768506": {
+      "exit": true,
+      "seen": true,
+      "steps": 597,
+      "reason": "exit",
+      "room_count": 42,
+      "last_navigation_status": "exit"
+    },
+    "768507": {
+      "exit": true,
+      "seen": true,
+      "steps": 331,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768508": {
+      "exit": true,
+      "seen": true,
+      "steps": 900,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768509": {
+      "exit": true,
+      "seen": true,
+      "steps": 1113,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768510": {
+      "exit": true,
+      "seen": true,
+      "steps": 362,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768511": {
+      "exit": true,
+      "seen": true,
+      "steps": 145,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768512": {
+      "exit": true,
+      "seen": true,
+      "steps": 1047,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768513": {
+      "exit": true,
+      "seen": true,
+      "steps": 187,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768514": {
+      "exit": true,
+      "seen": true,
+      "steps": 922,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768515": {
+      "exit": true,
+      "seen": true,
+      "steps": 127,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768516": {
+      "exit": true,
+      "seen": true,
+      "steps": 777,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768517": {
+      "exit": true,
+      "seen": true,
+      "steps": 458,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768518": {
+      "exit": true,
+      "seen": true,
+      "steps": 471,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768519": {
+      "exit": true,
+      "seen": true,
+      "steps": 1020,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768520": {
+      "exit": true,
+      "seen": true,
+      "steps": 399,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768521": {
+      "exit": true,
+      "seen": true,
+      "steps": 401,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768522": {
+      "exit": true,
+      "seen": true,
+      "steps": 128,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768523": {
+      "exit": true,
+      "seen": true,
+      "steps": 269,
+      "reason": "exit",
+      "room_count": 37,
+      "last_navigation_status": "exit"
+    },
+    "768524": {
+      "exit": true,
+      "seen": true,
+      "steps": 1536,
+      "reason": "exit",
+      "room_count": 49,
+      "last_navigation_status": "exit"
+    },
+    "768525": {
+      "exit": true,
+      "seen": true,
+      "steps": 367,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768526": {
+      "exit": true,
+      "seen": true,
+      "steps": 492,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768527": {
+      "exit": true,
+      "seen": true,
+      "steps": 814,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768528": {
+      "exit": true,
+      "seen": true,
+      "steps": 327,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768529": {
+      "exit": true,
+      "seen": true,
+      "steps": 233,
+      "reason": "exit",
+      "room_count": 35,
+      "last_navigation_status": "exit"
+    },
+    "768530": {
+      "exit": true,
+      "seen": true,
+      "steps": 155,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768531": {
+      "exit": true,
+      "seen": true,
+      "steps": 1005,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768532": {
+      "exit": true,
+      "seen": true,
+      "steps": 224,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768533": {
+      "exit": true,
+      "seen": true,
+      "steps": 299,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768534": {
+      "exit": true,
+      "seen": true,
+      "steps": 219,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768535": {
+      "exit": true,
+      "seen": true,
+      "steps": 1006,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768536": {
+      "exit": true,
+      "seen": true,
+      "steps": 606,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768537": {
+      "exit": true,
+      "seen": true,
+      "steps": 422,
+      "reason": "exit",
+      "room_count": 37,
+      "last_navigation_status": "exit"
+    },
+    "768538": {
+      "exit": true,
+      "seen": true,
+      "steps": 139,
+      "reason": "exit",
+      "room_count": 37,
+      "last_navigation_status": "exit"
+    },
+    "768539": {
+      "exit": true,
+      "seen": true,
+      "steps": 221,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768540": {
+      "exit": true,
+      "seen": true,
+      "steps": 293,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768541": {
+      "exit": true,
+      "seen": true,
+      "steps": 889,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768542": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 24,
+      "last_navigation_status": "door_cross"
+    },
+    "768543": {
+      "exit": true,
+      "seen": true,
+      "steps": 407,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768544": {
+      "exit": true,
+      "seen": true,
+      "steps": 363,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768545": {
+      "exit": true,
+      "seen": true,
+      "steps": 893,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768546": {
+      "exit": true,
+      "seen": true,
+      "steps": 93,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768547": {
+      "exit": true,
+      "seen": true,
+      "steps": 454,
+      "reason": "exit",
+      "room_count": 17,
+      "last_navigation_status": "exit"
+    },
+    "768548": {
+      "exit": true,
+      "seen": true,
+      "steps": 201,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768549": {
+      "exit": true,
+      "seen": true,
+      "steps": 209,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768550": {
+      "exit": true,
+      "seen": true,
+      "steps": 255,
+      "reason": "exit",
+      "room_count": 36,
+      "last_navigation_status": "exit"
+    },
+    "768551": {
+      "exit": true,
+      "seen": true,
+      "steps": 232,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768552": {
+      "exit": true,
+      "seen": true,
+      "steps": 306,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768553": {
+      "exit": true,
+      "seen": true,
+      "steps": 362,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768554": {
+      "exit": true,
+      "seen": true,
+      "steps": 865,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768555": {
+      "exit": true,
+      "seen": true,
+      "steps": 332,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768556": {
+      "exit": true,
+      "seen": true,
+      "steps": 419,
+      "reason": "exit",
+      "room_count": 19,
+      "last_navigation_status": "exit"
+    },
+    "768557": {
+      "exit": true,
+      "seen": true,
+      "steps": 458,
+      "reason": "exit",
+      "room_count": 47,
+      "last_navigation_status": "exit"
+    },
+    "768558": {
+      "exit": true,
+      "seen": true,
+      "steps": 780,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768559": {
+      "exit": true,
+      "seen": true,
+      "steps": 73,
+      "reason": "exit",
+      "room_count": 19,
+      "last_navigation_status": "exit"
+    },
+    "768560": {
+      "exit": true,
+      "seen": true,
+      "steps": 618,
+      "reason": "exit",
+      "room_count": 36,
+      "last_navigation_status": "exit"
+    },
+    "768561": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 20,
+      "last_navigation_status": "door_cross"
+    },
+    "768562": {
+      "exit": true,
+      "seen": true,
+      "steps": 1450,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768563": {
+      "exit": true,
+      "seen": true,
+      "steps": 171,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768564": {
+      "exit": true,
+      "seen": true,
+      "steps": 124,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768565": {
+      "exit": true,
+      "seen": true,
+      "steps": 393,
+      "reason": "exit",
+      "room_count": 35,
+      "last_navigation_status": "exit"
+    },
+    "768566": {
+      "exit": true,
+      "seen": true,
+      "steps": 188,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768567": {
+      "exit": true,
+      "seen": true,
+      "steps": 1642,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768568": {
+      "exit": true,
+      "seen": true,
+      "steps": 887,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768569": {
+      "exit": true,
+      "seen": true,
+      "steps": 218,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768570": {
+      "exit": true,
+      "seen": true,
+      "steps": 262,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768571": {
+      "exit": true,
+      "seen": true,
+      "steps": 402,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768572": {
+      "exit": true,
+      "seen": true,
+      "steps": 1677,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768573": {
+      "exit": true,
+      "seen": true,
+      "steps": 525,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768574": {
+      "exit": true,
+      "seen": true,
+      "steps": 276,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768575": {
+      "exit": true,
+      "seen": true,
+      "steps": 1218,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768576": {
+      "exit": true,
+      "seen": true,
+      "steps": 277,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768577": {
+      "exit": true,
+      "seen": true,
+      "steps": 907,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768578": {
+      "exit": true,
+      "seen": true,
+      "steps": 534,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768579": {
+      "exit": true,
+      "seen": true,
+      "steps": 392,
+      "reason": "exit",
+      "room_count": 36,
+      "last_navigation_status": "exit"
+    },
+    "768580": {
+      "exit": true,
+      "seen": true,
+      "steps": 620,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768581": {
+      "exit": true,
+      "seen": true,
+      "steps": 1096,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768582": {
+      "exit": true,
+      "seen": true,
+      "steps": 611,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768583": {
+      "exit": true,
+      "seen": true,
+      "steps": 141,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768584": {
+      "exit": true,
+      "seen": true,
+      "steps": 993,
+      "reason": "exit",
+      "room_count": 36,
+      "last_navigation_status": "exit"
+    },
+    "768585": {
+      "exit": true,
+      "seen": true,
+      "steps": 1289,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768586": {
+      "exit": true,
+      "seen": true,
+      "steps": 314,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768587": {
+      "exit": true,
+      "seen": true,
+      "steps": 358,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768588": {
+      "exit": true,
+      "seen": true,
+      "steps": 203,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768589": {
+      "exit": true,
+      "seen": true,
+      "steps": 72,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768590": {
+      "exit": true,
+      "seen": true,
+      "steps": 727,
+      "reason": "exit",
+      "room_count": 38,
+      "last_navigation_status": "exit"
+    },
+    "768591": {
+      "exit": true,
+      "seen": true,
+      "steps": 117,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768592": {
+      "exit": true,
+      "seen": true,
+      "steps": 516,
+      "reason": "exit",
+      "room_count": 19,
+      "last_navigation_status": "exit"
+    },
+    "768593": {
+      "exit": true,
+      "seen": true,
+      "steps": 174,
+      "reason": "exit",
+      "room_count": 49,
+      "last_navigation_status": "exit"
+    },
+    "768594": {
+      "exit": true,
+      "seen": true,
+      "steps": 842,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768595": {
+      "exit": true,
+      "seen": true,
+      "steps": 95,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768596": {
+      "exit": true,
+      "seen": true,
+      "steps": 655,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768597": {
+      "exit": true,
+      "seen": true,
+      "steps": 686,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768598": {
+      "exit": true,
+      "seen": true,
+      "steps": 315,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768599": {
+      "exit": true,
+      "seen": true,
+      "steps": 498,
+      "reason": "exit",
+      "room_count": 41,
+      "last_navigation_status": "exit"
+    },
+    "768600": {
+      "exit": true,
+      "seen": true,
+      "steps": 457,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768601": {
+      "exit": true,
+      "seen": true,
+      "steps": 712,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768602": {
+      "exit": true,
+      "seen": true,
+      "steps": 316,
+      "reason": "exit",
+      "room_count": 39,
+      "last_navigation_status": "exit"
+    },
+    "768603": {
+      "exit": true,
+      "seen": true,
+      "steps": 582,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768604": {
+      "exit": true,
+      "seen": true,
+      "steps": 177,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768605": {
+      "exit": true,
+      "seen": true,
+      "steps": 340,
+      "reason": "exit",
+      "room_count": 39,
+      "last_navigation_status": "exit"
+    },
+    "768606": {
+      "exit": true,
+      "seen": true,
+      "steps": 889,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768607": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 30,
+      "last_navigation_status": "door_cross"
+    },
+    "768608": {
+      "exit": true,
+      "seen": true,
+      "steps": 426,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768609": {
+      "exit": true,
+      "seen": true,
+      "steps": 198,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768610": {
+      "exit": true,
+      "seen": true,
+      "steps": 1550,
+      "reason": "exit",
+      "room_count": 15,
+      "last_navigation_status": "exit"
+    },
+    "768611": {
+      "exit": true,
+      "seen": true,
+      "steps": 686,
+      "reason": "exit",
+      "room_count": 40,
+      "last_navigation_status": "exit"
+    },
+    "768612": {
+      "exit": true,
+      "seen": true,
+      "steps": 441,
+      "reason": "exit",
+      "room_count": 40,
+      "last_navigation_status": "exit"
+    },
+    "768613": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 33,
+      "last_navigation_status": "recovering"
+    },
+    "768614": {
+      "exit": true,
+      "seen": true,
+      "steps": 520,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768615": {
+      "exit": true,
+      "seen": true,
+      "steps": 684,
+      "reason": "exit",
+      "room_count": 18,
+      "last_navigation_status": "exit"
+    },
+    "768616": {
+      "exit": true,
+      "seen": true,
+      "steps": 329,
+      "reason": "exit",
+      "room_count": 44,
+      "last_navigation_status": "exit"
+    },
+    "768617": {
+      "exit": true,
+      "seen": true,
+      "steps": 205,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768618": {
+      "exit": true,
+      "seen": true,
+      "steps": 426,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768619": {
+      "exit": true,
+      "seen": true,
+      "steps": 151,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768620": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 35,
+      "last_navigation_status": "exploring"
+    },
+    "768621": {
+      "exit": true,
+      "seen": true,
+      "steps": 562,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768622": {
+      "exit": true,
+      "seen": true,
+      "steps": 430,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768623": {
+      "exit": true,
+      "seen": true,
+      "steps": 248,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768624": {
+      "exit": true,
+      "seen": true,
+      "steps": 776,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768625": {
+      "exit": true,
+      "seen": true,
+      "steps": 478,
+      "reason": "exit",
+      "room_count": 28,
+      "last_navigation_status": "exit"
+    },
+    "768626": {
+      "exit": true,
+      "seen": true,
+      "steps": 194,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768627": {
+      "exit": true,
+      "seen": true,
+      "steps": 290,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768628": {
+      "exit": true,
+      "seen": true,
+      "steps": 230,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768629": {
+      "exit": true,
+      "seen": true,
+      "steps": 710,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768630": {
+      "exit": true,
+      "seen": true,
+      "steps": 344,
+      "reason": "exit",
+      "room_count": 17,
+      "last_navigation_status": "exit"
+    },
+    "768631": {
+      "exit": true,
+      "seen": true,
+      "steps": 514,
+      "reason": "exit",
+      "room_count": 40,
+      "last_navigation_status": "exit"
+    },
+    "768632": {
+      "exit": true,
+      "seen": true,
+      "steps": 205,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768633": {
+      "exit": true,
+      "seen": true,
+      "steps": 949,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768634": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 28,
+      "last_navigation_status": "observed_space_exhausted"
+    },
+    "768635": {
+      "exit": true,
+      "seen": true,
+      "steps": 965,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768636": {
+      "exit": true,
+      "seen": true,
+      "steps": 581,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768637": {
+      "exit": true,
+      "seen": true,
+      "steps": 93,
+      "reason": "exit",
+      "room_count": 18,
+      "last_navigation_status": "exit"
+    },
+    "768638": {
+      "exit": true,
+      "seen": true,
+      "steps": 1242,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768639": {
+      "exit": true,
+      "seen": true,
+      "steps": 633,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768640": {
+      "exit": true,
+      "seen": true,
+      "steps": 121,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768641": {
+      "exit": true,
+      "seen": true,
+      "steps": 204,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768642": {
+      "exit": true,
+      "seen": true,
+      "steps": 2026,
+      "reason": "exit",
+      "room_count": 39,
+      "last_navigation_status": "exit"
+    },
+    "768643": {
+      "exit": true,
+      "seen": true,
+      "steps": 245,
+      "reason": "exit",
+      "room_count": 45,
+      "last_navigation_status": "exit"
+    },
+    "768644": {
+      "exit": true,
+      "seen": true,
+      "steps": 171,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768645": {
+      "exit": true,
+      "seen": true,
+      "steps": 335,
+      "reason": "exit",
+      "room_count": 42,
+      "last_navigation_status": "exit"
+    },
+    "768646": {
+      "exit": true,
+      "seen": true,
+      "steps": 1131,
+      "reason": "exit",
+      "room_count": 24,
+      "last_navigation_status": "exit"
+    },
+    "768647": {
+      "exit": true,
+      "seen": true,
+      "steps": 175,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768648": {
+      "exit": true,
+      "seen": true,
+      "steps": 153,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768649": {
+      "exit": true,
+      "seen": true,
+      "steps": 712,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768650": {
+      "exit": true,
+      "seen": true,
+      "steps": 562,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768651": {
+      "exit": true,
+      "seen": true,
+      "steps": 87,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768652": {
+      "exit": true,
+      "seen": true,
+      "steps": 206,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768653": {
+      "exit": true,
+      "seen": true,
+      "steps": 363,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768654": {
+      "exit": true,
+      "seen": true,
+      "steps": 217,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768655": {
+      "exit": true,
+      "seen": true,
+      "steps": 1070,
+      "reason": "exit",
+      "room_count": 35,
+      "last_navigation_status": "exit"
+    },
+    "768656": {
+      "exit": true,
+      "seen": true,
+      "steps": 246,
+      "reason": "exit",
+      "room_count": 36,
+      "last_navigation_status": "exit"
+    },
+    "768657": {
+      "exit": true,
+      "seen": true,
+      "steps": 541,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768658": {
+      "exit": true,
+      "seen": true,
+      "steps": 399,
+      "reason": "exit",
+      "room_count": 22,
+      "last_navigation_status": "exit"
+    },
+    "768659": {
+      "exit": true,
+      "seen": true,
+      "steps": 1144,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768660": {
+      "exit": true,
+      "seen": true,
+      "steps": 791,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768661": {
+      "exit": true,
+      "seen": true,
+      "steps": 166,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768662": {
+      "exit": true,
+      "seen": true,
+      "steps": 408,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768663": {
+      "exit": true,
+      "seen": true,
+      "steps": 178,
+      "reason": "exit",
+      "room_count": 26,
+      "last_navigation_status": "exit"
+    },
+    "768664": {
+      "exit": true,
+      "seen": true,
+      "steps": 908,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768665": {
+      "exit": true,
+      "seen": true,
+      "steps": 420,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768666": {
+      "exit": true,
+      "seen": true,
+      "steps": 617,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768667": {
+      "exit": true,
+      "seen": true,
+      "steps": 1063,
+      "reason": "exit",
+      "room_count": 38,
+      "last_navigation_status": "exit"
+    },
+    "768668": {
+      "exit": true,
+      "seen": true,
+      "steps": 518,
+      "reason": "exit",
+      "room_count": 35,
+      "last_navigation_status": "exit"
+    },
+    "768669": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 25,
+      "last_navigation_status": "recovering"
+    },
+    "768670": {
+      "exit": true,
+      "seen": true,
+      "steps": 340,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768671": {
+      "exit": true,
+      "seen": true,
+      "steps": 320,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768672": {
+      "exit": true,
+      "seen": true,
+      "steps": 126,
+      "reason": "exit",
+      "room_count": 34,
+      "last_navigation_status": "exit"
+    },
+    "768673": {
+      "exit": true,
+      "seen": true,
+      "steps": 376,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768674": {
+      "exit": true,
+      "seen": true,
+      "steps": 1851,
+      "reason": "exit",
+      "room_count": 42,
+      "last_navigation_status": "exit"
+    },
+    "768675": {
+      "exit": true,
+      "seen": true,
+      "steps": 603,
+      "reason": "exit",
+      "room_count": 20,
+      "last_navigation_status": "exit"
+    },
+    "768676": {
+      "exit": true,
+      "seen": true,
+      "steps": 307,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768677": {
+      "exit": true,
+      "seen": true,
+      "steps": 551,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768678": {
+      "exit": true,
+      "seen": true,
+      "steps": 172,
+      "reason": "exit",
+      "room_count": 33,
+      "last_navigation_status": "exit"
+    },
+    "768679": {
+      "exit": true,
+      "seen": true,
+      "steps": 1294,
+      "reason": "exit",
+      "room_count": 38,
+      "last_navigation_status": "exit"
+    },
+    "768680": {
+      "exit": true,
+      "seen": true,
+      "steps": 204,
+      "reason": "exit",
+      "room_count": 29,
+      "last_navigation_status": "exit"
+    },
+    "768681": {
+      "exit": true,
+      "seen": true,
+      "steps": 472,
+      "reason": "exit",
+      "room_count": 30,
+      "last_navigation_status": "exit"
+    },
+    "768682": {
+      "exit": false,
+      "seen": false,
+      "steps": 3600,
+      "reason": "timeout",
+      "room_count": 30,
+      "last_navigation_status": "observed_space_exhausted"
+    },
+    "768683": {
+      "exit": true,
+      "seen": true,
+      "steps": 202,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768684": {
+      "exit": true,
+      "seen": true,
+      "steps": 2649,
+      "reason": "exit",
+      "room_count": 39,
+      "last_navigation_status": "exit"
+    },
+    "768685": {
+      "exit": true,
+      "seen": true,
+      "steps": 571,
+      "reason": "exit",
+      "room_count": 25,
+      "last_navigation_status": "exit"
+    },
+    "768686": {
+      "exit": true,
+      "seen": true,
+      "steps": 408,
+      "reason": "exit",
+      "room_count": 38,
+      "last_navigation_status": "exit"
+    },
+    "768687": {
+      "exit": true,
+      "seen": true,
+      "steps": 394,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768688": {
+      "exit": true,
+      "seen": true,
+      "steps": 249,
+      "reason": "exit",
+      "room_count": 31,
+      "last_navigation_status": "exit"
+    },
+    "768689": {
+      "exit": true,
+      "seen": true,
+      "steps": 487,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768690": {
+      "exit": true,
+      "seen": true,
+      "steps": 165,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768691": {
+      "exit": true,
+      "seen": true,
+      "steps": 509,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768692": {
+      "exit": true,
+      "seen": true,
+      "steps": 1893,
+      "reason": "exit",
+      "room_count": 37,
+      "last_navigation_status": "exit"
+    },
+    "768693": {
+      "exit": true,
+      "seen": true,
+      "steps": 1045,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768694": {
+      "exit": true,
+      "seen": true,
+      "steps": 1250,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768695": {
+      "exit": true,
+      "seen": true,
+      "steps": 257,
+      "reason": "exit",
+      "room_count": 27,
+      "last_navigation_status": "exit"
+    },
+    "768696": {
+      "exit": true,
+      "seen": true,
+      "steps": 240,
+      "reason": "exit",
+      "room_count": 32,
+      "last_navigation_status": "exit"
+    },
+    "768697": {
+      "exit": true,
+      "seen": true,
+      "steps": 407,
+      "reason": "exit",
+      "room_count": 21,
+      "last_navigation_status": "exit"
+    },
+    "768698": {
+      "exit": true,
+      "seen": true,
+      "steps": 531,
+      "reason": "exit",
+      "room_count": 23,
+      "last_navigation_status": "exit"
+    },
+    "768699": {
+      "exit": true,
+      "seen": true,
+      "steps": 1616,
+      "reason": "exit",
+      "room_count": 35,
+      "last_navigation_status": "exit"
+    }
+  },
+  "training_run": "qa-run-eae1dafb3f51430a8c3125c67352c70f"
+}

@@ -163,3 +163,5 @@ See [the integration guide](docs/integration-readiness.md) for a complete develo
 ## Worked example
 
 The sibling game's [QA integration guide](../kawaii-power-little-adventure/QA/README.md) demonstrates an adapter, state wrappers, lifecycle wiring, and an exit-time/success recorder. Its gameplay, evidence fields, predicates, and batch settings are integration choices.
+
+The dungeon navigation example includes QA-50 and QA-86 checkpoints for training and ONNX exports for frozen trials. Its evaluation DAG gives each model a 100-episode mixed-room trial and a 100-episode cathedral trial, then collects the episode records for review. [Evaluation and Unity environments](examples/dungeon-navigation/README.md) · [Model files and workflow paths](examples/dungeon-navigation/models/README.md)
