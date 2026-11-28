@@ -36,7 +36,7 @@ def positive_int(value: object, name: str) -> int:
 
 def trainer_settings(value: object, *, resuming: bool) -> dict:
     settings = copy_json_object(value, name="trainer")
-    allowed = {"model", "device", "seed", "total_timesteps", "checkpoint_freq",
+    allowed = {"model", "device", "seed", "total_timesteps", "max_episodes", "checkpoint_freq",
                "socket_timeout_seconds", "learning_rate", "gamma", "n_steps", "ppo", "ent_coef"}
     unknown = settings.keys() - allowed
     if unknown:
@@ -47,6 +47,8 @@ def trainer_settings(value: object, *, resuming: bool) -> dict:
     if settings["model"] != "ppo" or settings["device"] != "cpu":
         raise ValueError("training currently requires model: ppo and device: cpu")
     positive_int(settings.get("total_timesteps"), "trainer.total_timesteps")
+    if "max_episodes" in settings:
+        positive_int(settings["max_episodes"], "trainer.max_episodes")
     if type(settings["seed"]) is not int or not 0 <= settings["seed"] <= 2_147_483_647:
         raise ValueError("trainer.seed must be a nonnegative 32-bit integer")
     if type(settings["checkpoint_freq"]) is not int or settings["checkpoint_freq"] < 0:
@@ -176,8 +178,11 @@ def load_dag(path: Path) -> DAGConfig:
                 node["checkpoint"] = model_input(node["checkpoint"], "checkpoint")
             node["trainer"] = trainer_settings(node.get("trainer"), resuming=node.get("checkpoint") is not None)
         elif kind == "suite":
-            if set(node) - {"id", "type", "image", "environments", "agents", "episodes_per_trial"}:
+            if set(node) - {"id", "type", "image", "environments", "agents", "episodes_per_trial", "after"}:
                 raise ValueError(f"{identity}: unknown suite node fields")
+            after = node.get("after", [])
+            if not isinstance(after, list) or any(not isinstance(parent, str) for parent in after):
+                raise ValueError(f"{identity}: after must list suite IDs")
             positive_int(node.get("episodes_per_trial"), "episodes_per_trial")
             for key in ("environments", "agents"):
                 entries = node.get(key)
@@ -220,6 +225,12 @@ def load_dag(path: Path) -> DAGConfig:
         for dependency in node.dependencies:
             if dependency not in by_id or by_id[dependency].type != "train":
                 raise ValueError(f"{node.id}: producer {dependency} must name a training node")
+    for index, node in enumerate(nodes):
+        after = node.settings.get("after", [])
+        if after:
+            if any(parent not in by_id or by_id[parent].type != "suite" for parent in after):
+                raise ValueError(f"{node.id}: after must name existing suites")
+            nodes[index] = NodeConfig(node.id, node.type, node.image, node.settings, node.dependencies.union(after))
     remaining = {node.id: set(node.dependencies) for node in nodes}
     while remaining:
         ready = {identity for identity, parents in remaining.items() if not parents}

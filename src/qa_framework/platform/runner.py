@@ -252,7 +252,7 @@ class RunManager:
                 continue
             parents = [self.nodes[key] for key in state.config.dependencies]
             if any(parent.status in ("failed", "blocked", "cancelled") for parent in parents):
-                self.set_status(state, "blocked", "a required training producer did not succeed")
+                self.set_status(state, "blocked", "a required upstream node did not succeed")
                 continue
             if any(parent.status != "succeeded" for parent in parents):
                 continue

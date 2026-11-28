@@ -19,6 +19,7 @@ Paths resolve beside the YAML, except container paths in generated assignments. 
 | Trainer setting | Default / behavior |
 | --- | --- |
 | `total_timesteps` | Required positive budget for this stage; PPO may finish a rollout beyond it |
+| `max_episodes` | Optional exact count of completed episodes. Set a sufficient action budget. The node fails if the action budget ends training first. Use a Unity RL trainer build that supports this setting. |
 | `model`, `device` | `ppo`, `cpu`; other values rejected |
 | `seed` | 0; seeds environment resets and fresh policy initialization |
 | `checkpoint_freq` | 0, disabling intermediate checkpoints |
@@ -53,6 +54,8 @@ Training publishes `checkpoint.zip` and `model.onnx`, then `artifacts.json` afte
 The core QA Unity assembly does not depend on the RL assembly: the concrete training adapter supplies that integration. Trial-only consumers still need only the QA package. The actor sample includes both packages and pins Inference Engine 2.4.1 directly to align training exports with the trial converter/runtime.
 
 ## Scheduling and evaluation
+
+A suite can set `after: [first-suite]` to wait for another suite to succeed. Both suites can reference the same frozen model and supply different environment parameters. The runner validates suite IDs and rejects dependency cycles before launch.
 
 One Docker Compose project owns the entire DAG. Training jobs and individual trials share `max_concurrent_containers`; suites themselves are groups, not additional containers. The ready queue allocates one job per ready node in turn and generates trials lazily. A stage succeeds only after its container exits zero and its required artifacts validate.
 
