@@ -1,0 +1,30 @@
+max_concurrent_containers: 2
+output_dir: ./runs
+model_preparation:
+  unity_editor: C:/Program Files/Unity/Hub/Editor/6000.3.4f1/Editor/Unity.exe
+
+nodes:
+  - id: qa-50
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 100
+    environments: &navigation
+      - {id: rooms-1-to-6, scene: MixedRooms}
+      - {id: cathedral, scene: Cathedral}
+    agents:
+      - {id: qa-50, model: models/qa-50/model.onnx}
+
+  - id: qa-86
+    type: suite
+    image: qa-dungeon-trials:local
+    episodes_per_trial: 100
+    environments: *navigation
+    agents:
+      - {id: qa-86, model: models/qa-86/model.onnx}
+
+  - id: collect
+    type: finalizer
+    image: qa-dungeon-trials:local
+    testing:
+      nodes: [qa-50, qa-86]
+      scripts: []

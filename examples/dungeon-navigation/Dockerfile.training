@@ -1,0 +1,19 @@
+# Build with the framework root as context and unity-rl set to Unity RL's PythonEnv.
+FROM python:3.11-slim-bookworm
+ENV SDL_VIDEODRIVER=dummy
+ENV QA_RL_PYTHON=/opt/unity-rl/PythonEnv
+ENV OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libglib2.0-0 libgomp1 libatomic1 libgl1 libx11-6 libgtk-3-0 \
+    && rm -rf /var/lib/apt/lists/*
+COPY --from=unity-rl requirements*.txt /opt/unity-rl/PythonEnv/
+RUN pip install --no-cache-dir torch==2.6.0 --index-url https://download.pytorch.org/whl/cpu \
+    && pip install --no-cache-dir -r /opt/unity-rl/PythonEnv/requirements-export.txt
+COPY --from=unity-rl *.py /opt/unity-rl/PythonEnv/
+WORKDIR /framework
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir .
+COPY examples/dungeon-navigation/Build/Training /app
+RUN chmod +x /app/CathedralTraining.x86_64
+ENTRYPOINT ["qa-run-training", "--", "/app/CathedralTraining.x86_64", "-batchmode", "-nographics", "-logFile", "/qa/output/unity.log"]

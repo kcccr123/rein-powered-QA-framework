@@ -1,0 +1,84 @@
+{
+  "source_repository": "chlsey/kawaii-power-little-adventure",
+  "observation_contract": "local-waypoint-v1",
+  "onnx_input": {
+    "name": "obs",
+    "dtype": "float32",
+    "shape": [
+      1,
+      134
+    ]
+  },
+  "onnx_output": {
+    "name": "actions",
+    "dtype": "float32",
+    "shape": [
+      1,
+      2
+    ]
+  },
+  "verification": {
+    "qa_framework_revision": "7e31190c821c5a8a20ac07468591c18ead56ec2c",
+    "unity_rl_revision": "25e7611be4e08a85f7bdf450e7b98c2dc89be3d8",
+    "training_runtime": "Python 3.11, Stable-Baselines3 2.5.0, NumPy 1.26.4",
+    "unity_runtime": "Unity 6000.3.4f1, Inference Engine 2.4.1, CPU",
+    "observations": "QA-85 expansive dungeon traces",
+    "observation_count": 324,
+    "seed_count": 100,
+    "unchanged_checkpoint_entries": [
+      "policy.pth",
+      "policy.optimizer.pth",
+      "pytorch_variables.pth"
+    ]
+  },
+  "models": [
+    {
+      "id": "qa-50",
+      "source_kind": "final",
+      "source_checkpoint": "SavedModels/qa/local-waypoint-v1/qa-waypoint-recovery-20261109-224625-train/final_model.zip",
+      "source_sha256": "acffd0594bb6a03a157e2853688dfc4d7647606d052cb241fe620d9f8eb4db64",
+      "model_steps": 656793,
+      "sb3_n_updates": 25610,
+      "completed_lineage_episodes": 4700,
+      "learning_rate": 0.00002,
+      "clip_range": 0.2,
+      "checkpoint": {
+        "path": "qa-50/checkpoint.zip",
+        "sha256": "d6fedbff2ea6021486aca1804ba2fcd7e56d08b686955b69a3e4b3116eab503d"
+      },
+      "onnx": {
+        "path": "qa-50/model.onnx",
+        "sha256": "fe73c1ae92caf19a4aae16b5b613e85034731961673e2864be28cf5c2e287e1e"
+      },
+      "max_absolute_action_error_vs_source": {
+        "migrated_ppo": 0,
+        "onnx_runtime_cpu": 0.0000010915100574493408,
+        "unity_cpu": 6.780028343200684e-7
+      }
+    },
+    {
+      "id": "qa-86",
+      "source_kind": "periodic",
+      "source_checkpoint": "SavedModels/qa/local-waypoint-v1/qa-expansive-exit-20261118-190943-train/checkpoints/rl_model_1641793_steps.zip",
+      "source_sha256": "33d092f803bd416f524fd50a4a7ad94b4649c3b25260aecfeada6a923ef54a47",
+      "model_steps": 1641793,
+      "sb3_n_updates": 64080,
+      "completed_lineage_episodes": 5558,
+      "learning_rate": 0.000002,
+      "clip_range": 0.2,
+      "checkpoint": {
+        "path": "qa-86/checkpoint.zip",
+        "sha256": "fb5557c3ab749fa516d5d7a9650e5357e57d82e6efd105e66099e646ed404d75"
+      },
+      "onnx": {
+        "path": "qa-86/model.onnx",
+        "sha256": "bd6ecbb55e0774b17579b158ba6d390a54018dfdf4f54ee1780ac897cb50a9b3"
+      },
+      "max_absolute_action_error_vs_source": {
+        "migrated_ppo": 0,
+        "onnx_runtime_cpu": 9.5367431640625e-7,
+        "unity_cpu": 5.662441253662109e-7
+      }
+    }
+  ]
+}

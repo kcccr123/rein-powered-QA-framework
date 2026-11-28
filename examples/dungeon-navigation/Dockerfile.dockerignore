@@ -1,0 +1,13 @@
+**
+!pyproject.toml
+!README.md
+!src/
+!src/**
+!examples/
+!examples/dungeon-navigation/
+!examples/dungeon-navigation/Build/
+!examples/dungeon-navigation/Build/Linux/
+!examples/dungeon-navigation/Build/Linux/**
+**/*_BurstDebugInformation_DoNotShip/
+**/__pycache__/
+**/*.egg-info/
